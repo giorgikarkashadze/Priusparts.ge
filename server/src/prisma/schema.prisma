@@ -1,0 +1,160 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role     @default(CUSTOMER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  orders       Order[]
+  reviews      Review[]
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+model Make {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  models Model[]
+}
+
+model Model {
+  id     String  @id @default(cuid())
+  name   String
+  makeId String
+  make   Make    @relation(fields: [makeId], references: [id])
+  years  Int[]
+  parts  PartCompatibility[]
+
+  @@unique([name, makeId])
+}
+
+model Category {
+  id    String  @id @default(cuid())
+  name  String  @unique
+  slug  String  @unique
+  icon  String?
+  parts Part[]
+}
+
+model Part {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique
+  description  String?
+  oemNumber    String?
+  price        Decimal  @db.Decimal(10, 2)
+  comparePrice Decimal? @db.Decimal(10, 2)
+  stock        Int      @default(0)
+  images       String[]
+  categoryId   String
+  category     Category @relation(fields: [categoryId], references: [id])
+  compatibility PartCompatibility[]
+  orderItems   OrderItem[]
+  reviews      Review[]
+  promoItems   PromoItem[]
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model PartCompatibility {
+  id      String @id @default(cuid())
+  partId  String
+  modelId String
+  years   Int[]
+  part    Part   @relation(fields: [partId], references: [id], onDelete: Cascade)
+  model   Model  @relation(fields: [modelId], references: [id])
+
+  @@unique([partId, modelId])
+}
+
+model Promotion {
+  id          String      @id @default(cuid())
+  code        String      @unique
+  description String?
+  discount    Decimal     @db.Decimal(5, 2)
+  type        PromoType   @default(PERCENTAGE)
+  isActive    Boolean     @default(true)
+  expiresAt   DateTime?
+  usageLimit  Int?
+  usageCount  Int         @default(0)
+  items       PromoItem[]
+  orders      Order[]
+  createdAt   DateTime    @default(now())
+}
+
+enum PromoType {
+  PERCENTAGE
+  FIXED
+}
+
+model PromoItem {
+  id          String    @id @default(cuid())
+  promotionId String
+  promotion   Promotion @relation(fields: [promotionId], references: [id])
+  partId      String?
+  part        Part?     @relation(fields: [partId], references: [id])
+  categoryId  String?
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  userId      String?
+  user        User?       @relation(fields: [userId], references: [id])
+  status      OrderStatus @default(PENDING)
+  items       OrderItem[]
+  subtotal    Decimal     @db.Decimal(10, 2)
+  shipping    Decimal     @db.Decimal(10, 2) @default(9.99)
+  discount    Decimal     @db.Decimal(10, 2) @default(0)
+  total       Decimal     @db.Decimal(10, 2)
+  promotionId String?
+  promotion   Promotion?  @relation(fields: [promotionId], references: [id])
+  stripePaymentId String?
+  shippingAddress Json
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model OrderItem {
+  id       String  @id @default(cuid())
+  orderId  String
+  order    Order   @relation(fields: [orderId], references: [id])
+  partId   String
+  part     Part    @relation(fields: [partId], references: [id])
+  quantity Int
+  price    Decimal @db.Decimal(10, 2)
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  partId    String
+  part      Part     @relation(fields: [partId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  @@unique([partId, userId])
+}
