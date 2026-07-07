@@ -1,6 +1,9 @@
 export interface Part {
   id: string
   name: string
+  slug: string
+  comparePrice?: number
+  oemNumber?: string
   description: string
   price: number
   originalPrice?: number
@@ -24,6 +27,7 @@ export interface Category {
   icon: string
   description?: string
   partCount?: number
+  _count?: { parts: number }
 }
 
 export interface Compatibility {
@@ -140,4 +144,28 @@ export interface DashboardStats {
   lowStockCount: number
   avgRating: number
   recentOrders: Order[]
+}
+
+export interface FilterState {
+  makeId: string
+  modelId: string
+  year: string
+  category: string
+  minPrice: string
+  maxPrice: string
+  search: string
+  sort: string
+}
+
+export interface Make {
+  id: string
+  name: string
+  models: Model[]
+}
+
+export interface Model {
+  id: string
+  name: string
+  makeId: string
+  years: number[]
 }

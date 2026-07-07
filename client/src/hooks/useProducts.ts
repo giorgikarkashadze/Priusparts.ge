@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import api from '@/lib/api'
-import type { PaginatedResponse, Part, Category, Make } from '@/types'
-import type { FilterState } from '@/types'
+import type { PaginatedResponse, Part, Category, Make, FilterState  } from '@/types/types'
 
 export function useProducts(filters: Partial<FilterState> & { page?: number }) {
   return useQuery<PaginatedResponse<Part>>({
