@@ -4,7 +4,7 @@ import { Package, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import api from '@/lib/api'
 import { formatPrice, formatDate, STATUS_LABELS, cn } from '@/lib/utils'
-import type { Order } from '@/types'
+import type { Order } from '../types/types'
 
 export default function OrdersPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null)

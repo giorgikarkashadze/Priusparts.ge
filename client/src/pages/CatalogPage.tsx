@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Search, SlidersHorizontal, X } from 'lucide-react'
-import { useProducts } from './hooks/useProducts'
-import PartCard from './components/PartCard'
+import { useProducts } from '../hooks/useProducts'
+import PartCard from '../components/PartCard'
 import FilterSidebar from '../components/FilterSidebar'
-import type { FilterState } from './types'
+import type { FilterState } from '../types/types'
 
 const SORTS = [
   { value: 'newest', label: 'Newest first' },
@@ -116,9 +116,9 @@ export default function CatalogPage() {
           )}
 
           {/* Pagination */}
-          {data && data.pages > 1 && (
+          {data && data.page > 1 && (
             <div className="flex justify-center gap-2 mt-6">
-              {Array.from({ length: data.pages }).map((_, i) => (
+              {Array.from({ length: data.page }).map((_, i) => (
                 <button key={i} onClick={() => setPage(i + 1)}
                   className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
                     page === i + 1 ? 'bg-brand text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}>

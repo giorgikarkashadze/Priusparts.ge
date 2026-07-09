@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { CartItem, Part, User } from '@/types'
+import type { CartItem, Part, User } from '../types/types'
 
 // ─── Auth store ───────────────────────────────────────────────────────────────
 interface AuthState {

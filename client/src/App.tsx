@@ -1,15 +1,15 @@
-// import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-// import { useAuthStore } from '@/store'
-// import Layout from '@/components/Layout'
-// import HomePage from '@/pages/HomePage'
-// import CatalogPage from '@/pages/CatalogPage'
-// import ProductPage from '@/pages/ProductPage'
-// import CartPage from '@/pages/CartPage'
-// import CheckoutPage from '@/pages/CheckoutPage'
-// import OrdersPage from '@/pages/OrdersPage'
-// import AboutPage from '@/pages/AboutPage'
-// import LoginPage from '@/pages/LoginPage'
-// import AdminPage from '@/pages/AdminPage'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useAuthStore } from '@/store'
+import Layout from '@/components/Layout'
+import HomePage from '@/pages/HomePage'
+import CatalogPage from '@/pages/CatalogPage'
+import ProductPage from '@/pages/ProductPage'
+import CartPage from '@/pages/CartPage'
+import CheckoutPage from '@/pages/CheckoutPage'
+import OrdersPage from '@/pages/OrdersPage'
+import AboutPage from '@/pages/AboutPage'
+import LoginPage from '@/pages/LoginPage'
+import AdminPage from '@/pages/AdminPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((s) => s.user)
@@ -18,7 +18,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 
 function AdminRoute({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((s) => s.user)
-  return user?.role === 'ADMIN' ? <>{children}</> : <Navigate to="/" replace />
+  return user?.role === 'admin' ? <>{children}</> : <Navigate to="/" replace />
 }
 
 export default function App() {

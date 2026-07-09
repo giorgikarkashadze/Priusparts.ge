@@ -15,6 +15,7 @@ export interface Part {
   images: string[]
   compatibility: Compatibility[]
   rating: number
+  reviews?: Review[] 
   reviewCount: number
   isActive: boolean
   createdAt: string
@@ -66,6 +67,7 @@ export interface OrderItem {
   partSku: string
   price: number
   quantity: number
+  part: Part 
 }
 
 export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
@@ -108,6 +110,9 @@ export interface RegisterPayload extends LoginPayload {
 export interface Promotion {
   id: string
   code: string
+  description?: string
+  discount: number
+  type: 'PERCENTAGE' | 'FIXED'
   discountPercent: number
   categoryId?: string
   expiresAt: string
@@ -168,4 +173,12 @@ export interface Model {
   name: string
   makeId: string
   years: number[]
+}
+
+export interface Review {
+  id: string
+  rating: number
+  comment?: string
+  createdAt: string
+  user: { name: string }
 }

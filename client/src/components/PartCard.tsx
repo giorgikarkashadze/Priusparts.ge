@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { ShoppingCart, Star } from 'lucide-react'
 import { useCartStore } from '@/store'
 import { formatPrice, discount, cn } from '@/lib/utils'
-import type { Part } from '@/types/types'
+import type { Part } from '../types/types'
 
 const CATEGORY_ICONS: Record<string, string> = {
   engine: '🔧', brakes: '🛞', suspension: '⚙️', electrical: '⚡', filters: '🌀',

@@ -1,6 +1,6 @@
 import { useCategories, useMakes } from "@/hooks/useProducts";
 import { cn } from "@/lib/utils";
-import type { FilterState } from "@/types/types";
+import type { FilterState } from "../types/types";
 
 interface Props {
   filters: FilterState;
