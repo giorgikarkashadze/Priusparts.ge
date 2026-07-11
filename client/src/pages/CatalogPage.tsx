@@ -103,7 +103,7 @@ export default function CatalogPage() {
                 <div key={i} className="card h-56 animate-pulse bg-gray-100 dark:bg-gray-800" />
               ))}
             </div>
-          ) : data?.data.length === 0 ? (
+          ) : Array.isArray(data) && data?.data.length === 0 ? (
             <div className="text-center py-16 text-gray-400">
               <div className="text-4xl mb-3">🔍</div>
               <div className="font-medium mb-1">No parts found</div>
@@ -111,7 +111,7 @@ export default function CatalogPage() {
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {data?.data.map((part) => <PartCard key={part.id} part={part} />)}
+              {Array.isArray(data) && data?.data.map((part) => <PartCard key={part.id} part={part} />)}
             </div>
           )}
 

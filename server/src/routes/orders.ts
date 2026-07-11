@@ -2,11 +2,13 @@ import { Router } from 'express'
 import { PrismaClient } from '@prisma/client'
 import { z } from 'zod'
 import Stripe from 'stripe'
-import { requireAuth, AuthRequest } from '../../middleware/auth'
+import { requireAuth, AuthRequest } from '../middleware/auth'
 
 const router = Router()
 const prisma = new PrismaClient()
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder')
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? 'sk_test_placeholder', {
+  apiVersion: '2023-10-16',
+})
 
 const orderSchema = z.object({
   items: z.array(z.object({ partId: z.string(), quantity: z.number().min(1) })),

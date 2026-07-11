@@ -60,7 +60,7 @@ export default function HomePage() {
 
       <div className="max-w-7xl mx-auto px-4 py-10 space-y-10">
         {/* Categories */}
-        {categories && (
+        {Array.isArray(categories) && categories.length > 0 &&(
           <section>
             <h2 className="text-lg font-semibold mb-4">Shop by category</h2>
             <div className="grid grid-cols-3 md:grid-cols-5 gap-3">

@@ -5,10 +5,10 @@ import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import path from 'path'
 
-import authRouter from './routes/authRoute'
-import productsRouter from './routes/productsRoute'
-import ordersRouter from './routes/ordersRoute'
-import adminRouter from './routes/adminRoute'
+import authRouter from './routes/auth'
+import productsRouter from './routes/products'
+import ordersRouter from './routes/orders'
+import adminRouter from './routes/admin'
 import promotionsRouter from '.'
 
 const app = express()
@@ -29,7 +29,7 @@ app.use('/api/auth', authRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/orders', ordersRouter)
 app.use('/api/admin', adminRouter)
-app.use('/api/promotions', promotionsRouter)
+// app.use('/api/promotions', promotionsRouter)
 
 // Health check
 app.get('/api/health', (_, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }))

@@ -11,7 +11,7 @@ export default function FilterSidebar({ filters, onChange }: Props) {
   const { data: categories } = useCategories();
   const { data: makes } = useMakes();
 
-  const selectedMake = makes?.find((m) => m.id === filters.makeId);
+  const selectedMake = Array.isArray(makes) && makes?.find((m) => m.id === filters.makeId);
 
   return (
     <aside className="w-56 shrink-0 space-y-5">
@@ -29,7 +29,7 @@ export default function FilterSidebar({ filters, onChange }: Props) {
             }
           >
             <option value="">All makes</option>
-            {makes?.map((m) => (
+            {Array.isArray(makes) && makes?.map((m) => (
               <option key={m.id} value={m.id}>
                 {m.name}
               </option>
@@ -88,7 +88,7 @@ export default function FilterSidebar({ filters, onChange }: Props) {
           >
             All parts
           </button>
-          {categories?.map((c) => (
+          {Array.isArray(categories) &&  categories?.map((c) => (
             <button
               key={c.id}
               onClick={() => onChange({ category: c.slug })}

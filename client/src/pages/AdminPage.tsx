@@ -178,7 +178,7 @@ function InventoryTab() {
               <label className="block text-sm font-medium mb-1">Category *</label>
               <select {...register('categoryId')} className="input">
                 <option value="">Select category</option>
-                {categories?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                {Array.isArray(categories) &&  categories?.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
               {errors.categoryId && <p className="text-xs text-red-500 mt-1">{errors.categoryId.message}</p>}
             </div>
