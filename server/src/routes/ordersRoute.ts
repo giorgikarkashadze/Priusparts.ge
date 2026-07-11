@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { PrismaClient } from '@prisma/client'
 import { z } from 'zod'
 import Stripe from 'stripe'
-import { requireAuth, AuthRequest } from '../middleware/auth'
+import { requireAuth, AuthRequest } from '../../middleware/auth'
 
 const router = Router()
 const prisma = new PrismaClient()

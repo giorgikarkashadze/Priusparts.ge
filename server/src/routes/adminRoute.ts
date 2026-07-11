@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client'
 import { z } from 'zod'
 import multer from 'multer'
 import path from 'path'
-import { requireAdmin } from '../middleware/auth'
+import { requireAdmin } from '../../middleware/auth'
 
 const router = Router()
 const prisma = new PrismaClient()
