@@ -28,9 +28,9 @@ export default function HomePage() {
       <section className="bg-gradient-to-br from-gray-900 to-gray-800 text-white py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-semibold tracking-tight mb-4">
-            Find parts for <span className="text-brand-light">any vehicle</span>
+            Find parts for <span className="text-brand-light">TOYOTA Prius</span>
           </h1>
-          <p className="text-gray-400 text-lg mb-8">Over 50,000 genuine & aftermarket parts with fast delivery</p>
+          <p className="text-gray-400 text-lg mb-8">Over 200 genuine & aftermarket parts with fast delivery</p>
           <form onSubmit={handleSearch} className="flex gap-3 max-w-xl mx-auto">
             <div className="relative flex-1">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -101,7 +101,7 @@ export default function HomePage() {
 
         {/* Features */}
         <section>
-          <h2 className="text-lg font-semibold mb-4">Why AutoParts Pro?</h2>
+          <h2 className="text-lg font-semibold mb-4">Why PriusParts Pro?</h2>
           <div className="grid md:grid-cols-4 gap-4">
             {FEATURES.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="card p-4">

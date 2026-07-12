@@ -1,4 +1,4 @@
-# AutoParts Pro
+# PriusParts Pro
 
 Full-stack car parts e-commerce app — React + TypeScript frontend, Node.js/Express backend, PostgreSQL via Prisma.
 
@@ -38,7 +38,7 @@ cd client && npm run dev
 
 ## Structure
 ```
-autoparts/
+priusparts/
 ├── client/          # React + Vite + TypeScript
 │   └── src/
 │       ├── components/   # Navbar, PartCard, CartDrawer, etc.

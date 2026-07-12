@@ -21,6 +21,6 @@ export const useThemeStore = create<ThemeStore>()(
         set({ isDark: dark })
       },
     }),
-    { name: 'autoparts-theme' }
+    { name: 'priusparts-theme' }
   )
 )

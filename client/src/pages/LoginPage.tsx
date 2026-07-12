@@ -160,7 +160,7 @@ export default function LoginPage() {
 
         {/* Demo credentials */}
         <div className="mt-4 card p-3 text-xs text-gray-500 dark:text-gray-400 text-center">
-          <strong>Demo admin:</strong> admin@autoparts.pro / admin123
+          <strong>Demo admin:</strong> admin@priusparts.pro / admin123
         </div>
       </div>
     </div>

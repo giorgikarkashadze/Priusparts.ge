@@ -59,6 +59,6 @@ export const useAuthStore = create<AuthStore>()(
         }
       },
     }),
-    { name: 'autoparts-auth', partialize: (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }) }
+    { name: 'priusparts-auth', partialize: (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }) }
   )
 )

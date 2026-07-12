@@ -1,11 +1,20 @@
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
-import { ShoppingCart, Sun, Moon, Menu, X, User, LogOut, Settings, Package } from "lucide-react";
+import {
+  ShoppingCart,
+  Sun,
+  Moon,
+  Menu,
+  X,
+  User,
+  LogOut,
+  Settings,
+  Package,
+} from "lucide-react";
 import { useState } from "react";
 import { useCartStore, useAuthStore, useThemeStore } from "@/store";
 import { cn } from "@/lib/utils";
 
 export default function Layout() {
-  
   const itemCount = useCartStore((s) => s.itemCount());
   const { user, clearAuth } = useAuthStore();
   const { dark, toggle } = useThemeStore();
@@ -19,6 +28,10 @@ export default function Layout() {
     { href: "/catalog", label: "Catalog" },
     { href: "/about", label: "About" },
   ];
+
+  const handleReload = () => {
+    window.location.reload();
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -35,7 +48,7 @@ export default function Layout() {
             to="/"
             className="text-lg font-semibold tracking-tight shrink-0"
           >
-            AUTO<span className="text-brand-light">PARTS</span>
+            PRIUS<span className="text-brand-light">PARTS</span>
           </Link>
 
           {/* Desktop nav */}
@@ -112,8 +125,10 @@ export default function Layout() {
                     <button
                       onClick={() => {
                         clearAuth();
+                        useCartStore.getState().clearCart();
                         setUserMenuOpen(false);
                         navigate("/");
+                        handleReload();
                       }}
                       className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-white/10 text-red-400 w-full text-left"
                     >
@@ -192,14 +207,14 @@ export default function Layout() {
           <div>
             <div className="text-gray-300 font-medium mb-2">Support</div>
             <div className="space-y-1 text-xs">
-              <p>support@autoparts.pro</p>
-              <p>+1 800-AUTOPARTS</p>
+              <p>support@priusparts.pro</p>
+              <p>+1 800-PriusParts</p>
               <p>Mon–Fri 8am–6pm EST</p>
             </div>
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 mt-6 pt-4 border-t border-gray-800 text-xs text-gray-600">
-          © 2025 AutoParts Pro. All rights reserved.
+          © 2025 PriusParts Pro. All rights reserved.
         </div>
       </footer>
     </div>

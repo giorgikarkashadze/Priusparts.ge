@@ -18,7 +18,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 
 function AdminRoute({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((s) => s.user)
-  return user?.role === 'admin' ? <>{children}</> : <Navigate to="/" replace />
+  return user?.role === 'ADMIN' ? <>{children}</> : <Navigate to="/" replace />
 }
 
 export default function App() {

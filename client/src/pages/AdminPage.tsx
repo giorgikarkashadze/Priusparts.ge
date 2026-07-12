@@ -479,9 +479,9 @@ function SettingsTab() {
         <h2 className="font-semibold mb-4">Store information</h2>
         <div className="space-y-4">
           {[
-            { label: 'Store name', placeholder: 'AutoParts Pro', type: 'text' },
-            { label: 'Contact email', placeholder: 'admin@autoparts.pro', type: 'email' },
-            { label: 'Support phone', placeholder: '+1 800-AUTOPARTS', type: 'text' },
+            { label: 'Store name', placeholder: 'PriusParts Pro', type: 'text' },
+            { label: 'Contact email', placeholder: 'admin@priusparts.pro', type: 'email' },
+            { label: 'Support phone', placeholder: '+1 800-PriusParts', type: 'text' },
           ].map(({ label, placeholder, type }) => (
             <div key={label}>
               <label className="block text-sm font-medium mb-1.5">{label}</label>

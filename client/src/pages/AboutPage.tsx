@@ -16,9 +16,8 @@ const STATS = [
 ]
 
 const TEAM = [
-  { name: 'Marcus Reid', role: 'Founder & Head Mechanic', emoji: '🧑‍🔧' },
-  { name: 'Sofia Chen', role: 'Parts Specialist', emoji: '👩‍💼' },
-  { name: 'James Kowalski', role: 'Logistics Manager', emoji: '🧑‍💼' },
+  { name: 'Giga Arabidze', role: 'Founder & Head Mechanic', emoji: '🧑🏻‍💼' },
+  { name: 'Giorgi Karkashadze', role: 'Developer', emoji: '🛠️💻' },
 ]
 
 export default function AboutPage() {
@@ -26,9 +25,9 @@ export default function AboutPage() {
     <div className="max-w-4xl mx-auto px-4 py-10 space-y-14">
       {/* Hero */}
       <section className="text-center">
-        <h1 className="text-3xl font-semibold mb-3">About AutoParts Pro</h1>
+        <h1 className="text-3xl font-semibold mb-3">About PriusParts Pro</h1>
         <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto leading-relaxed">
-          Founded in 2010 by Marcus Reid, a master mechanic with 20 years of experience, AutoParts Pro was built to
+          Founded in 2010 by Marcus Reid, a master mechanic with 20 years of experience, PriusParts Pro was built to
           give everyday drivers and professional workshops access to quality parts at fair prices — with the expert
           knowledge to back it up.
         </p>
@@ -103,8 +102,8 @@ export default function AboutPage() {
         <h2 className="text-xl font-semibold mb-5">Get in touch</h2>
         <div className="grid md:grid-cols-3 gap-4">
           {[
-            { icon: Mail, label: 'Email us', value: 'support@autoparts.pro', href: 'mailto:support@autoparts.pro' },
-            { icon: Phone, label: 'Call us', value: '+1 800-AUTOPARTS', href: 'tel:+18002886278' },
+            { icon: Mail, label: 'Email us', value: 'support@priusparts.pro', href: 'mailto:support@priusparts.pro' },
+            { icon: Phone, label: 'Call us', value: '+1 800-PriusParts', href: 'tel:+18002886278' },
             { icon: MapPin, label: 'Visit us', value: '142 Garage Blvd, Detroit MI', href: '#' },
           ].map(({ icon: Icon, label, value, href }) => (
             <a key={label} href={href} className="card p-5 flex gap-3 items-start hover:border-brand/40 transition-colors group">
