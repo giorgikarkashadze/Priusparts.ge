@@ -25,9 +25,9 @@ export default function AboutPage() {
     <div className="max-w-4xl mx-auto px-4 py-10 space-y-14">
       {/* Hero */}
       <section className="text-center">
-        <h1 className="text-3xl font-semibold mb-3">About PriusParts Pro</h1>
+        <h1 className="text-3xl font-semibold mb-3">About PriusParts</h1>
         <p className="text-gray-500 dark:text-gray-400 max-w-xl mx-auto leading-relaxed">
-          Founded in 2010 by Marcus Reid, a master mechanic with 20 years of experience, PriusParts Pro was built to
+          Founded in 2010 by Marcus Reid, a master mechanic with 20 years of experience, PriusParts was built to
           give everyday drivers and professional workshops access to quality parts at fair prices — with the expert
           knowledge to back it up.
         </p>

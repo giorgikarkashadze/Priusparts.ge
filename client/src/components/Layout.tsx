@@ -29,11 +29,11 @@ export default function Layout() {
 
       {/* Navbar */}
       <nav style={{ background: '#0a0f1e', borderBottom: '1px solid #1a2744', position: 'sticky', top: 0, zIndex: 100 }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 16px', height: 56, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ maxWidth: 2000, margin: '0 auto', padding: '0 16px', height: 56, display: 'flex', alignItems: 'center', gap: 8 }}>
 
           {/* Logo */}
           <Link to="/" style={{ textDecoration: 'none', marginRight: 16, flexShrink: 0 }}>
-            <span style={{ fontSize: 18, fontWeight: 700, color: '#f9fafb', letterSpacing: '-0.5px' }}>
+            <span style={{ fontSize: 30, fontWeight: 700, color: '#f9fafb', letterSpacing: '-0.5px' }}>
               Prius<span style={{ color: '#4d9fff' }}>Parts</span>
               <span style={{ color: '#6b7280', fontSize: 13, fontWeight: 400 }}>.ge</span>
             </span>

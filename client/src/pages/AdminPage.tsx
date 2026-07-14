@@ -89,13 +89,10 @@ export default function AdminPage() {
   return (
     <div style={{ margin: '10px', padding: '32px 16px' }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
-        <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(212,56,13,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Settings size={18} style={{ color: '#4d9fff' }} />
-        </div>
+      <div style={{ justifyContent: 'space-between', gap: 12, marginBottom: 28 }}>
         <div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: '#f9fafb' }}>Admin dashboard</h1>
-          <p style={{ fontSize: 12, color: '#475569' }}>PriusParts.ge — manage inventory, orders and promotions</p>
+          <h1 style={{ fontSize: 40, fontWeight: 700, color: '#f9fafb' }}>Admin dashboard</h1>
+          <p style={{ fontSize: 20, color: '#475569' }}>PriusParts.ge — manage inventory, orders and promotions</p>
         </div>
       </div>
 
@@ -312,7 +309,7 @@ function InventoryTab() {
         </div>
       )}
 
-      {/* Parts table */}
+      {/* Inventory table */}
       <div style={{ ...card, overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
@@ -427,7 +424,7 @@ function OrdersTab() {
           <thead>
             <tr style={{ background: '#0a0f1e' }}>
               {['Order', 'Customer', 'Total', 'Status', 'Date', ''].map(h => (
-                <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#475569', borderBottom: '1px solid #1a2744' }}>{h}</th>
+                <th key={h} style={{ textAlign: 'center', padding: '12px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#475569', borderBottom: '1px solid #1a2744' }}>{h}</th>
               ))}
             </tr>
           </thead>
