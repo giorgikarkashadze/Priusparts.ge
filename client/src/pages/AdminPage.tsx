@@ -87,7 +87,7 @@ export default function AdminPage() {
   ]
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0', padding: '32px 16px' }}>
+    <div style={{ margin: '10px', padding: '32px 16px' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
         <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(212,56,13,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -100,7 +100,7 @@ export default function AdminPage() {
       </div>
 
       {/* Tab bar */}
-      <div style={{ display: 'flex', gap: 4, marginBottom: 24, background: '#0a0f1e', border: '1px solid #1a2744', borderRadius: 12, padding: 4, width: 'fit-content' }}>
+      <div style={{ display: 'flex', gap: 4, marginBottom: 24, background: '#0a0f1e', border: '1px solid #1a2744', borderRadius: 12, padding: 4, width: '100%', justifyContent: 'space-between' }}>
         {TABS.map(({ id, label, icon: Icon }) => (
           <button key={id} onClick={() => setTab(id)} style={{
             display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px',
@@ -318,7 +318,7 @@ function InventoryTab() {
           <thead>
             <tr style={{ background: '#0a0f1e' }}>
               {['Name', 'Category', 'Price', 'Stock', 'Actions'].map(h => (
-                <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#475569', borderBottom: '1px solid #1a2744' }}>{h}</th>
+                <th key={h} style={{ textAlign: 'center', padding: '12px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#475569', borderBottom: '1px solid #1a2744' }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -361,7 +361,7 @@ function InventoryTab() {
                     {part.stock === 0 ? 'Out of stock' : `${part.stock} in stock`}
                   </span>
                 </td>
-                <td style={{ padding: '14px 16px' }}>
+                <td style={{ padding: '14px 16px', alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
                   <div style={{ display: 'flex', gap: 6 }}>
                     <button onClick={() => { setEditId(part.id); setShowForm(true) }}
                       style={{ width: 30, height: 30, borderRadius: 7, border: '1px solid #1a2744', background: '#1a2744', color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -453,7 +453,7 @@ function OrdersTab() {
                     <td style={{ padding: '14px 16px' }}>
                       <select value={order.status}
                         onChange={e => statusMutation.mutate({ id: order.id, status: e.target.value })}
-                        style={{ padding: '4px 8px', borderRadius: 6, border: `1px solid ${statusColor}33`, background: `${statusColor}18`, color: statusColor, fontSize: 12, fontWeight: 600, cursor: 'pointer', outline: 'none' }}>
+                        style={{ padding: '4px 8px', borderRadius: 6, border: `1px solid ${statusColor}33`, background: `#111e35`, color: statusColor, fontSize: 12, fontWeight: 600, cursor: 'pointer', outline: 'none' }}>
                         {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
                       </select>
                     </td>
