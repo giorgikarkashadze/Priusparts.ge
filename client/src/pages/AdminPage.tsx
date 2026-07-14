@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import api from '@/lib/api'
-import { formatPrice, formatDate, STATUS_LABELS } from '@/lib/utils'
+import { formatPrice, formatDate } from '@/lib/utils'
 import type { Part, Order, Promotion, Category } from '@/types/types'
 
 type Tab = 'dashboard' | 'inventory' | 'orders' | 'promotions' | 'settings'
