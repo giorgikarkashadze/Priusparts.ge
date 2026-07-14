@@ -1,168 +1,117 @@
-import { useCategories, useMakes } from "@/hooks/useProducts";
-import { cn } from "@/lib/utils";
-import type { FilterState } from "../types/types";
+import { useCategories } from '@/hooks/useProducts'
+import type { FilterState } from '@/types/types'
+
+// const PRIUS_YEARS = Array.from({ length: 2024 - 2008 + 1 }, (_, i) => 2008 + i).reverse()
+
+const GENERATIONS = [
+  { label: 'Gen 2 (2004–2009)', years: [2008, 2009] },
+  { label: 'Gen 3 (2010–2015)', years: [2010, 2011, 2012, 2013, 2014, 2015] },
+  { label: 'Gen 4 (2016–2022)', years: [2016, 2017, 2018, 2019, 2020, 2021, 2022] },
+  { label: 'Gen 5 (2023+)', years: [2023, 2024] },
+]
 
 interface Props {
-  filters: FilterState;
-  onChange: (filters: Partial<FilterState>) => void;
+  filters: FilterState
+  onChange: (filters: Partial<FilterState>) => void
+}
+
+const sectionTitle: React.CSSProperties = {
+  fontSize: 11, fontWeight: 600, textTransform: 'uppercase',
+  letterSpacing: '0.05em', color: '#6b7280', marginBottom: 10
+}
+
+const selectStyle: React.CSSProperties = {
+  width: '100%', padding: '8px 10px', borderRadius: 8,
+  border: '1px solid #374151', background: '#1f2937',
+  color: '#f9fafb', fontSize: 13, cursor: 'pointer', marginBottom: 8,
+  boxSizing: 'border-box'
+}
+
+const inputStyle: React.CSSProperties = {
+  width: '100%', padding: '8px 10px', borderRadius: 8,
+  border: '1px solid #374151', background: '#1f2937',
+  color: '#f9fafb', fontSize: 13, outline: 'none', boxSizing: 'border-box'
 }
 
 export default function FilterSidebar({ filters, onChange }: Props) {
-  const { data: categories } = useCategories();
-  const { data: makes } = useMakes();
-
-  const selectedMake = Array.isArray(makes) && makes?.find((m) => m.id === filters.makeId);
+  const { data: categories } = useCategories()
 
   return (
-    <aside className="w-56 shrink-0 space-y-5">
-      {/* Vehicle selector */}
-      <div>
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
-          Vehicle
-        </h3>
-        <div className="space-y-2">
-          <select
-            className="input text-sm"
-            value={filters.makeId}
-            onChange={(e) =>
-              onChange({ makeId: e.target.value, modelId: "", year: "" })
-            }
-          >
-            <option value="">All makes</option>
-            {Array.isArray(makes) && makes?.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.name}
-              </option>
-            ))}
-          </select>
+    <div style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: 16 }}>
 
-          {selectedMake && (
-            <select
-              className="input text-sm"
-              value={filters.modelId}
-              onChange={(e) => onChange({ modelId: e.target.value, year: "" })}
-            >
-              <option value="">All models</option>
-              {selectedMake.models.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.name}
-                </option>
+      {/* Year */}
+      <div style={{ marginBottom: 20 }}>
+        <div style={sectionTitle}>Prius Year</div>
+        <select style={selectStyle} value={filters.year}
+          onChange={(e) => onChange({ year: e.target.value })}>
+          <option value="">All years (2008–2024)</option>
+          {GENERATIONS.map(gen => (
+            <optgroup key={gen.label} label={gen.label}>
+              {gen.years.map(y => (
+                <option key={y} value={String(y)}>{y}</option>
               ))}
-            </select>
-          )}
-
-          {filters.modelId && selectedMake && (
-            <select
-              className="input text-sm"
-              value={filters.year}
-              onChange={(e) => onChange({ year: e.target.value })}
-            >
-              <option value="">All years</option>
-              {selectedMake.models
-                .find((m) => m.id === filters.modelId)
-                ?.years.sort((a, b) => b - a)
-                .map((y) => (
-                  <option key={y} value={String(y)}>
-                    {y}
-                  </option>
-                ))}
-            </select>
-          )}
-        </div>
+            </optgroup>
+          ))}
+        </select>
       </div>
 
       {/* Category */}
-      <div>
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
-          Category
-        </h3>
-        <div className="space-y-0.5">
+      <div style={{ marginBottom: 20 }}>
+        <div style={sectionTitle}>Category</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <button
-            onClick={() => onChange({ category: "" })}
-            className={cn(
-              "w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors",
-              !filters.category
-                ? "bg-brand text-white"
-                : "hover:bg-gray-100 dark:hover:bg-gray-800",
-            )}
-          >
+            onClick={() => onChange({ category: '' })}
+            style={{
+              textAlign: 'left', padding: '8px 12px', borderRadius: 8, border: 'none',
+              cursor: 'pointer', fontSize: 13, fontWeight: 500,
+              background: !filters.category ? '#d4380d' : 'transparent',
+              color: !filters.category ? '#fff' : '#9ca3af',
+            }}>
             All parts
           </button>
-          {Array.isArray(categories) &&  categories?.map((c) => (
+          {Array.isArray(categories) && categories.map((c) => (
             <button
               key={c.id}
               onClick={() => onChange({ category: c.slug })}
-              className={cn(
-                "w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors flex items-center justify-between",
-                filters.category === c.slug
-                  ? "bg-brand text-white"
-                  : "hover:bg-gray-100 dark:hover:bg-gray-800",
-              )}
-            >
-              <span>
-                {c.icon} {c.name}
-              </span>
-              <span
-                className={cn(
-                  "text-xs",
-                  filters.category === c.slug
-                    ? "text-white/70"
-                    : "text-gray-400",
-                )}
-              >
-                {c._count?.parts}
-              </span>
+              style={{
+                textAlign: 'left', padding: '8px 12px', borderRadius: 8, border: 'none',
+                cursor: 'pointer', fontSize: 13, display: 'flex', justifyContent: 'space-between',
+                alignItems: 'center',
+                background: filters.category === c.slug ? '#d4380d' : 'transparent',
+                color: filters.category === c.slug ? '#fff' : '#9ca3af',
+              }}>
+              <span>{c.icon} {c.name}</span>
+              <span style={{ fontSize: 11, opacity: 0.7 }}>{c._count?.parts}</span>
             </button>
           ))}
         </div>
       </div>
 
       {/* Price range */}
-      <div>
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
-          Price range
-        </h3>
-        <div className="flex items-center gap-2">
-          <input
-            type="number"
-            placeholder="Min"
-            value={filters.minPrice}
+      <div style={{ marginBottom: 20 }}>
+        <div style={sectionTitle}>Price range</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <input type="number" placeholder="Min" value={filters.minPrice}
             onChange={(e) => onChange({ minPrice: e.target.value })}
-            className="input text-sm"
-            min={0}
-          />
-          <span className="text-gray-400">–</span>
-          <input
-            type="number"
-            placeholder="Max"
-            value={filters.maxPrice}
+            style={{ ...inputStyle, width: '50%' }} />
+          <span style={{ color: '#6b7280' }}>–</span>
+          <input type="number" placeholder="Max" value={filters.maxPrice}
             onChange={(e) => onChange({ maxPrice: e.target.value })}
-            className="input text-sm"
-            min={0}
-          />
+            style={{ ...inputStyle, width: '50%' }} />
         </div>
       </div>
 
-      {/* Reset */}
+      {/* Clear */}
       {Object.values(filters).some(Boolean) && (
         <button
-          onClick={() =>
-            onChange({
-              makeId: "",
-              modelId: "",
-              year: "",
-              category: "",
-              minPrice: "",
-              maxPrice: "",
-              search: "",
-              sort: "",
-            })
-          }
-          className="w-full text-sm text-gray-500 hover:text-brand underline"
-        >
+          onClick={() => onChange({ makeId: '', modelId: '', year: '', category: '', minPrice: '', maxPrice: '', search: '', sort: 'newest' })}
+          style={{
+            width: '100%', padding: '8px', borderRadius: 8, border: '1px solid #374151',
+            background: 'transparent', color: '#6b7280', fontSize: 13, cursor: 'pointer'
+          }}>
           Clear all filters
         </button>
       )}
-    </aside>
-  );
+    </div>
+  )
 }

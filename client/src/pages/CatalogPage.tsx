@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Search, SlidersHorizontal, X } from 'lucide-react'
-import { useProducts } from '../hooks/useProducts'
-import PartCard from '../components/PartCard'
-import FilterSidebar from '../components/FilterSidebar'
-import type { FilterState } from '../types/types'
+import { Search, X, SlidersHorizontal } from 'lucide-react'
+import { useProducts } from '@/hooks/useProducts'
+import PartCard from '@/components/PartCard'
+import FilterSidebar from '@/components/FilterSidebar'
+import type { FilterState } from '@/types/types'
 
 const SORTS = [
   { value: 'newest', label: 'Newest first' },
@@ -41,21 +41,31 @@ export default function CatalogPage() {
     setSearchParams(params, { replace: true })
   }, [filters])
 
+  const activeFilterCount = [filters.makeId, filters.modelId, filters.year, filters.category, filters.minPrice, filters.maxPrice].filter(Boolean).length
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
-      {/* Toolbar */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="relative flex-1 max-w-md">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px 16px' }}>
+
+      {/* Top toolbar */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
+        <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
+          <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
           <input
-            className="input pl-9"
+            style={{
+              width: '100%', paddingLeft: 36, paddingRight: 12, paddingTop: 9, paddingBottom: 9,
+              borderRadius: 8, border: '1px solid #374151', background: '#1f2937',
+              color: '#f9fafb', fontSize: 14, outline: 'none', boxSizing: 'border-box'
+            }}
             placeholder="Search parts..."
             value={filters.search}
             onChange={(e) => updateFilters({ search: e.target.value })}
           />
         </div>
         <select
-          className="input w-44"
+          style={{
+            padding: '9px 12px', borderRadius: 8, border: '1px solid #374151',
+            background: '#1f2937', color: '#f9fafb', fontSize: 14, cursor: 'pointer'
+          }}
           value={filters.sort}
           onChange={(e) => updateFilters({ sort: e.target.value })}
         >
@@ -63,65 +73,92 @@ export default function CatalogPage() {
         </select>
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className="md:hidden btn-secondary flex items-center gap-2"
+          style={{
+            display: 'flex', alignItems: 'center', gap: 6, padding: '9px 14px',
+            borderRadius: 8, border: '1px solid #374151', background: showFilters ? '#d4380d' : '#1f2937',
+            color: '#f9fafb', fontSize: 14, cursor: 'pointer'
+          }}
         >
           <SlidersHorizontal size={14} />
-          Filters
+          Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
         </button>
       </div>
 
-      <div className="flex gap-6">
-        {/* Sidebar — desktop always, mobile toggle */}
-        <div className={`${showFilters ? 'block' : 'hidden'} md:block`}>
-          <FilterSidebar filters={filters} onChange={updateFilters} />
-        </div>
-
-        {/* Grid */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm text-gray-500">
-              {isLoading ? 'Loading…' : `${data?.total ?? 0} parts found`}
+      {/* Active filter chips */}
+      {(filters.category || filters.search) && (
+        <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
+          {filters.category && (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px',
+              borderRadius: 20, background: 'rgba(212,56,13,0.15)', color: '#ff6b35', fontSize: 12
+            }}>
+              {filters.category}
+              <button onClick={() => updateFilters({ category: '' })} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff6b35', padding: 0, display: 'flex' }}>
+                <X size={12} />
+              </button>
             </span>
-            {/* Active filter chips */}
-            <div className="flex flex-wrap gap-1.5">
-              {filters.category && (
-                <span className="badge bg-brand/10 text-brand text-xs flex items-center gap-1">
-                  {filters.category} <button onClick={() => updateFilters({ category: '' })}><X size={10} /></button>
-                </span>
-              )}
-              {filters.search && (
-                <span className="badge bg-gray-100 dark:bg-gray-800 text-xs flex items-center gap-1">
-                  "{filters.search}" <button onClick={() => updateFilters({ search: '' })}><X size={10} /></button>
-                </span>
-              )}
-            </div>
+          )}
+          {filters.search && (
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px',
+              borderRadius: 20, background: '#1f2937', color: '#9ca3af', fontSize: 12, border: '1px solid #374151'
+            }}>
+              "{filters.search}"
+              <button onClick={() => updateFilters({ search: '' })} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', padding: 0, display: 'flex' }}>
+                <X size={12} />
+              </button>
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Main layout */}
+      <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
+
+        {/* Sidebar */}
+        {showFilters && (
+          <div style={{ width: 220, flexShrink: 0 }}>
+            <FilterSidebar filters={filters} onChange={updateFilters} />
+          </div>
+        )}
+
+        {/* Parts grid area */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {/* Results count */}
+          <div style={{ marginBottom: 16, color: '#9ca3af', fontSize: 13 }}>
+            {isLoading ? 'Loading…' : `${data?.total ?? 0} parts found`}
           </div>
 
+          {/* Grid */}
           {isLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="card h-56 animate-pulse bg-gray-100 dark:bg-gray-800" />
+                <div key={i} style={{ height: 260, borderRadius: 12, background: '#1f2937', animation: 'pulse 1.5s infinite' }} />
               ))}
             </div>
-          ) : Array.isArray(data) && data?.data.length === 0 ? (
-            <div className="text-center py-16 text-gray-400">
-              <div className="text-4xl mb-3">🔍</div>
-              <div className="font-medium mb-1">No parts found</div>
-              <div className="text-sm">Try adjusting your filters or search terms</div>
+          ) : !data?.data?.length ? (
+            <div style={{ textAlign: 'center', padding: '64px 0', color: '#6b7280' }}>
+              <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
+              <div style={{ fontSize: 16, fontWeight: 500, marginBottom: 4 }}>No parts found</div>
+              <div style={{ fontSize: 13 }}>Try adjusting your filters or search terms</div>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {Array.isArray(data) && data?.data.map((part) => <PartCard key={part.id} part={part} />)}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
+              {data.data.map((part) => <PartCard key={part.id} part={part} />)}
             </div>
           )}
 
           {/* Pagination */}
           {data && data.page > 1 && (
-            <div className="flex justify-center gap-2 mt-6">
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 32 }}>
               {Array.from({ length: data.page }).map((_, i) => (
                 <button key={i} onClick={() => setPage(i + 1)}
-                  className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
-                    page === i + 1 ? 'bg-brand text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
+                  style={{
+                    width: 36, height: 36, borderRadius: 8, border: 'none', cursor: 'pointer',
+                    fontSize: 14, fontWeight: 500,
+                    background: page === i + 1 ? '#d4380d' : '#1f2937',
+                    color: page === i + 1 ? '#fff' : '#9ca3af',
+                  }}>
                   {i + 1}
                 </button>
               ))}

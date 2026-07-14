@@ -1,84 +1,129 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ShoppingCart, Star } from 'lucide-react'
 import { useCartStore } from '@/store'
-import { formatPrice, discount, cn } from '@/lib/utils'
-import type { Part } from '../types/types'
+import { formatPrice, discount } from '@/lib/utils'
+import type { Part } from '@/types/types'
 
 const CATEGORY_ICONS: Record<string, string> = {
   engine: '🔧', brakes: '🛞', suspension: '⚙️', electrical: '⚡', filters: '🌀',
 }
 
-interface Props { part: Part; className?: string }
-
-export default function PartCard({ part, className }: Props) {
+export default function PartCard({ part }: { part: Part }) {
   const addItem = useCartStore((s) => s.addItem)
+  const [added, setAdded] = useState(false)
   const disc = discount(part.price, part.comparePrice)
-  const icon = CATEGORY_ICONS[part.category.slug] || '🔩'
+  const icon = CATEGORY_ICONS[part.category?.slug] || '🔩'
+
+  const handleAdd = (e: React.MouseEvent) => {
+    e.preventDefault()
+    addItem(part)
+    setAdded(true)
+    setTimeout(() => setAdded(false), 1500)
+  }
 
   return (
-    <div className={cn('card overflow-hidden group hover:-translate-y-1 transition-all duration-200 hover:shadow-lg hover:shadow-black/10 dark:hover:shadow-black/40', className)}>
+    <div style={{
+      background: '#111827', border: '1px solid #1f2937', borderRadius: 12,
+      overflow: 'hidden', transition: 'transform 0.15s, box-shadow 0.15s',
+      cursor: 'pointer',
+    }}
+      onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 24px rgba(0,0,0,0.3)' }}
+      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'none'; (e.currentTarget as HTMLDivElement).style.boxShadow = 'none' }}
+    >
       {/* Thumbnail */}
-      <Link to={`/catalog/${part.slug}`} className="block">
-        <div className="relative h-36 bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-          {part.images.length > 0 ? (
-            <img src={part.images[0]} alt={part.name} className="h-full w-full object-cover" />
+      <Link to={`/catalog/${part.slug}`} style={{ display: 'block', textDecoration: 'none' }}>
+        <div style={{
+          height: 140, background: '#1f2937', display: 'flex',
+          alignItems: 'center', justifyContent: 'center', position: 'relative'
+        }}>
+          {part.images?.[0] ? (
+            <img src={part.images[0]} alt={part.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           ) : (
-            <span className="text-4xl">{icon}</span>
+            <span style={{ fontSize: 48 }}>{icon}</span>
           )}
           {disc && (
-            <div className="absolute top-2 right-2 bg-brand text-white text-xs font-medium px-2 py-0.5 rounded-full">
+            <div style={{
+              position: 'absolute', top: 8, right: 8, background: '#d4380d',
+              color: '#fff', fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 20
+            }}>
               -{disc}%
             </div>
           )}
-          {part.stock <= 5 && part.stock > 0 && (
-            <div className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full">
-              Only {part.stock} left
+          {part.stock === 0 && (
+            <div style={{
+              position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}>
+              <span style={{ color: '#fff', fontSize: 12, background: 'rgba(0,0,0,0.7)', padding: '4px 12px', borderRadius: 20 }}>
+                Out of stock
+              </span>
             </div>
           )}
-          {part.stock === 0 && (
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-              <span className="text-white text-xs font-medium bg-black/60 px-3 py-1 rounded-full">Out of stock</span>
+          {part.stock > 0 && part.stock <= 5 && (
+            <div style={{
+              position: 'absolute', top: 8, left: 8, background: '#f97316',
+              color: '#fff', fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 20
+            }}>
+              Only {part.stock} left
             </div>
           )}
         </div>
       </Link>
 
       {/* Info */}
-      <div className="p-3">
-        <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{part.category.name}</div>
-        <Link to={`/catalog/${part.slug}`}>
-          <h3 className="text-sm font-medium leading-snug mb-1 hover:text-brand transition-colors line-clamp-2">{part.name}</h3>
+      <div style={{ padding: 12 }}>
+        <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 4 }}>{part.category?.name}</div>
+
+        <Link to={`/catalog/${part.slug}`} style={{ textDecoration: 'none' }}>
+          <div style={{
+            fontSize: 13, fontWeight: 500, color: '#f9fafb', lineHeight: 1.4,
+            marginBottom: 4, display: '-webkit-box', WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical', overflow: 'hidden'
+          }}>
+            {part.name}
+          </div>
         </Link>
+
         {part.oemNumber && (
-          <div className="text-xs text-gray-400 font-mono mb-2">OEM: {part.oemNumber}</div>
+          <div style={{ fontSize: 11, color: '#6b7280', fontFamily: 'monospace', marginBottom: 6 }}>
+            OEM: {part.oemNumber}
+          </div>
         )}
 
-        {/* Rating placeholder */}
-        <div className="flex items-center gap-1 mb-2">
+        {/* Stars */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 10 }}>
           {Array.from({ length: 5 }).map((_, i) => (
-            <Star key={i} size={11} className={i < 4 ? 'fill-amber-400 text-amber-400' : 'text-gray-300 dark:text-gray-600'} />
+            <Star key={i} size={11} style={{ fill: i < 4 ? '#fbbf24' : 'none', color: i < 4 ? '#fbbf24' : '#374151' }} />
           ))}
-          <span className="text-xs text-gray-400 ml-1">(24)</span>
+          <span style={{ fontSize: 11, color: '#6b7280' }}>(24)</span>
         </div>
 
-        <div className="flex items-center justify-between">
+        {/* Price + Add */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <span className="text-base font-semibold text-brand">{formatPrice(part.price)}</span>
+            <span style={{ fontSize: 16, fontWeight: 600, color: '#d4380d' }}>
+              {formatPrice(part.price)}
+            </span>
             {part.comparePrice && (
-              <span className="text-xs text-gray-400 line-through ml-1.5">{formatPrice(part.comparePrice)}</span>
+              <span style={{ fontSize: 12, color: '#6b7280', textDecoration: 'line-through', marginLeft: 6 }}>
+                {formatPrice(part.comparePrice)}
+              </span>
             )}
           </div>
           <button
-            onClick={() => addItem(part)}
+            onClick={handleAdd}
             disabled={part.stock === 0}
-            className={cn('p-2 rounded-lg transition-all',
-              part.stock === 0
-                ? 'opacity-30 cursor-not-allowed bg-gray-100 dark:bg-gray-800'
-                : 'bg-gray-100 dark:bg-gray-800 hover:bg-brand hover:text-white active:scale-95'
-            )}
-            aria-label="Add to cart"
+            style={{
+              width: 32, height: 32, borderRadius: 8, border: 'none', cursor: part.stock === 0 ? 'not-allowed' : 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: added ? '#16a34a' : '#1f2937',
+              color: added ? '#fff' : '#9ca3af',
+              opacity: part.stock === 0 ? 0.4 : 1,
+              transition: 'all 0.15s'
+            }}
           >
-            <ShoppingCart size={15} />
+            <ShoppingCart size={14} />
           </button>
         </div>
       </div>

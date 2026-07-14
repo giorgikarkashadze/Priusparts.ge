@@ -52,11 +52,12 @@ router.post('/', requireAuth, async (req: AuthRequest, res) => {
     const total = Math.max(0, subtotal - discount + shipping)
 
     // Stripe payment intent
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(total * 100),
-      currency: 'usd',
-      metadata: { userId: req.user!.id },
-    })
+    // const paymentIntent = await stripe.paymentIntents.create({
+    //   amount: Math.round(total * 100),
+    //   currency: 'usd',
+    //   metadata: { userId: req.user!.id },
+    // })
+    const paymentIntent = { id: `mock_${Date.now()}`, client_secret: null }
 
     // Create order
     const order = await prisma.order.create({

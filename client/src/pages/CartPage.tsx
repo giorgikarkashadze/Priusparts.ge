@@ -1,9 +1,13 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Trash2, ShoppingBag, Tag, ArrowRight } from 'lucide-react'
+import { Trash2, ShoppingBag, Tag, ArrowRight, ShieldCheck, RotateCcw, BadgeCheck, Minus, Plus } from 'lucide-react'
 import { useCartStore, useAuthStore } from '@/store'
-import { formatPrice, cn } from '@/lib/utils'
+import { formatPrice } from '@/lib/utils'
 import api from '@/lib/api'
+
+const CATEGORY_ICONS: Record<string, string> = {
+  engine: '🔧', brakes: '🛞', suspension: '⚙️', electrical: '⚡', filters: '🌀', hybrid: '🔋',
+}
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, total } = useCartStore()
@@ -26,9 +30,7 @@ export default function CartPage() {
 
   const handleApplyPromo = async () => {
     if (!promoCode.trim()) return
-    setPromoLoading(true)
-    setPromoError('')
-    setPromoResult(null)
+    setPromoLoading(true); setPromoError(''); setPromoResult(null)
     try {
       const { data } = await api.post('/orders/validate-promo', { code: promoCode.trim().toUpperCase() })
       setPromoResult(data)
@@ -40,128 +42,232 @@ export default function CartPage() {
   }
 
   if (items.length === 0) return (
-    <div className="max-w-lg mx-auto px-4 py-24 text-center">
-      <ShoppingBag size={48} className="mx-auto mb-4 text-gray-300 dark:text-gray-600" />
-      <h2 className="text-xl font-semibold mb-2">Your cart is empty</h2>
-      <p className="text-gray-500 mb-6 text-sm">Add some parts to get started</p>
-      <Link to="/catalog" className="btn-primary">Browse catalog</Link>
+    <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#1f2937', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: 36 }}>
+          🛒
+        </div>
+        <h2 style={{ fontSize: 22, fontWeight: 600, color: '#f9fafb', marginBottom: 8 }}>Your cart is empty</h2>
+        <p style={{ color: '#6b7280', fontSize: 14, marginBottom: 24 }}>Add some Prius parts to get started</p>
+        <Link to="/catalog" style={{
+          background: '#d4380d', color: '#fff', textDecoration: 'none',
+          padding: '12px 28px', borderRadius: 10, fontSize: 14, fontWeight: 600
+        }}>
+          Browse parts
+        </Link>
+      </div>
     </div>
   )
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-semibold mb-6">Your cart</h1>
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 16px' }}>
 
-      <div className="grid md:grid-cols-3 gap-6">
-        {/* Items */}
-        <div className="md:col-span-2 space-y-3">
-          {items.map(({ part, quantity }) => (
-            <div key={part.id} className="card p-4 flex gap-4">
-              {/* Thumbnail */}
-              <Link to={`/catalog/${part.slug}`} className="w-20 h-20 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0 overflow-hidden">
-                {part.images[0]
-                  ? <img src={part.images[0]} alt={part.name} className="w-full h-full object-cover" />
-                  : <span className="text-3xl">🔩</span>}
-              </Link>
+      {/* Header */}
+      <div style={{ marginBottom: 32 }}>
+        <h1 style={{ fontSize: 28, fontWeight: 700, color: '#f9fafb', marginBottom: 4 }}>Your cart</h1>
+        <p style={{ color: '#6b7280', fontSize: 14 }}>{items.reduce((a, i) => a + i.quantity, 0)} items in your cart</p>
+      </div>
 
-              <div className="flex-1 min-w-0">
-                <Link to={`/catalog/${part.slug}`} className="font-medium text-sm hover:text-brand line-clamp-2">{part.name}</Link>
-                <div className="text-xs text-gray-500 mt-0.5">{part.category.name}</div>
-                {part.oemNumber && <div className="text-xs text-gray-400 font-mono mt-0.5">OEM: {part.oemNumber}</div>}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 24, alignItems: 'start' }}>
 
-                <div className="flex items-center justify-between mt-3">
-                  {/* Quantity */}
-                  <div className="flex items-center border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-                    <button onClick={() => updateQuantity(part.id, quantity - 1)}
-                      className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-lg">−</button>
-                    <span className="w-8 text-center text-sm">{quantity}</span>
-                    <button onClick={() => updateQuantity(part.id, quantity + 1)}
-                      disabled={quantity >= part.stock}
-                      className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-lg disabled:opacity-30">+</button>
+        {/* Items list */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {items.map(({ part, quantity }) => {
+            const icon = CATEGORY_ICONS[part.category?.slug] || '🔩'
+            return (
+              <div key={part.id} style={{
+                background: '#111827', border: '1px solid #1f2937', borderRadius: 14,
+                padding: 16, display: 'flex', gap: 16, alignItems: 'center'
+              }}>
+                {/* Image */}
+                <Link to={`/catalog/${part.slug}`} style={{ textDecoration: 'none', flexShrink: 0 }}>
+                  <div style={{
+                    width: 80, height: 80, borderRadius: 10, background: '#1f2937',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    overflow: 'hidden', fontSize: 32
+                  }}>
+                    {part.images?.[0]
+                      ? <img src={part.images[0]} alt={part.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : icon}
                   </div>
+                </Link>
 
-                  <div className="flex items-center gap-3">
-                    <span className="font-semibold text-brand">{formatPrice(Number(part.price) * quantity)}</span>
-                    <button onClick={() => removeItem(part.id)} className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-500 transition-colors">
-                      <Trash2 size={14} />
-                    </button>
+                {/* Info */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <Link to={`/catalog/${part.slug}`} style={{ textDecoration: 'none' }}>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: '#f9fafb', marginBottom: 4, lineHeight: 1.3 }}>
+                      {part.name}
+                    </div>
+                  </Link>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                    <span style={{
+                      background: 'rgba(212,56,13,0.12)', color: '#ff6b35',
+                      fontSize: 11, fontWeight: 500, padding: '2px 8px', borderRadius: 6
+                    }}>
+                      {part.category?.name}
+                    </span>
+                    {part.oemNumber && (
+                      <span style={{ fontSize: 11, color: '#6b7280', fontFamily: 'monospace' }}>
+                        OEM: {part.oemNumber}
+                      </span>
+                    )}
                   </div>
                 </div>
-              </div>
-            </div>
-          ))}
 
-          <Link to="/catalog" className="flex items-center gap-2 text-sm text-brand hover:underline mt-2">
-            ← Continue shopping
+                {/* Quantity + Price + Delete */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexShrink: 0 }}>
+                  {/* Qty control */}
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 0,
+                    border: '1px solid #374151', borderRadius: 8, overflow: 'hidden'
+                  }}>
+                    <button onClick={() => updateQuantity(part.id, quantity - 1)}
+                      style={{ width: 32, height: 32, background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Minus size={13} />
+                    </button>
+                    <span style={{ width: 32, textAlign: 'center', fontSize: 14, fontWeight: 600, color: '#f9fafb', borderLeft: '1px solid #374151', borderRight: '1px solid #374151', lineHeight: '32px' }}>
+                      {quantity}
+                    </span>
+                    <button onClick={() => updateQuantity(part.id, quantity + 1)}
+                      disabled={quantity >= part.stock}
+                      style={{ width: 32, height: 32, background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: quantity >= part.stock ? 0.3 : 1 }}>
+                      <Plus size={13} />
+                    </button>
+                  </div>
+
+                  {/* Price */}
+                  <div style={{ textAlign: 'right', minWidth: 72 }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: '#ff6b35' }}>
+                      {formatPrice(Number(part.price) * quantity)}
+                    </div>
+                    {quantity > 1 && (
+                      <div style={{ fontSize: 11, color: '#6b7280' }}>
+                        {formatPrice(Number(part.price))} each
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Delete */}
+                  <button onClick={() => removeItem(part.id)} style={{
+                    width: 32, height: 32, borderRadius: 8, border: 'none', background: 'rgba(239,68,68,0.1)',
+                    color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                  }}>
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              </div>
+            )
+          })}
+
+          {/* Continue shopping */}
+          <Link to="/catalog" style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            color: '#6b7280', textDecoration: 'none', fontSize: 13, marginTop: 4,
+            padding: '8px 0'
+          }}>
+            <ShoppingBag size={14} /> Continue shopping
           </Link>
         </div>
 
-        {/* Summary */}
-        <div className="space-y-4">
-          <div className="card p-5">
-            <h2 className="font-semibold mb-4">Order summary</h2>
+        {/* Order summary */}
+        <div style={{ position: 'sticky', top: 80 }}>
+          <div style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 16, overflow: 'hidden' }}>
 
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between text-gray-600 dark:text-gray-400">
+            {/* Summary header */}
+            <div style={{ padding: '20px 20px 0', borderBottom: '1px solid #1f2937', paddingBottom: 16 }}>
+              <h2 style={{ fontSize: 16, fontWeight: 700, color: '#f9fafb' }}>Order summary</h2>
+            </div>
+
+            {/* Line items */}
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #1f2937' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: '#9ca3af', marginBottom: 10 }}>
                 <span>Subtotal ({items.reduce((a, i) => a + i.quantity, 0)} items)</span>
-                <span>{formatPrice(subtotal)}</span>
+                <span style={{ color: '#f9fafb' }}>{formatPrice(subtotal)}</span>
               </div>
-              <div className="flex justify-between text-gray-600 dark:text-gray-400">
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: '#9ca3af', marginBottom: 10 }}>
                 <span>Shipping</span>
-                <span>{formatPrice(shipping)}</span>
+                <span style={{ color: '#f9fafb' }}>{formatPrice(shipping)}</span>
               </div>
               {discountAmount > 0 && (
-                <div className="flex justify-between text-green-600 dark:text-green-400">
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: '#4ade80', marginBottom: 10 }}>
                   <span>Discount ({promoCode.toUpperCase()})</span>
                   <span>−{formatPrice(discountAmount)}</span>
                 </div>
               )}
-              <div className="border-t border-gray-100 dark:border-gray-800 pt-2 flex justify-between font-semibold text-base">
-                <span>Total</span>
-                <span className="text-brand">{formatPrice(orderTotal)}</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 18, fontWeight: 700, paddingTop: 12, borderTop: '1px solid #1f2937', marginTop: 4 }}>
+                <span style={{ color: '#f9fafb' }}>Total</span>
+                <span style={{ color: '#ff6b35' }}>{formatPrice(orderTotal)}</span>
               </div>
             </div>
 
             {/* Promo code */}
-            <div className="mt-4">
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Tag size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #1f2937' }}>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <div style={{ position: 'relative', flex: 1 }}>
+                  <Tag size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#6b7280' }} />
                   <input
-                    className="input pl-8 text-sm uppercase"
                     placeholder="Promo code"
                     value={promoCode}
                     onChange={(e) => { setPromoCode(e.target.value); setPromoError(''); setPromoResult(null) }}
                     onKeyDown={(e) => e.key === 'Enter' && handleApplyPromo()}
+                    style={{
+                      width: '100%', paddingLeft: 32, paddingRight: 10, paddingTop: 9, paddingBottom: 9,
+                      borderRadius: 8, border: '1px solid #374151', background: '#1f2937',
+                      color: '#f9fafb', fontSize: 13, outline: 'none', boxSizing: 'border-box',
+                      textTransform: 'uppercase', letterSpacing: '0.05em'
+                    }}
                   />
                 </div>
-                <button onClick={handleApplyPromo} disabled={promoLoading} className="btn-secondary text-sm px-3">
+                <button onClick={handleApplyPromo} disabled={promoLoading} style={{
+                  padding: '9px 14px', borderRadius: 8, border: '1px solid #374151',
+                  background: '#1f2937', color: '#f9fafb', fontSize: 13, cursor: 'pointer', whiteSpace: 'nowrap'
+                }}>
                   {promoLoading ? '…' : 'Apply'}
                 </button>
               </div>
-              {promoError && <p className="text-xs text-red-500 mt-1.5">{promoError}</p>}
+              {promoError && <p style={{ color: '#f87171', fontSize: 12, marginTop: 6 }}>{promoError}</p>}
               {promoResult && (
-                <p className="text-xs text-green-600 dark:text-green-400 mt-1.5 flex items-center gap-1">
+                <p style={{ color: '#4ade80', fontSize: 12, marginTop: 6 }}>
                   ✓ {promoResult.description || `${promoResult.discount}${promoResult.type === 'PERCENTAGE' ? '%' : '$'} off applied`}
                 </p>
               )}
             </div>
 
-            <button
-              onClick={() => user ? navigate('/checkout', { state: { promoCode: promoResult ? promoCode : undefined } }) : navigate('/login?redirect=/checkout')}
-              className={cn('btn-primary w-full mt-4 flex items-center justify-center gap-2 py-3')}
-            >
-              {user ? 'Proceed to checkout' : 'Sign in to checkout'}
-              <ArrowRight size={16} />
-            </button>
-
-            {!user && <p className="text-xs text-center text-gray-400 mt-2">You need to be signed in to place an order</p>}
+            {/* Checkout button */}
+            <div style={{ padding: 20 }}>
+              <button
+                onClick={() => user
+                  ? navigate('/checkout', { state: { promoCode: promoResult ? promoCode : undefined } })
+                  : navigate('/login?redirect=/checkout')}
+                style={{
+                  width: '100%', padding: '14px', borderRadius: 10, border: 'none',
+                  background: 'linear-gradient(135deg, #d4380d, #ff6b35)',
+                  color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                  boxShadow: '0 4px 16px rgba(212,56,13,0.35)'
+                }}>
+                {user ? 'Proceed to checkout' : 'Sign in to checkout'}
+                <ArrowRight size={16} />
+              </button>
+              {!user && (
+                <p style={{ textAlign: 'center', color: '#6b7280', fontSize: 12, marginTop: 10 }}>
+                  You need to be signed in to place an order
+                </p>
+              )}
+            </div>
           </div>
 
-          {/* Trust */}
-          <div className="card p-4 space-y-2">
-            {['🔒 Secure SSL checkout', '🚚 Free returns within 30 days', '✅ Genuine OEM parts guaranteed'].map(t => (
-              <div key={t} className="text-xs text-gray-500 dark:text-gray-400">{t}</div>
+          {/* Trust badges */}
+          <div style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: '14px 16px', marginTop: 12 }}>
+            {[
+              { icon: ShieldCheck, text: 'Secure SSL checkout' },
+              { icon: RotateCcw, text: 'Free returns within 30 days' },
+              { icon: BadgeCheck, text: 'Genuine OEM parts guaranteed' },
+            ].map(({ icon: Icon, text }) => (
+              <div key={text} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0' }}>
+                <Icon size={14} style={{ color: '#ff6b35', flexShrink: 0 }} />
+                <span style={{ fontSize: 12, color: '#6b7280' }}>{text}</span>
+              </div>
             ))}
           </div>
         </div>

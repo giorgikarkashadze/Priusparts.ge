@@ -20,7 +20,7 @@ const loginSchema = z.object({
 })
 
 function signTokens(user: { id: string; role: string; email: string }) {
-  const access = jwt.sign({ id: user.id, role: user.role, email: user.email }, process.env.JWT_SECRET!, { expiresIn: '15m' })
+  const access = jwt.sign({ id: user.id, role: user.role, email: user.email }, process.env.JWT_SECRET!, { expiresIn: '7d' })
   const refresh = jwt.sign({ id: user.id }, process.env.JWT_REFRESH_SECRET!, { expiresIn: '30d' })
   return { access, refresh }
 }

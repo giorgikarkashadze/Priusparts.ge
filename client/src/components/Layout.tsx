@@ -1,222 +1,194 @@
-import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
-import {
-  ShoppingCart,
-  Sun,
-  Moon,
-  Menu,
-  X,
-  User,
-  LogOut,
-  Settings,
-  Package,
-} from "lucide-react";
-import { useState } from "react";
-import { useCartStore, useAuthStore, useThemeStore } from "@/store";
-import { cn } from "@/lib/utils";
+import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom'
+import { ShoppingCart, Sun, Moon, User, LogOut, Settings, Package } from 'lucide-react'
+import { useState } from 'react'
+import { useCartStore, useAuthStore, useThemeStore } from '@/store'
 
 export default function Layout() {
-  const itemCount = useCartStore((s) => s.itemCount());
-  const { user, clearAuth } = useAuthStore();
-  const { dark, toggle } = useThemeStore();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
+  const itemCount = useCartStore((s) => s.itemCount())
+  const { user, clearAuth } = useAuthStore()
+  const { dark, toggle } = useThemeStore()
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/catalog", label: "Catalog" },
-    { href: "/about", label: "About" },
-  ];
+    { href: '/', label: 'Home' },
+    { href: '/catalog', label: 'Parts' },
+    { href: '/about', label: 'About' },
+  ]
 
-  const handleReload = () => {
-    window.location.reload();
-  };
+  const isActive = (href: string) => href === '/' ? location.pathname === '/' : location.pathname.startsWith(href)
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: dark ? '#030712' : '#f9fafb', color: dark ? '#f9fafb' : '#111827' }}>
+
       {/* Promo banner */}
-      <div className="bg-brand text-white text-center text-xs py-1.5 font-medium">
-        🏷️ Summer Sale — Use code <strong>SUMMER30</strong> for 30% off brake
-        parts
+      <div style={{ background: '#d4380d', color: '#fff', textAlign: 'center', fontSize: 12, padding: '6px 16px', fontWeight: 500 }}>
+        🚗 Genuine & aftermarket parts for Toyota Prius 2008–2024 — Fast delivery across Georgia
       </div>
 
-      <nav className="bg-gray-900 dark:bg-black text-white sticky top-0 z-50 border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 h-14 flex items-center gap-4">
+      {/* Navbar */}
+      <nav style={{ background: '#0f172a', borderBottom: '1px solid #1e293b', position: 'sticky', top: 0, zIndex: 100 }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 16px', height: 56, display: 'flex', alignItems: 'center', gap: 8 }}>
+
           {/* Logo */}
-          <Link
-            to="/"
-            className="text-lg font-semibold tracking-tight shrink-0"
-          >
-            PRIUS<span className="text-brand-light">PARTS</span>
+          <Link to="/" style={{ textDecoration: 'none', marginRight: 16, flexShrink: 0 }}>
+            <span style={{ fontSize: 18, fontWeight: 700, color: '#f9fafb', letterSpacing: '-0.5px' }}>
+              Prius<span style={{ color: '#ff6b35' }}>Parts</span>
+              <span style={{ color: '#6b7280', fontSize: 13, fontWeight: 400 }}>.ge</span>
+            </span>
           </Link>
 
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-1 flex-1">
+          {/* Desktop nav links */}
+          <div style={{ display: 'flex', gap: 4, flex: 1 }}>
             {navLinks.map((l) => (
-              <Link
-                key={l.href}
-                to={l.href}
-                className={cn(
-                  "px-3 py-1.5 rounded-lg text-sm transition-colors",
-                  location.pathname === l.href
-                    ? "bg-white/10 text-white"
-                    : "text-gray-400 hover:text-white hover:bg-white/5",
-                )}
-              >
+              <Link key={l.href} to={l.href} style={{
+                textDecoration: 'none', padding: '6px 12px', borderRadius: 8, fontSize: 14,
+                background: isActive(l.href) ? 'rgba(255,255,255,0.1)' : 'transparent',
+                color: isActive(l.href) ? '#fff' : '#94a3b8',
+                transition: 'all 0.15s'
+              }}>
                 {l.label}
               </Link>
             ))}
           </div>
 
-          <div className="flex items-center gap-2 ml-auto">
+          {/* Right side */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginLeft: 'auto' }}>
+
             {/* Theme toggle */}
-            <button
-              onClick={toggle}
-              className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-              aria-label="Toggle theme"
-            >
-              {dark ? <Sun size={16} /> : <Moon size={16} />}
+            <button onClick={toggle} style={{
+              background: 'rgba(255,255,255,0.08)', border: 'none', color: '#94a3b8',
+              width: 36, height: 36, borderRadius: 8, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}>
+              {dark ? <Sun size={15} /> : <Moon size={15} />}
             </button>
 
             {/* Cart */}
-            <Link
-              to="/cart"
-              className="relative p-2 rounded-lg hover:bg-white/10 transition-colors"
-            >
-              <ShoppingCart size={18} />
+            <Link to="/cart" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: 8, background: 'rgba(255,255,255,0.08)', color: '#94a3b8', textDecoration: 'none' }}>
+              <ShoppingCart size={16} />
               {itemCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-brand text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-medium">
-                  {itemCount > 99 ? "99+" : itemCount}
+                <span style={{
+                  position: 'absolute', top: -4, right: -4, background: '#d4380d',
+                  color: '#fff', fontSize: 10, width: 16, height: 16, borderRadius: '50%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600
+                }}>
+                  {itemCount > 9 ? '9+' : itemCount}
                 </span>
               )}
             </Link>
 
-            {/* User menu */}
+            {/* User */}
             {user ? (
-              <div className="relative">
-                <button
-                  onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/10 text-sm transition-colors"
-                >
-                  <div className="w-6 h-6 rounded-full bg-brand flex items-center justify-center text-xs font-medium">
+              <div style={{ position: 'relative' }}>
+                <button onClick={() => setUserMenuOpen(!userMenuOpen)} style={{
+                  display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px',
+                  borderRadius: 8, background: 'rgba(255,255,255,0.08)', border: 'none',
+                  color: '#f9fafb', cursor: 'pointer', fontSize: 13
+                }}>
+                  <div style={{
+                    width: 22, height: 22, borderRadius: '50%', background: '#d4380d',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 11, fontWeight: 600, color: '#fff'
+                  }}>
                     {user.name[0].toUpperCase()}
                   </div>
-                  <span className="hidden md:block">{user.name}</span>
+                  <span>{user.name}</span>
                 </button>
                 {userMenuOpen && (
-                  <div className="absolute right-0 top-full mt-1 w-48 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl py-1 z-50">
-                    <Link
-                      to="/orders"
-                      onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-white/10 text-gray-300"
-                    >
-                      <Package size={14} /> My orders
+                  <div style={{
+                    position: 'absolute', right: 0, top: '100%', marginTop: 4, width: 180,
+                    background: '#1e293b', border: '1px solid #334155', borderRadius: 12,
+                    padding: 4, zIndex: 50, boxShadow: '0 16px 48px rgba(0,0,0,0.4)'
+                  }}>
+                    <Link to="/orders" onClick={() => setUserMenuOpen(false)} style={{
+                      display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px',
+                      borderRadius: 8, color: '#94a3b8', textDecoration: 'none', fontSize: 13
+                    }}>
+                      <Package size={13} /> My orders
                     </Link>
-                    {user.role === "ADMIN" && (
-                      <Link
-                        to="/admin"
-                        onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-white/10 text-brand-light"
-                      >
-                        <Settings size={14} /> Admin panel
+                    {user.role === 'ADMIN' && (
+                      <Link to="/admin" onClick={() => setUserMenuOpen(false)} style={{
+                        display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px',
+                        borderRadius: 8, color: '#ff6b35', textDecoration: 'none', fontSize: 13
+                      }}>
+                        <Settings size={13} /> Admin panel
                       </Link>
                     )}
-                    <button
-                      onClick={() => {
-                        clearAuth();
-                        useCartStore.getState().clearCart();
-                        setUserMenuOpen(false);
-                        navigate("/");
-                        handleReload();
-                      }}
-                      className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-white/10 text-red-400 w-full text-left"
-                    >
-                      <LogOut size={14} /> Sign out
+                    <button onClick={() => {
+                      clearAuth()
+                      useCartStore.getState().clearCart()
+                      setUserMenuOpen(false)
+                      navigate('/')
+                    }} style={{
+                      display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px',
+                      borderRadius: 8, color: '#f87171', background: 'none', border: 'none',
+                      cursor: 'pointer', fontSize: 13, width: '100%', textAlign: 'left'
+                    }}>
+                      <LogOut size={13} /> Sign out
                     </button>
                   </div>
                 )}
               </div>
             ) : (
-              <Link
-                to="/login"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm bg-white/10 hover:bg-white/20 transition-colors"
-              >
-                <User size={14} /> Sign in
+              <Link to="/login" style={{
+                display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px',
+                borderRadius: 8, background: 'rgba(255,255,255,0.08)', color: '#94a3b8',
+                textDecoration: 'none', fontSize: 13
+              }}>
+                <User size={13} /> Sign in
               </Link>
             )}
 
-            {/* Mobile menu */}
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-white/10"
-            >
-              {menuOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
+            {/* Mobile menu button */}
+            
           </div>
         </div>
-
         {/* Mobile nav */}
-        {menuOpen && (
-          <div className="md:hidden border-t border-gray-800 px-4 py-2 space-y-1">
-            {navLinks.map((l) => (
-              <Link
-                key={l.href}
-                to={l.href}
-                onClick={() => setMenuOpen(false)}
-                className="block px-3 py-2 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/10"
-              >
-                {l.label}
-              </Link>
-            ))}
-          </div>
-        )}
       </nav>
 
-      <main className="flex-1">
+      {/* Page content */}
+      <main style={{ flex: 1 }}>
         <Outlet />
       </main>
 
-      <footer className="bg-gray-900 text-gray-400 py-8 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-6 text-sm">
+      {/* Footer */}
+      <footer style={{ background: '#0f172a', borderTop: '1px solid #1e293b', padding: '40px 16px 20px' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 32, marginBottom: 32 }}>
           <div>
-            <div className="text-white font-semibold mb-2">
-              AUTO<span className="text-brand-light">PARTS</span> Pro
+            <div style={{ fontSize: 18, fontWeight: 700, color: '#f9fafb', marginBottom: 8 }}>
+              Prius<span style={{ color: '#ff6b35' }}>Parts</span><span style={{ color: '#475569', fontSize: 13 }}>.ge</span>
             </div>
-            <p className="text-xs leading-relaxed">
-              Genuine & aftermarket parts with fast delivery. Trusted by
-              mechanics since 2010.
+            <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.7 }}>
+              Genuine & aftermarket parts for Toyota Prius 2008–2024. Trusted by Prius owners across Georgia.
             </p>
           </div>
           <div>
-            <div className="text-gray-300 font-medium mb-2">Shop</div>
-            <div className="space-y-1">
-              {["Engine", "Brakes", "Suspension", "Electrical", "Filters"].map(
-                (c) => (
-                  <Link
-                    key={c}
-                    to={`/catalog?category=${c.toLowerCase()}`}
-                    className="block hover:text-white transition-colors text-xs"
-                  >
-                    {c}
-                  </Link>
-                ),
-              )}
-            </div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#94a3b8', marginBottom: 12 }}>Parts</div>
+            {['Engine', 'Brakes', 'Suspension', 'Electrical', 'Filters', 'Hybrid Battery'].map(c => (
+              <Link key={c} to={`/catalog?category=${c.toLowerCase()}`} style={{ display: 'block', color: '#64748b', textDecoration: 'none', fontSize: 13, marginBottom: 6 }}>
+                {c}
+              </Link>
+            ))}
           </div>
           <div>
-            <div className="text-gray-300 font-medium mb-2">Support</div>
-            <div className="space-y-1 text-xs">
-              <p>support@priusparts.pro</p>
-              <p>+1 800-PriusParts</p>
-              <p>Mon–Fri 8am–6pm EST</p>
-            </div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#94a3b8', marginBottom: 12 }}>Prius Models</div>
+            {['Prius Gen 2 (2004–2009)', 'Prius Gen 3 (2010–2015)', 'Prius Gen 4 (2016–2022)', 'Prius Gen 5 (2023+)'].map(m => (
+              <div key={m} style={{ color: '#64748b', fontSize: 13, marginBottom: 6 }}>{m}</div>
+            ))}
+          </div>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#94a3b8', marginBottom: 12 }}>Contact</div>
+            <div style={{ color: '#64748b', fontSize: 13, marginBottom: 6 }}>support@priusparts.ge</div>
+            <div style={{ color: '#64748b', fontSize: 13, marginBottom: 6 }}>+995 XXX XXX XXX</div>
+            <div style={{ color: '#64748b', fontSize: 13 }}>Tbilisi, Georgia</div>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto px-4 mt-6 pt-4 border-t border-gray-800 text-xs text-gray-600">
-          © 2025 PriusParts Pro. All rights reserved.
+        <div style={{ maxWidth: 1200, margin: '0 auto', paddingTop: 20, borderTop: '1px solid #1e293b', fontSize: 12, color: '#475569', textAlign: 'center' }}>
+          © 2025 PriusParts.ge — All rights reserved
         </div>
       </footer>
     </div>
-  );
+  )
 }
