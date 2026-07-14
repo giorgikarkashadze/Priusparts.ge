@@ -6,7 +6,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        brand: { DEFAULT: '#d4380d', dark: '#b52e0a', light: '#ff6b35' },
+        brand: { DEFAULT: '#1d6fe8', dark: '#1558c0', light: '#4d9fff' },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

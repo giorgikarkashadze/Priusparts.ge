@@ -37,7 +37,7 @@ function Field({ label, error, children, hint }: { label: string; error?: string
 
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '10px 14px', borderRadius: 8,
-  border: '1px solid #1e293b', background: '#0f172a',
+  border: '1px solid #1a2744', background: '#0a0f1e',
   color: '#f9fafb', fontSize: 14, outline: 'none', boxSizing: 'border-box',
   transition: 'border-color 0.15s'
 }
@@ -81,7 +81,7 @@ export default function CheckoutPage() {
 
   const getInputStyle = (name: string): React.CSSProperties => ({
     ...inputStyle,
-    borderColor: focusedField === name ? '#d4380d' : errors[name as keyof FormData] ? '#ef4444' : '#1e293b',
+    borderColor: focusedField === name ? '#1d6fe8' : errors[name as keyof FormData] ? '#ef4444' : '#1a2744',
   })
 
   if (items.length === 0) { navigate('/cart'); return null }
@@ -95,11 +95,11 @@ export default function CheckoutPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#475569', marginBottom: 16 }}>
           <Link to="/cart" style={{ color: '#64748b', textDecoration: 'none' }}>Cart</Link>
           <ChevronRight size={12} />
-          <span style={{ color: '#ff6b35', fontWeight: 500 }}>Checkout</span>
+          <span style={{ color: '#4d9fff', fontWeight: 500 }}>Checkout</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(212,56,13,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Lock size={16} style={{ color: '#ff6b35' }} />
+            <Lock size={16} style={{ color: '#4d9fff' }} />
           </div>
           <div>
             <h1 style={{ fontSize: 22, fontWeight: 700, color: '#f9fafb' }}>Secure checkout</h1>
@@ -114,9 +114,9 @@ export default function CheckoutPage() {
         <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
           {/* Contact */}
-          <div style={{ background: '#111827', border: '1px solid #1e293b', borderRadius: 14, overflow: 'hidden' }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #1e293b', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#d4380d', color: '#fff', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>1</div>
+          <div style={{ background: '#0d1526', border: '1px solid #1a2744', borderRadius: 14, overflow: 'hidden' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #1a2744', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#1d6fe8', color: '#fff', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>1</div>
               <span style={{ fontSize: 15, fontWeight: 600, color: '#f9fafb' }}>Contact information</span>
             </div>
             <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -136,9 +136,9 @@ export default function CheckoutPage() {
           </div>
 
           {/* Shipping */}
-          <div style={{ background: '#111827', border: '1px solid #1e293b', borderRadius: 14, overflow: 'hidden' }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #1e293b', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#d4380d', color: '#fff', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>2</div>
+          <div style={{ background: '#0d1526', border: '1px solid #1a2744', borderRadius: 14, overflow: 'hidden' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #1a2744', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#1d6fe8', color: '#fff', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>2</div>
               <span style={{ fontSize: 15, fontWeight: 600, color: '#f9fafb' }}>Shipping address</span>
             </div>
             <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -192,26 +192,26 @@ export default function CheckoutPage() {
           </div>
 
           {/* Payment */}
-          <div style={{ background: '#111827', border: '1px solid #1e293b', borderRadius: 14, overflow: 'hidden' }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #1e293b', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#d4380d', color: '#fff', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>3</div>
+          <div style={{ background: '#0d1526', border: '1px solid #1a2744', borderRadius: 14, overflow: 'hidden' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #1a2744', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#1d6fe8', color: '#fff', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>3</div>
               <span style={{ fontSize: 15, fontWeight: 600, color: '#f9fafb' }}>Payment</span>
               <CreditCard size={14} style={{ color: '#475569', marginLeft: 4 }} />
             </div>
             <div style={{ padding: 20 }}>
               <div style={{
-                border: '1px dashed #1e293b', borderRadius: 10, padding: '24px 16px',
-                textAlign: 'center', background: '#0f172a'
+                border: '1px dashed #1a2744', borderRadius: 10, padding: '24px 16px',
+                textAlign: 'center', background: '#0a0f1e'
               }}>
                 <CreditCard size={24} style={{ color: '#334155', marginBottom: 8 }} />
                 <div style={{ fontSize: 13, color: '#475569', marginBottom: 4 }}>Stripe payment form will appear here</div>
                 <div style={{ fontSize: 11, color: '#334155' }}>
-                  Install <code style={{ background: '#1e293b', padding: '1px 6px', borderRadius: 4, color: '#94a3b8' }}>@stripe/react-stripe-js</code> and add your publishable key
+                  Install <code style={{ background: '#1a2744', padding: '1px 6px', borderRadius: 4, color: '#94a3b8' }}>@stripe/react-stripe-js</code> and add your publishable key
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginTop: 14 }}>
                 {['VISA', 'MC', 'AMEX', 'PAYPAL'].map(brand => (
-                  <div key={brand} style={{ padding: '3px 8px', borderRadius: 4, border: '1px solid #1e293b', fontSize: 10, fontWeight: 700, color: '#475569' }}>{brand}</div>
+                  <div key={brand} style={{ padding: '3px 8px', borderRadius: 4, border: '1px solid #1a2744', fontSize: 10, fontWeight: 700, color: '#475569' }}>{brand}</div>
                 ))}
               </div>
             </div>
@@ -227,7 +227,7 @@ export default function CheckoutPage() {
           {/* Submit */}
           <button type="submit" disabled={loading} style={{
             width: '100%', padding: '15px', borderRadius: 12, border: 'none',
-            background: loading ? '#374151' : 'linear-gradient(135deg, #d4380d, #ff6b35)',
+            background: loading ? '#374151' : 'linear-gradient(135deg, #1d6fe8, #4d9fff)',
             color: '#fff', fontSize: 16, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             boxShadow: loading ? 'none' : '0 4px 20px rgba(212,56,13,0.4)',
@@ -246,8 +246,8 @@ export default function CheckoutPage() {
         <div style={{ position: 'sticky', top: 80, display: 'flex', flexDirection: 'column', gap: 12 }}>
 
           {/* Items */}
-          <div style={{ background: '#111827', border: '1px solid #1e293b', borderRadius: 14, overflow: 'hidden' }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #1e293b' }}>
+          <div style={{ background: '#0d1526', border: '1px solid #1a2744', borderRadius: 14, overflow: 'hidden' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #1a2744' }}>
               <h2 style={{ fontSize: 15, fontWeight: 600, color: '#f9fafb' }}>
                 Order summary <span style={{ color: '#475569', fontWeight: 400, fontSize: 13 }}>({items.reduce((a, i) => a + i.quantity, 0)} items)</span>
               </h2>
@@ -258,7 +258,7 @@ export default function CheckoutPage() {
                 return (
                   <div key={part.id} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <div style={{
-                      width: 44, height: 44, borderRadius: 8, background: '#1e293b',
+                      width: 44, height: 44, borderRadius: 8, background: '#1a2744',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontSize: 20, flexShrink: 0, overflow: 'hidden', position: 'relative'
                     }}>
@@ -267,7 +267,7 @@ export default function CheckoutPage() {
                         : icon}
                       <div style={{
                         position: 'absolute', top: -4, right: -4, width: 16, height: 16,
-                        background: '#d4380d', borderRadius: '50%', fontSize: 9, fontWeight: 700,
+                        background: '#1d6fe8', borderRadius: '50%', fontSize: 9, fontWeight: 700,
                         color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center'
                       }}>
                         {quantity}
@@ -288,29 +288,29 @@ export default function CheckoutPage() {
             </div>
 
             {/* Totals */}
-            <div style={{ padding: '12px 20px', borderTop: '1px solid #1e293b', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ padding: '12px 20px', borderTop: '1px solid #1a2744', display: 'flex', flexDirection: 'column', gap: 8 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#64748b' }}>
                 <span>Subtotal</span><span style={{ color: '#94a3b8' }}>{formatPrice(subtotal)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#64748b' }}>
                 <span>Shipping</span><span style={{ color: '#94a3b8' }}>{formatPrice(shipping)}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 16, fontWeight: 700, paddingTop: 10, borderTop: '1px solid #1e293b', marginTop: 2 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 16, fontWeight: 700, paddingTop: 10, borderTop: '1px solid #1a2744', marginTop: 2 }}>
                 <span style={{ color: '#f9fafb' }}>Total</span>
-                <span style={{ color: '#ff6b35' }}>{formatPrice(orderTotal)}</span>
+                <span style={{ color: '#4d9fff' }}>{formatPrice(orderTotal)}</span>
               </div>
             </div>
           </div>
 
           {/* Trust */}
-          <div style={{ background: '#111827', border: '1px solid #1e293b', borderRadius: 12, padding: '14px 16px' }}>
+          <div style={{ background: '#0d1526', border: '1px solid #1a2744', borderRadius: 12, padding: '14px 16px' }}>
             {[
               { icon: ShieldCheck, text: 'SSL encrypted & secure' },
               { icon: Truck, text: '1–3 day delivery across Georgia' },
               { icon: RotateCcw, text: '30-day hassle-free returns' },
             ].map(({ icon: Icon, text }) => (
               <div key={text} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0' }}>
-                <Icon size={14} style={{ color: '#ff6b35', flexShrink: 0 }} />
+                <Icon size={14} style={{ color: '#4d9fff', flexShrink: 0 }} />
                 <span style={{ fontSize: 12, color: '#64748b' }}>{text}</span>
               </div>
             ))}

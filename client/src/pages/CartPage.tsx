@@ -44,13 +44,13 @@ export default function CartPage() {
   if (items.length === 0) return (
     <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
       <div style={{ textAlign: 'center' }}>
-        <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#1f2937', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: 36 }}>
+        <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#111e35', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: 36 }}>
           🛒
         </div>
         <h2 style={{ fontSize: 22, fontWeight: 600, color: '#f9fafb', marginBottom: 8 }}>Your cart is empty</h2>
         <p style={{ color: '#6b7280', fontSize: 14, marginBottom: 24 }}>Add some Prius parts to get started</p>
         <Link to="/catalog" style={{
-          background: '#d4380d', color: '#fff', textDecoration: 'none',
+          background: '#1d6fe8', color: '#fff', textDecoration: 'none',
           padding: '12px 28px', borderRadius: 10, fontSize: 14, fontWeight: 600
         }}>
           Browse parts
@@ -76,13 +76,13 @@ export default function CartPage() {
             const icon = CATEGORY_ICONS[part.category?.slug] || '🔩'
             return (
               <div key={part.id} style={{
-                background: '#111827', border: '1px solid #1f2937', borderRadius: 14,
+                background: '#0d1526', border: '1px solid #111e35', borderRadius: 14,
                 padding: 16, display: 'flex', gap: 16, alignItems: 'center'
               }}>
                 {/* Image */}
                 <Link to={`/catalog/${part.slug}`} style={{ textDecoration: 'none', flexShrink: 0 }}>
                   <div style={{
-                    width: 80, height: 80, borderRadius: 10, background: '#1f2937',
+                    width: 80, height: 80, borderRadius: 10, background: '#111e35',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     overflow: 'hidden', fontSize: 32
                   }}>
@@ -101,7 +101,7 @@ export default function CartPage() {
                   </Link>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                     <span style={{
-                      background: 'rgba(212,56,13,0.12)', color: '#ff6b35',
+                      background: 'rgba(212,56,13,0.12)', color: '#4d9fff',
                       fontSize: 11, fontWeight: 500, padding: '2px 8px', borderRadius: 6
                     }}>
                       {part.category?.name}
@@ -137,7 +137,7 @@ export default function CartPage() {
 
                   {/* Price */}
                   <div style={{ textAlign: 'right', minWidth: 72 }}>
-                    <div style={{ fontSize: 16, fontWeight: 700, color: '#ff6b35' }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: '#4d9fff' }}>
                       {formatPrice(Number(part.price) * quantity)}
                     </div>
                     {quantity > 1 && (
@@ -171,15 +171,15 @@ export default function CartPage() {
 
         {/* Order summary */}
         <div style={{ position: 'sticky', top: 80 }}>
-          <div style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 16, overflow: 'hidden' }}>
+          <div style={{ background: '#0d1526', border: '1px solid #111e35', borderRadius: 16, overflow: 'hidden' }}>
 
             {/* Summary header */}
-            <div style={{ padding: '20px 20px 0', borderBottom: '1px solid #1f2937', paddingBottom: 16 }}>
+            <div style={{ padding: '20px 20px 0', borderBottom: '1px solid #111e35', paddingBottom: 16 }}>
               <h2 style={{ fontSize: 16, fontWeight: 700, color: '#f9fafb' }}>Order summary</h2>
             </div>
 
             {/* Line items */}
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #1f2937' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #111e35' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: '#9ca3af', marginBottom: 10 }}>
                 <span>Subtotal ({items.reduce((a, i) => a + i.quantity, 0)} items)</span>
                 <span style={{ color: '#f9fafb' }}>{formatPrice(subtotal)}</span>
@@ -194,14 +194,14 @@ export default function CartPage() {
                   <span>−{formatPrice(discountAmount)}</span>
                 </div>
               )}
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 18, fontWeight: 700, paddingTop: 12, borderTop: '1px solid #1f2937', marginTop: 4 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 18, fontWeight: 700, paddingTop: 12, borderTop: '1px solid #111e35', marginTop: 4 }}>
                 <span style={{ color: '#f9fafb' }}>Total</span>
-                <span style={{ color: '#ff6b35' }}>{formatPrice(orderTotal)}</span>
+                <span style={{ color: '#4d9fff' }}>{formatPrice(orderTotal)}</span>
               </div>
             </div>
 
             {/* Promo code */}
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid #1f2937' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #111e35' }}>
               <div style={{ display: 'flex', gap: 8 }}>
                 <div style={{ position: 'relative', flex: 1 }}>
                   <Tag size={13} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#6b7280' }} />
@@ -212,7 +212,7 @@ export default function CartPage() {
                     onKeyDown={(e) => e.key === 'Enter' && handleApplyPromo()}
                     style={{
                       width: '100%', paddingLeft: 32, paddingRight: 10, paddingTop: 9, paddingBottom: 9,
-                      borderRadius: 8, border: '1px solid #374151', background: '#1f2937',
+                      borderRadius: 8, border: '1px solid #374151', background: '#111e35',
                       color: '#f9fafb', fontSize: 13, outline: 'none', boxSizing: 'border-box',
                       textTransform: 'uppercase', letterSpacing: '0.05em'
                     }}
@@ -220,7 +220,7 @@ export default function CartPage() {
                 </div>
                 <button onClick={handleApplyPromo} disabled={promoLoading} style={{
                   padding: '9px 14px', borderRadius: 8, border: '1px solid #374151',
-                  background: '#1f2937', color: '#f9fafb', fontSize: 13, cursor: 'pointer', whiteSpace: 'nowrap'
+                  background: '#111e35', color: '#f9fafb', fontSize: 13, cursor: 'pointer', whiteSpace: 'nowrap'
                 }}>
                   {promoLoading ? '…' : 'Apply'}
                 </button>
@@ -241,7 +241,7 @@ export default function CartPage() {
                   : navigate('/login?redirect=/checkout')}
                 style={{
                   width: '100%', padding: '14px', borderRadius: 10, border: 'none',
-                  background: 'linear-gradient(135deg, #d4380d, #ff6b35)',
+                  background: 'linear-gradient(135deg, #1d6fe8, #4d9fff)',
                   color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                   boxShadow: '0 4px 16px rgba(212,56,13,0.35)'
@@ -258,14 +258,14 @@ export default function CartPage() {
           </div>
 
           {/* Trust badges */}
-          <div style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: '14px 16px', marginTop: 12 }}>
+          <div style={{ background: '#0d1526', border: '1px solid #111e35', borderRadius: 12, padding: '14px 16px', marginTop: 12 }}>
             {[
               { icon: ShieldCheck, text: 'Secure SSL checkout' },
               { icon: RotateCcw, text: 'Free returns within 30 days' },
               { icon: BadgeCheck, text: 'Genuine OEM parts guaranteed' },
             ].map(({ icon: Icon, text }) => (
               <div key={text} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0' }}>
-                <Icon size={14} style={{ color: '#ff6b35', flexShrink: 0 }} />
+                <Icon size={14} style={{ color: '#4d9fff', flexShrink: 0 }} />
                 <span style={{ fontSize: 12, color: '#6b7280' }}>{text}</span>
               </div>
             ))}

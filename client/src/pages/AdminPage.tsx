@@ -40,12 +40,12 @@ type PromoForm = z.infer<typeof promoSchema>
 
 // ─── Shared styles ────────────────────────────────────────────────────────────
 const card: React.CSSProperties = {
-  background: '#111827', border: '1px solid #1e293b', borderRadius: 14
+  background: '#0d1526', border: '1px solid #1a2744', borderRadius: 14
 }
 
 const inputSt: React.CSSProperties = {
   width: '100%', padding: '10px 14px', borderRadius: 8,
-  border: '1px solid #1e293b', background: '#0f172a',
+  border: '1px solid #1a2744', background: '#0a0f1e',
   color: '#f9fafb', fontSize: 13, outline: 'none', boxSizing: 'border-box'
 }
 
@@ -54,13 +54,13 @@ const labelSt: React.CSSProperties = {
 }
 
 const btnPrimary: React.CSSProperties = {
-  background: 'linear-gradient(135deg,#d4380d,#ff6b35)', color: '#fff',
+  background: 'linear-gradient(135deg,#1d6fe8,#4d9fff)', color: '#fff',
   border: 'none', padding: '9px 18px', borderRadius: 8, fontSize: 13,
   fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6
 }
 
 const btnSecondary: React.CSSProperties = {
-  background: '#1e293b', color: '#94a3b8', border: '1px solid #334155',
+  background: '#1a2744', color: '#94a3b8', border: '1px solid #334155',
   padding: '9px 18px', borderRadius: 8, fontSize: 13, cursor: 'pointer'
 }
 
@@ -91,7 +91,7 @@ export default function AdminPage() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
         <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(212,56,13,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Settings size={18} style={{ color: '#ff6b35' }} />
+          <Settings size={18} style={{ color: '#4d9fff' }} />
         </div>
         <div>
           <h1 style={{ fontSize: 20, fontWeight: 700, color: '#f9fafb' }}>Admin dashboard</h1>
@@ -100,12 +100,12 @@ export default function AdminPage() {
       </div>
 
       {/* Tab bar */}
-      <div style={{ display: 'flex', gap: 4, marginBottom: 24, background: '#0f172a', border: '1px solid #1e293b', borderRadius: 12, padding: 4, width: 'fit-content' }}>
+      <div style={{ display: 'flex', gap: 4, marginBottom: 24, background: '#0a0f1e', border: '1px solid #1a2744', borderRadius: 12, padding: 4, width: 'fit-content' }}>
         {TABS.map(({ id, label, icon: Icon }) => (
           <button key={id} onClick={() => setTab(id)} style={{
             display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px',
             borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 500,
-            background: tab === id ? '#1e293b' : 'transparent',
+            background: tab === id ? '#1a2744' : 'transparent',
             color: tab === id ? '#f9fafb' : '#475569',
             transition: 'all 0.15s'
           }}>
@@ -134,7 +134,7 @@ function DashboardTab() {
     { label: 'Total orders', value: stats?.totalOrders ?? '—', icon: ShoppingBag, color: '#3b82f6', bg: 'rgba(59,130,246,0.1)' },
     { label: 'Revenue', value: stats?.revenue ? formatPrice(stats.revenue) : '—', icon: TrendingUp, color: '#22c55e', bg: 'rgba(34,197,94,0.1)' },
     { label: 'Low stock alerts', value: stats?.lowStock ?? '—', icon: AlertTriangle, color: '#f97316', bg: 'rgba(249,115,22,0.1)' },
-    { label: 'Active parts', value: stats?.totalParts ?? '—', icon: Package, color: '#ff6b35', bg: 'rgba(212,56,13,0.1)' },
+    { label: 'Active parts', value: stats?.totalParts ?? '—', icon: Package, color: '#4d9fff', bg: 'rgba(212,56,13,0.1)' },
   ]
 
   return (
@@ -199,7 +199,7 @@ function InventoryTab() {
   const filtered = (Array.isArray(parts) ? parts : []).filter(p => p.name.toLowerCase().includes(search.toLowerCase()))
 
   const getInput = (name: string): React.CSSProperties => ({
-    ...inputSt, borderColor: focusedField === name ? '#d4380d' : errors[name as keyof PartForm] ? '#ef4444' : '#1e293b'
+    ...inputSt, borderColor: focusedField === name ? '#1d6fe8' : errors[name as keyof PartForm] ? '#ef4444' : '#1a2744'
   })
 
   return (
@@ -220,9 +220,9 @@ function InventoryTab() {
       {showForm && (
         <div style={{ ...card, overflow: 'hidden' }}>
           {/* Form header */}
-          <div style={{ padding: '16px 24px', borderBottom: '1px solid #1e293b', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ padding: '16px 24px', borderBottom: '1px solid #1a2744', display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(212,56,13,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Plus size={14} style={{ color: '#ff6b35' }} />
+              <Plus size={14} style={{ color: '#4d9fff' }} />
             </div>
             <span style={{ fontSize: 15, fontWeight: 600, color: '#f9fafb' }}>{editId ? 'Edit part' : 'Add new Prius part'}</span>
           </div>
@@ -296,7 +296,7 @@ function InventoryTab() {
             </div>
 
             {/* Form actions */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 20, paddingTop: 20, borderTop: '1px solid #1e293b' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 20, paddingTop: 20, borderTop: '1px solid #1a2744' }}>
               <button type="button" onClick={() => { setShowForm(false); reset() }} style={btnSecondary}>
                 Cancel
               </button>
@@ -316,9 +316,9 @@ function InventoryTab() {
       <div style={{ ...card, overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
-            <tr style={{ background: '#0f172a' }}>
+            <tr style={{ background: '#0a0f1e' }}>
               {['Name', 'Category', 'Price', 'Stock', 'Actions'].map(h => (
-                <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#475569', borderBottom: '1px solid #1e293b' }}>{h}</th>
+                <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#475569', borderBottom: '1px solid #1a2744' }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -327,7 +327,7 @@ function InventoryTab() {
               Array.from({ length: 4 }).map((_, i) => (
                 <tr key={i}>
                   <td colSpan={5} style={{ padding: '12px 16px' }}>
-                    <div style={{ height: 16, background: '#1e293b', borderRadius: 4, animation: 'pulse 1.5s infinite' }} />
+                    <div style={{ height: 16, background: '#1a2744', borderRadius: 4, animation: 'pulse 1.5s infinite' }} />
                   </td>
                 </tr>
               ))
@@ -339,19 +339,19 @@ function InventoryTab() {
                 </td>
               </tr>
             ) : filtered.map((part, i) => (
-              <tr key={part.id} style={{ borderTop: i === 0 ? 'none' : '1px solid #1e293b', transition: 'background 0.1s' }}
-                onMouseEnter={e => (e.currentTarget as HTMLTableRowElement).style.background = '#0f172a'}
+              <tr key={part.id} style={{ borderTop: i === 0 ? 'none' : '1px solid #1a2744', transition: 'background 0.1s' }}
+                onMouseEnter={e => (e.currentTarget as HTMLTableRowElement).style.background = '#0a0f1e'}
                 onMouseLeave={e => (e.currentTarget as HTMLTableRowElement).style.background = 'transparent'}>
                 <td style={{ padding: '14px 16px' }}>
                   <div style={{ fontWeight: 500, color: '#e2e8f0' }}>{part.name}</div>
                   {part.oemNumber && <div style={{ fontSize: 11, color: '#475569', fontFamily: 'monospace', marginTop: 2 }}>{part.oemNumber}</div>}
                 </td>
                 <td style={{ padding: '14px 16px' }}>
-                  <span style={{ background: 'rgba(212,56,13,0.1)', color: '#ff6b35', fontSize: 11, fontWeight: 500, padding: '3px 8px', borderRadius: 6 }}>
+                  <span style={{ background: 'rgba(212,56,13,0.1)', color: '#4d9fff', fontSize: 11, fontWeight: 500, padding: '3px 8px', borderRadius: 6 }}>
                     {part.category?.name}
                   </span>
                 </td>
-                <td style={{ padding: '14px 16px', fontWeight: 600, color: '#ff6b35' }}>{formatPrice(part.price)}</td>
+                <td style={{ padding: '14px 16px', fontWeight: 600, color: '#4d9fff' }}>{formatPrice(part.price)}</td>
                 <td style={{ padding: '14px 16px' }}>
                   <span style={{
                     padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 500,
@@ -364,7 +364,7 @@ function InventoryTab() {
                 <td style={{ padding: '14px 16px' }}>
                   <div style={{ display: 'flex', gap: 6 }}>
                     <button onClick={() => { setEditId(part.id); setShowForm(true) }}
-                      style={{ width: 30, height: 30, borderRadius: 7, border: '1px solid #1e293b', background: '#1e293b', color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      style={{ width: 30, height: 30, borderRadius: 7, border: '1px solid #1a2744', background: '#1a2744', color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <Pencil size={12} />
                     </button>
                     <button onClick={() => deleteMutation.mutate(part.id)}
@@ -414,7 +414,7 @@ function OrdersTab() {
           <button key={s} onClick={() => setStatusFilter(s)} style={{
             padding: '6px 14px', borderRadius: 20, border: 'none', cursor: 'pointer',
             fontSize: 12, fontWeight: 500, transition: 'all 0.15s',
-            background: statusFilter === s ? '#d4380d' : '#1e293b',
+            background: statusFilter === s ? '#1d6fe8' : '#1a2744',
             color: statusFilter === s ? '#fff' : '#64748b',
           }}>
             {s || 'All orders'} {s === '' && data ? `(${data.total})` : ''}
@@ -425,9 +425,9 @@ function OrdersTab() {
       <div style={{ ...card, overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
-            <tr style={{ background: '#0f172a' }}>
+            <tr style={{ background: '#0a0f1e' }}>
               {['Order', 'Customer', 'Total', 'Status', 'Date', ''].map(h => (
-                <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#475569', borderBottom: '1px solid #1e293b' }}>{h}</th>
+                <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#475569', borderBottom: '1px solid #1a2744' }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -437,8 +437,8 @@ function OrdersTab() {
               const statusColor = STATUS_COLORS[order.status] || '#64748b'
               return (
                 <>
-                  <tr key={order.id} style={{ borderTop: i === 0 ? 'none' : '1px solid #1e293b' }}
-                    onMouseEnter={e => (e.currentTarget as HTMLTableRowElement).style.background = '#0f172a'}
+                  <tr key={order.id} style={{ borderTop: i === 0 ? 'none' : '1px solid #1a2744' }}
+                    onMouseEnter={e => (e.currentTarget as HTMLTableRowElement).style.background = '#0a0f1e'}
                     onMouseLeave={e => (e.currentTarget as HTMLTableRowElement).style.background = 'transparent'}>
                     <td style={{ padding: '14px 16px' }}>
                       <span style={{ fontFamily: 'monospace', fontWeight: 600, color: '#94a3b8', fontSize: 12 }}>
@@ -449,7 +449,7 @@ function OrdersTab() {
                       <div style={{ fontWeight: 500, color: '#e2e8f0' }}>{(order as any).user?.name ?? 'Guest'}</div>
                       <div style={{ fontSize: 11, color: '#475569' }}>{(order as any).user?.email}</div>
                     </td>
-                    <td style={{ padding: '14px 16px', fontWeight: 700, color: '#ff6b35' }}>{formatPrice(order.total)}</td>
+                    <td style={{ padding: '14px 16px', fontWeight: 700, color: '#4d9fff' }}>{formatPrice(order.total)}</td>
                     <td style={{ padding: '14px 16px' }}>
                       <select value={order.status}
                         onChange={e => statusMutation.mutate({ id: order.id, status: e.target.value })}
@@ -460,19 +460,19 @@ function OrdersTab() {
                     <td style={{ padding: '14px 16px', color: '#475569', fontSize: 12 }}>{formatDate(order.createdAt)}</td>
                     <td style={{ padding: '14px 16px' }}>
                       <button onClick={() => setExpandedId(isExpanded ? null : order.id)}
-                        style={{ width: 28, height: 28, borderRadius: 7, border: '1px solid #1e293b', background: '#1e293b', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        style={{ width: 28, height: 28, borderRadius: 7, border: '1px solid #1a2744', background: '#1a2744', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
                       </button>
                     </td>
                   </tr>
                   {isExpanded && (
                     <tr key={`${order.id}-exp`}>
-                      <td colSpan={6} style={{ background: '#0a0f1a', borderTop: '1px solid #1e293b', padding: '12px 16px' }}>
+                      <td colSpan={6} style={{ background: '#0a0f1a', borderTop: '1px solid #1a2744', padding: '12px 16px' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                           {order.items.map(item => (
                             <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#94a3b8' }}>
                               <span>{item.part?.name} × {item.quantity}</span>
-                              <span style={{ color: '#ff6b35', fontWeight: 600 }}>{formatPrice(Number(item.price) * item.quantity)}</span>
+                              <span style={{ color: '#4d9fff', fontWeight: 600 }}>{formatPrice(Number(item.price) * item.quantity)}</span>
                             </div>
                           ))}
                         </div>
@@ -524,8 +524,8 @@ function PromotionsTab() {
 
       {showForm && (
         <div style={{ ...card, overflow: 'hidden' }}>
-          <div style={{ padding: '16px 24px', borderBottom: '1px solid #1e293b', display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Tag size={15} style={{ color: '#ff6b35' }} />
+          <div style={{ padding: '16px 24px', borderBottom: '1px solid #1a2744', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <Tag size={15} style={{ color: '#4d9fff' }} />
             <span style={{ fontSize: 15, fontWeight: 600, color: '#f9fafb' }}>New promotion</span>
           </div>
           <form onSubmit={handleSubmit(d => createMutation.mutate(d))} style={{ padding: 24, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
@@ -550,7 +550,7 @@ function PromotionsTab() {
             <Field label="Usage limit">
               <input {...register('usageLimit')} type="number" placeholder="Unlimited" style={inputSt} />
             </Field>
-            <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', gap: 10, paddingTop: 16, borderTop: '1px solid #1e293b' }}>
+            <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', gap: 10, paddingTop: 16, borderTop: '1px solid #1a2744' }}>
               <button type="button" onClick={() => { setShowForm(false); reset() }} style={btnSecondary}>Cancel</button>
               <button type="submit" disabled={createMutation.isPending} style={{ ...btnPrimary, boxShadow: '0 4px 16px rgba(212,56,13,0.3)' }}>
                 {createMutation.isPending ? 'Creating…' : 'Create promotion'}
@@ -563,17 +563,17 @@ function PromotionsTab() {
       <div style={{ ...card, overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
-            <tr style={{ background: '#0f172a' }}>
+            <tr style={{ background: '#0a0f1e' }}>
               {['Code', 'Discount', 'Description', 'Expires', 'Used', 'Active'].map(h => (
-                <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#475569', borderBottom: '1px solid #1e293b' }}>{h}</th>
+                <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#475569', borderBottom: '1px solid #1a2744' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {Array.isArray(promos) && promos.map((promo, i) => (
-              <tr key={promo.id} style={{ borderTop: i === 0 ? 'none' : '1px solid #1e293b' }}>
+              <tr key={promo.id} style={{ borderTop: i === 0 ? 'none' : '1px solid #1a2744' }}>
                 <td style={{ padding: '14px 16px' }}>
-                  <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#ff6b35', letterSpacing: '0.05em', fontSize: 13 }}>{promo.code}</span>
+                  <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#4d9fff', letterSpacing: '0.05em', fontSize: 13 }}>{promo.code}</span>
                 </td>
                 <td style={{ padding: '14px 16px', fontWeight: 600, color: '#f9fafb' }}>
                   {promo.type === 'PERCENTAGE' ? `${promo.discount}%` : `₾${promo.discount}`}
@@ -603,7 +603,7 @@ function SettingsTab() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 600 }}>
       <div style={{ ...card, overflow: 'hidden' }}>
-        <div style={{ padding: '16px 24px', borderBottom: '1px solid #1e293b' }}>
+        <div style={{ padding: '16px 24px', borderBottom: '1px solid #1a2744' }}>
           <h2 style={{ fontSize: 15, fontWeight: 600, color: '#f9fafb' }}>Store information</h2>
         </div>
         <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -629,7 +629,7 @@ function SettingsTab() {
       </div>
 
       <div style={{ ...card, overflow: 'hidden' }}>
-        <div style={{ padding: '16px 24px', borderBottom: '1px solid #1e293b' }}>
+        <div style={{ padding: '16px 24px', borderBottom: '1px solid #1a2744' }}>
           <h2 style={{ fontSize: 15, fontWeight: 600, color: '#f9fafb' }}>Shipping</h2>
         </div>
         <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -646,7 +646,7 @@ function SettingsTab() {
       </div>
 
       <button onClick={() => { setSaved(true); setTimeout(() => setSaved(false), 2500) }}
-        style={{ ...btnPrimary, width: 'fit-content', boxShadow: saved ? 'none' : '0 4px 16px rgba(212,56,13,0.3)', background: saved ? 'linear-gradient(135deg,#16a34a,#22c55e)' : 'linear-gradient(135deg,#d4380d,#ff6b35)' }}>
+        style={{ ...btnPrimary, width: 'fit-content', boxShadow: saved ? 'none' : '0 4px 16px rgba(212,56,13,0.3)', background: saved ? 'linear-gradient(135deg,#16a34a,#22c55e)' : 'linear-gradient(135deg,#1d6fe8,#4d9fff)' }}>
         {saved ? <><CheckCircle size={14} /> Saved!</> : 'Save settings'}
       </button>
     </div>

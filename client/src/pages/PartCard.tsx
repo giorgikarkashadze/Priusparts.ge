@@ -24,7 +24,7 @@ export default function PartCard({ part }: { part: Part }) {
 
   return (
     <div style={{
-      background: '#111827', border: '1px solid #1f2937', borderRadius: 12,
+      background: '#0d1526', border: '1px solid #111e35', borderRadius: 12,
       overflow: 'hidden', transition: 'transform 0.15s, box-shadow 0.15s',
       cursor: 'pointer',
     }}
@@ -34,7 +34,7 @@ export default function PartCard({ part }: { part: Part }) {
       {/* Thumbnail */}
       <Link to={`/catalog/${part.slug}`} style={{ display: 'block', textDecoration: 'none' }}>
         <div style={{
-          height: 140, background: '#1f2937', display: 'flex',
+          height: 140, background: '#111e35', display: 'flex',
           alignItems: 'center', justifyContent: 'center', position: 'relative'
         }}>
           {part.images?.[0] ? (
@@ -44,7 +44,7 @@ export default function PartCard({ part }: { part: Part }) {
           )}
           {disc && (
             <div style={{
-              position: 'absolute', top: 8, right: 8, background: '#d4380d',
+              position: 'absolute', top: 8, right: 8, background: '#1d6fe8',
               color: '#fff', fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 20
             }}>
               -{disc}%
@@ -102,7 +102,7 @@ export default function PartCard({ part }: { part: Part }) {
         {/* Price + Add */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <span style={{ fontSize: 16, fontWeight: 600, color: '#d4380d' }}>
+            <span style={{ fontSize: 16, fontWeight: 600, color: '#1d6fe8' }}>
               {formatPrice(part.price)}
             </span>
             {part.comparePrice && (
@@ -117,7 +117,7 @@ export default function PartCard({ part }: { part: Part }) {
             style={{
               width: 32, height: 32, borderRadius: 8, border: 'none', cursor: part.stock === 0 ? 'not-allowed' : 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: added ? '#16a34a' : '#1f2937',
+              background: added ? '#16a34a' : '#111e35',
               color: added ? '#fff' : '#9ca3af',
               opacity: part.stock === 0 ? 0.4 : 1,
               transition: 'all 0.15s'

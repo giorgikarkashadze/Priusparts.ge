@@ -22,14 +22,14 @@ const sectionTitle: React.CSSProperties = {
 
 const selectStyle: React.CSSProperties = {
   width: '100%', padding: '8px 10px', borderRadius: 8,
-  border: '1px solid #374151', background: '#1f2937',
+  border: '1px solid #374151', background: '#111e35',
   color: '#f9fafb', fontSize: 13, cursor: 'pointer', marginBottom: 8,
   boxSizing: 'border-box'
 }
 
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '8px 10px', borderRadius: 8,
-  border: '1px solid #374151', background: '#1f2937',
+  border: '1px solid #374151', background: '#111e35',
   color: '#f9fafb', fontSize: 13, outline: 'none', boxSizing: 'border-box'
 }
 
@@ -37,7 +37,7 @@ export default function FilterSidebar({ filters, onChange }: Props) {
   const { data: categories } = useCategories()
 
   return (
-    <div style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: 16 }}>
+    <div style={{ background: '#0d1526', border: '1px solid #111e35', borderRadius: 12, padding: 16 }}>
 
       {/* Year */}
       <div style={{ marginBottom: 20 }}>
@@ -64,7 +64,7 @@ export default function FilterSidebar({ filters, onChange }: Props) {
             style={{
               textAlign: 'left', padding: '8px 12px', borderRadius: 8, border: 'none',
               cursor: 'pointer', fontSize: 13, fontWeight: 500,
-              background: !filters.category ? '#d4380d' : 'transparent',
+              background: !filters.category ? '#1d6fe8' : 'transparent',
               color: !filters.category ? '#fff' : '#9ca3af',
             }}>
             All parts
@@ -77,7 +77,7 @@ export default function FilterSidebar({ filters, onChange }: Props) {
                 textAlign: 'left', padding: '8px 12px', borderRadius: 8, border: 'none',
                 cursor: 'pointer', fontSize: 13, display: 'flex', justifyContent: 'space-between',
                 alignItems: 'center',
-                background: filters.category === c.slug ? '#d4380d' : 'transparent',
+                background: filters.category === c.slug ? '#1d6fe8' : 'transparent',
                 color: filters.category === c.slug ? '#fff' : '#9ca3af',
               }}>
               <span>{c.icon} {c.name}</span>

@@ -53,7 +53,7 @@ export default function CatalogPage() {
           <input
             style={{
               width: '100%', paddingLeft: 36, paddingRight: 12, paddingTop: 9, paddingBottom: 9,
-              borderRadius: 8, border: '1px solid #374151', background: '#1f2937',
+              borderRadius: 8, border: '1px solid #374151', background: '#111e35',
               color: '#f9fafb', fontSize: 14, outline: 'none', boxSizing: 'border-box'
             }}
             placeholder="Search parts..."
@@ -64,7 +64,7 @@ export default function CatalogPage() {
         <select
           style={{
             padding: '9px 12px', borderRadius: 8, border: '1px solid #374151',
-            background: '#1f2937', color: '#f9fafb', fontSize: 14, cursor: 'pointer'
+            background: '#111e35', color: '#f9fafb', fontSize: 14, cursor: 'pointer'
           }}
           value={filters.sort}
           onChange={(e) => updateFilters({ sort: e.target.value })}
@@ -75,7 +75,7 @@ export default function CatalogPage() {
           onClick={() => setShowFilters(!showFilters)}
           style={{
             display: 'flex', alignItems: 'center', gap: 6, padding: '9px 14px',
-            borderRadius: 8, border: '1px solid #374151', background: showFilters ? '#d4380d' : '#1f2937',
+            borderRadius: 8, border: '1px solid #374151', background: showFilters ? '#1d6fe8' : '#111e35',
             color: '#f9fafb', fontSize: 14, cursor: 'pointer'
           }}
         >
@@ -90,10 +90,10 @@ export default function CatalogPage() {
           {filters.category && (
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px',
-              borderRadius: 20, background: 'rgba(212,56,13,0.15)', color: '#ff6b35', fontSize: 12
+              borderRadius: 20, background: 'rgba(212,56,13,0.15)', color: '#4d9fff', fontSize: 12
             }}>
               {filters.category}
-              <button onClick={() => updateFilters({ category: '' })} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff6b35', padding: 0, display: 'flex' }}>
+              <button onClick={() => updateFilters({ category: '' })} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#4d9fff', padding: 0, display: 'flex' }}>
                 <X size={12} />
               </button>
             </span>
@@ -101,7 +101,7 @@ export default function CatalogPage() {
           {filters.search && (
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: 4, padding: '4px 10px',
-              borderRadius: 20, background: '#1f2937', color: '#9ca3af', fontSize: 12, border: '1px solid #374151'
+              borderRadius: 20, background: '#111e35', color: '#9ca3af', fontSize: 12, border: '1px solid #374151'
             }}>
               "{filters.search}"
               <button onClick={() => updateFilters({ search: '' })} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', padding: 0, display: 'flex' }}>
@@ -133,7 +133,7 @@ export default function CatalogPage() {
           {isLoading ? (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} style={{ height: 260, borderRadius: 12, background: '#1f2937', animation: 'pulse 1.5s infinite' }} />
+                <div key={i} style={{ height: 260, borderRadius: 12, background: '#111e35', animation: 'pulse 1.5s infinite' }} />
               ))}
             </div>
           ) : !data?.data?.length ? (
@@ -156,7 +156,7 @@ export default function CatalogPage() {
                   style={{
                     width: 36, height: 36, borderRadius: 8, border: 'none', cursor: 'pointer',
                     fontSize: 14, fontWeight: 500,
-                    background: page === i + 1 ? '#d4380d' : '#1f2937',
+                    background: page === i + 1 ? '#1d6fe8' : '#111e35',
                     color: page === i + 1 ? '#fff' : '#9ca3af',
                   }}>
                   {i + 1}

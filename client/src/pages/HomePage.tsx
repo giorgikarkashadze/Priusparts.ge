@@ -33,16 +33,16 @@ export default function HomePage() {
     <div>
       {/* Hero */}
       <section style={{
-        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)',
+        background: 'linear-gradient(135deg, #0a0f1e 0%, #1e1b4b 50%, #0a0f1e 100%)',
         padding: '64px 16px', textAlign: 'center'
       }}>
         <div style={{ maxWidth: 640, margin: '0 auto' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(212,56,13,0.15)', color: '#ff6b35', padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 500, marginBottom: 20, border: '1px solid rgba(212,56,13,0.3)' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(212,56,13,0.15)', color: '#4d9fff', padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 500, marginBottom: 20, border: '1px solid rgba(212,56,13,0.3)' }}>
             🚗 Toyota Prius Specialist — 2008 to 2024
           </div>
           <h1 style={{ fontSize: 40, fontWeight: 700, color: '#f9fafb', lineHeight: 1.2, marginBottom: 12, letterSpacing: '-1px' }}>
             Parts for your<br />
-            <span style={{ color: '#ff6b35' }}>Toyota Prius</span>
+            <span style={{ color: '#4d9fff' }}>Toyota Prius</span>
           </h1>
           <p style={{ color: '#94a3b8', fontSize: 16, marginBottom: 32, lineHeight: 1.6 }}>
             Genuine & aftermarket Prius parts delivered fast across Georgia.
@@ -63,7 +63,7 @@ export default function HomePage() {
               />
             </div>
             <button type="submit" style={{
-              background: '#d4380d', color: '#fff', border: 'none', padding: '12px 24px',
+              background: '#1d6fe8', color: '#fff', border: 'none', padding: '12px 24px',
               borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap'
             }}>
               Search
@@ -73,7 +73,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats */}
-      <div style={{ background: '#1e293b', borderBottom: '1px solid #334155' }}>
+      <div style={{ background: '#1a2744', borderBottom: '1px solid #334155' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '16px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, textAlign: 'center' }}>
           {[
             ['5,000+', 'Prius parts'],
@@ -82,7 +82,7 @@ export default function HomePage() {
             ['4.9★', 'Customer rating'],
           ].map(([val, lbl]) => (
             <div key={lbl}>
-              <div style={{ fontSize: 20, fontWeight: 700, color: '#ff6b35' }}>{val}</div>
+              <div style={{ fontSize: 20, fontWeight: 700, color: '#4d9fff' }}>{val}</div>
               <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>{lbl}</div>
             </div>
           ))}
@@ -98,17 +98,17 @@ export default function HomePage() {
             {GENERATIONS.map((gen) => (
               <Link key={gen.label} to={`/catalog?year=${gen.slug}`} style={{ textDecoration: 'none' }}>
                 <div style={{
-                  background: '#111827', border: '1px solid #1f2937', borderRadius: 12,
+                  background: '#0d1526', border: '1px solid #111e35', borderRadius: 12,
                   padding: '20px 16px', textAlign: 'center', cursor: 'pointer',
                   transition: 'all 0.15s'
                 }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#d4380d'; (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)' }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#1f2937'; (e.currentTarget as HTMLDivElement).style.transform = 'none' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#1d6fe8'; (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)' }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#111e35'; (e.currentTarget as HTMLDivElement).style.transform = 'none' }}
                 >
                   <div style={{ fontSize: 32, marginBottom: 8 }}>{gen.emoji}</div>
                   <div style={{ fontSize: 15, fontWeight: 600, color: '#f9fafb', marginBottom: 2 }}>Toyota Prius {gen.label}</div>
                   <div style={{ fontSize: 12, color: '#6b7280' }}>{gen.years}</div>
-                  <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, color: '#ff6b35', fontSize: 12, fontWeight: 500 }}>
+                  <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, color: '#4d9fff', fontSize: 12, fontWeight: 500 }}>
                     Browse parts <ChevronRight size={12} />
                   </div>
                 </div>
@@ -125,11 +125,11 @@ export default function HomePage() {
               {categories.map((c) => (
                 <Link key={c.id} to={`/catalog?category=${c.slug}`} style={{ textDecoration: 'none' }}>
                   <div style={{
-                    background: '#111827', border: '1px solid #1f2937', borderRadius: 12,
+                    background: '#0d1526', border: '1px solid #111e35', borderRadius: 12,
                     padding: '16px 12px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.15s'
                   }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#d4380d' }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#1f2937' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#1d6fe8' }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#111e35' }}
                   >
                     <div style={{ fontSize: 28, marginBottom: 6 }}>{c.icon}</div>
                     <div style={{ fontSize: 13, fontWeight: 500, color: '#f9fafb' }}>{c.name}</div>
@@ -150,11 +150,11 @@ export default function HomePage() {
           }}>
             <div style={{ fontSize: 40 }}>🏷️</div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 600, color: '#ff6b35', fontSize: 16 }}>Summer Sale — up to 30% off brake parts</div>
+              <div style={{ fontWeight: 600, color: '#4d9fff', fontSize: 16 }}>Summer Sale — up to 30% off brake parts</div>
               <div style={{ fontSize: 13, color: '#64748b', marginTop: 4 }}>Use code <strong style={{ color: '#f9fafb' }}>SUMMER30</strong> at checkout. Ends August 31.</div>
             </div>
             <Link to="/catalog?category=brakes" style={{
-              background: '#d4380d', color: '#fff', textDecoration: 'none',
+              background: '#1d6fe8', color: '#fff', textDecoration: 'none',
               padding: '10px 20px', borderRadius: 8, fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap'
             }}>
               Shop brakes
@@ -167,7 +167,7 @@ export default function HomePage() {
           <section style={{ marginBottom: 48 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
               <h2 style={{ fontSize: 20, fontWeight: 600 }}>New arrivals</h2>
-              <Link to="/catalog" style={{ color: '#ff6b35', textDecoration: 'none', fontSize: 13, fontWeight: 500 }}>
+              <Link to="/catalog" style={{ color: '#4d9fff', textDecoration: 'none', fontSize: 13, fontWeight: 500 }}>
                 View all →
               </Link>
             </div>
@@ -182,11 +182,11 @@ export default function HomePage() {
           <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 16 }}>Why PriusParts.ge?</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
             {FEATURES.map(({ icon: Icon, title, desc }) => (
-              <div key={title} style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: 20 }}>
+              <div key={title} style={{ background: '#0d1526', border: '1px solid #111e35', borderRadius: 12, padding: 20 }}>
                 <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(212,56,13,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
-                  <Icon size={18} style={{ color: '#ff6b35' }} />
+                  <Icon size={18} style={{ color: '#4d9fff' }} />
                 </div>
-                <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 6 }}>{title}</div>
+                <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 6, color: 'white' }}>{title}</div>
                 <div style={{ fontSize: 13, color: '#6b7280', lineHeight: 1.6 }}>{desc}</div>
               </div>
             ))}

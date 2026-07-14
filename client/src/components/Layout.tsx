@@ -20,21 +20,21 @@ export default function Layout() {
   const isActive = (href: string) => href === '/' ? location.pathname === '/' : location.pathname.startsWith(href)
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: dark ? '#030712' : '#f9fafb', color: dark ? '#f9fafb' : '#111827' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: dark ? '#030712' : '#f9fafb', color: dark ? '#f9fafb' : '#0d1526' }}>
 
       {/* Promo banner */}
-      <div style={{ background: '#d4380d', color: '#fff', textAlign: 'center', fontSize: 12, padding: '6px 16px', fontWeight: 500 }}>
+      <div style={{ background: '#1d6fe8', color: '#fff', textAlign: 'center', fontSize: 12, padding: '6px 16px', fontWeight: 500 }}>
         🚗 Genuine & aftermarket parts for Toyota Prius 2008–2024 — Fast delivery across Georgia
       </div>
 
       {/* Navbar */}
-      <nav style={{ background: '#0f172a', borderBottom: '1px solid #1e293b', position: 'sticky', top: 0, zIndex: 100 }}>
+      <nav style={{ background: '#0a0f1e', borderBottom: '1px solid #1a2744', position: 'sticky', top: 0, zIndex: 100 }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 16px', height: 56, display: 'flex', alignItems: 'center', gap: 8 }}>
 
           {/* Logo */}
           <Link to="/" style={{ textDecoration: 'none', marginRight: 16, flexShrink: 0 }}>
             <span style={{ fontSize: 18, fontWeight: 700, color: '#f9fafb', letterSpacing: '-0.5px' }}>
-              Prius<span style={{ color: '#ff6b35' }}>Parts</span>
+              Prius<span style={{ color: '#4d9fff' }}>Parts</span>
               <span style={{ color: '#6b7280', fontSize: 13, fontWeight: 400 }}>.ge</span>
             </span>
           </Link>
@@ -70,7 +70,7 @@ export default function Layout() {
               <ShoppingCart size={16} />
               {itemCount > 0 && (
                 <span style={{
-                  position: 'absolute', top: -4, right: -4, background: '#d4380d',
+                  position: 'absolute', top: -4, right: -4, background: '#1d6fe8',
                   color: '#fff', fontSize: 10, width: 16, height: 16, borderRadius: '50%',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600
                 }}>
@@ -88,7 +88,7 @@ export default function Layout() {
                   color: '#f9fafb', cursor: 'pointer', fontSize: 13
                 }}>
                   <div style={{
-                    width: 22, height: 22, borderRadius: '50%', background: '#d4380d',
+                    width: 22, height: 22, borderRadius: '50%', background: '#1d6fe8',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 11, fontWeight: 600, color: '#fff'
                   }}>
@@ -99,7 +99,7 @@ export default function Layout() {
                 {userMenuOpen && (
                   <div style={{
                     position: 'absolute', right: 0, top: '100%', marginTop: 4, width: 180,
-                    background: '#1e293b', border: '1px solid #334155', borderRadius: 12,
+                    background: '#1a2744', border: '1px solid #334155', borderRadius: 12,
                     padding: 4, zIndex: 50, boxShadow: '0 16px 48px rgba(0,0,0,0.4)'
                   }}>
                     <Link to="/orders" onClick={() => setUserMenuOpen(false)} style={{
@@ -111,7 +111,7 @@ export default function Layout() {
                     {user.role === 'ADMIN' && (
                       <Link to="/admin" onClick={() => setUserMenuOpen(false)} style={{
                         display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px',
-                        borderRadius: 8, color: '#ff6b35', textDecoration: 'none', fontSize: 13
+                        borderRadius: 8, color: '#4d9fff', textDecoration: 'none', fontSize: 13
                       }}>
                         <Settings size={13} /> Admin panel
                       </Link>
@@ -154,11 +154,11 @@ export default function Layout() {
       </main>
 
       {/* Footer */}
-      <footer style={{ background: '#0f172a', borderTop: '1px solid #1e293b', padding: '40px 16px 20px' }}>
+      <footer style={{ background: '#0a0f1e', borderTop: '1px solid #1a2744', padding: '40px 16px 20px' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 32, marginBottom: 32 }}>
           <div>
             <div style={{ fontSize: 18, fontWeight: 700, color: '#f9fafb', marginBottom: 8 }}>
-              Prius<span style={{ color: '#ff6b35' }}>Parts</span><span style={{ color: '#475569', fontSize: 13 }}>.ge</span>
+              Prius<span style={{ color: '#4d9fff' }}>Parts</span><span style={{ color: '#475569', fontSize: 13 }}>.ge</span>
             </div>
             <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.7 }}>
               Genuine & aftermarket parts for Toyota Prius 2008–2024. Trusted by Prius owners across Georgia.
@@ -185,7 +185,7 @@ export default function Layout() {
             <div style={{ color: '#64748b', fontSize: 13 }}>Tbilisi, Georgia</div>
           </div>
         </div>
-        <div style={{ maxWidth: 1200, margin: '0 auto', paddingTop: 20, borderTop: '1px solid #1e293b', fontSize: 12, color: '#475569', textAlign: 'center' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', paddingTop: 20, borderTop: '1px solid #1a2744', fontSize: 12, color: '#475569', textAlign: 'center' }}>
           © 2025 PriusParts.ge — All rights reserved
         </div>
       </footer>
