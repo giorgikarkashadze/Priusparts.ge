@@ -18,9 +18,9 @@ const partSchema = z.object({
   name: z.string().min(2),
   description: z.string().optional(),
   oemNumber: z.string().optional(),
-  price: z.coerce.number().positive(),
-  comparePrice: z.coerce.number().optional(),
-  stock: z.coerce.number().int().min(0),
+  price: z.number().positive(),
+  comparePrice: z.number().positive().optional(),
+  stock: z.number().int().min(0),
   categoryId: z.string().min(1, 'Select a category'),
 })
 type PartForm = z.infer<typeof partSchema>
@@ -28,13 +28,10 @@ type PartForm = z.infer<typeof partSchema>
 const promoSchema = z.object({
   code: z.string().min(3),
   description: z.string().optional(),
-  discount: z.preprocess((v) => parseFloat(String(v)), z.number().positive()),
+  discount: z.number().positive(),
   type: z.enum(['PERCENTAGE', 'FIXED']),
   expiresAt: z.string().optional(),
-  usageLimit: z.preprocess(
-    (v) => (v === '' || v === undefined ? undefined : parseInt(String(v))),
-    z.number().int().positive().optional()
-  ),
+  usageLimit: z.number().int().positive().optional(),
 })
 type PromoForm = z.infer<typeof promoSchema>
 
@@ -181,12 +178,18 @@ function InventoryTab() {
   })
 
   const saveMutation = useMutation({
-    mutationFn: async (data: PartForm) => {
-      if (editId) return api.put(`/admin/parts/${editId}`, data)
-      return api.post('/admin/parts', data)
-    },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-parts'] }); setShowForm(false); setEditId(null); reset() },
-  })
+  mutationFn: async (data: PartForm) => {
+    const payload = {
+      ...data,
+      price: parseFloat(String(data.price)),
+      stock: parseInt(String(data.stock)),
+      comparePrice: data.comparePrice ? parseFloat(String(data.comparePrice)) : undefined,
+    }
+    if (editId) return api.put(`/admin/parts/${editId}`, payload)
+    return api.post('/admin/parts', payload)
+  },
+  onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-parts'] }); setShowForm(false); setEditId(null); reset() },
+})
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => api.delete(`/admin/parts/${id}`),
@@ -502,9 +505,13 @@ function PromotionsTab() {
   })
 
   const createMutation = useMutation({
-    mutationFn: (data: PromoForm) => api.post('/admin/promotions', data),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-promos'] }); setShowForm(false); reset() },
-  })
+  mutationFn: (data: PromoForm) => api.post('/admin/promotions', {
+    ...data,
+    discount: parseFloat(String(data.discount)),
+    usageLimit: data.usageLimit ? parseInt(String(data.usageLimit)) : undefined,
+  }),
+  onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-promos'] }); setShowForm(false); reset() },
+})
 
   const toggleMutation = useMutation({
     mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) => api.patch(`/admin/promotions/${id}`, { isActive }),

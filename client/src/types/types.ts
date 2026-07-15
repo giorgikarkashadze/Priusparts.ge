@@ -33,11 +33,19 @@ export interface Category {
 
 export interface Compatibility {
   id: string
-  make: string
-  model: string
-  yearFrom: number
-  yearTo: number
-  engine?: string
+  partId: string
+  modelId: string
+  years: number[]
+  model: {
+    id: string
+    name: string
+    makeId: string
+    years: number[]
+    make: {
+      id: string
+      name: string
+    }
+  }
 }
 
 export interface CartItem {
