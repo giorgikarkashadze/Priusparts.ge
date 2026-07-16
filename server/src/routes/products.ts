@@ -74,12 +74,12 @@ router.post('/:id/reviews', requireAuth, async (req: AuthRequest, res) => {
   try {
     const { rating, comment } = reviewSchema.parse(req.body)
     const review = await prisma.review.create({
-      data: { partId: req.params.id, userId: req.user!.id, rating, comment },
+      data: { partId: String(req.params.id), userId: req.user!.id, rating, comment },
       include: { user: { select: { name: true } } },
     })
     res.status(201).json(review)
   } catch (e) {
-    if (e instanceof z.ZodError) return res.status(400).json({ error: e.errors })
+    if (e instanceof z.ZodError) return res.status(400).json({ error: e.issues })
     res.status(500).json({ error: 'Failed to create review' })
   }
 })

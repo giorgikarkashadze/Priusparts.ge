@@ -54,7 +54,7 @@ router.post('/parts', upload.array('images', 5), async (req, res) => {
     const part = await prisma.part.create({ data: { ...data, slug, images }, include: { category: true } })
     res.status(201).json(part)
   } catch (e) {
-    if (e instanceof z.ZodError) return res.status(400).json({ error: e.errors })
+    if (e instanceof z.ZodError) return res.status(400).json({ error: e.issues })
     res.status(500).json({ error: 'Failed to create part' })
   }
 })
@@ -63,13 +63,13 @@ router.put('/parts/:id', upload.array('images', 5), async (req, res) => {
   try {
     const data = partSchema.partial().parse(req.body)
     const newImages = (req.files as Express.Multer.File[] | undefined)?.map(f => `/uploads/${f.filename}`)
-    const existing = await prisma.part.findUnique({ where: { id: req.params.id } })
+    const existing = await prisma.part.findUnique({ where: { id: String(req.params.id) } })
     if (!existing) return res.status(404).json({ error: 'Part not found' })
     const images = newImages?.length ? [...existing.images, ...newImages] : existing.images
-    const part = await prisma.part.update({ where: { id: req.params.id }, data: { ...data, images }, include: { category: true } })
+    const part = await prisma.part.update({ where: { id: String(req.params.id) }, data: { ...data, images }, include: { category: true } })
     res.json(part)
   } catch (e) {
-    if (e instanceof z.ZodError) return res.status(400).json({ error: e.errors })
+    if (e instanceof z.ZodError) return res.status(400).json({ error: e.issues })
     res.status(500).json({ error: 'Failed to update part' })
   }
 })
@@ -117,7 +117,7 @@ router.post('/promotions', async (req, res) => {
     const promo = await prisma.promotion.create({ data: { ...data, expiresAt: data.expiresAt ? new Date(data.expiresAt) : null } })
     res.status(201).json(promo)
   } catch (e) {
-    if (e instanceof z.ZodError) return res.status(400).json({ error: e.errors })
+    if (e instanceof z.ZodError) return res.status(400).json({ error: e.issues })
     res.status(500).json({ error: 'Failed to create promotion' })
   }
 })

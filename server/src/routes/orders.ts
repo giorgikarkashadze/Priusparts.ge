@@ -7,7 +7,7 @@ import { requireAuth, AuthRequest } from '../middleware/auth'
 const router = Router()
 const prisma = new PrismaClient()
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? 'sk_test_placeholder', {
-  apiVersion: '2023-10-16',
+  apiVersion: '2026-06-24.dahlia',
 })
 
 const orderSchema = z.object({
@@ -82,7 +82,7 @@ router.post('/', requireAuth, async (req: AuthRequest, res) => {
 
     res.status(201).json({ order, clientSecret: paymentIntent.client_secret })
   } catch (e) {
-    if (e instanceof z.ZodError) return res.status(400).json({ error: e.errors })
+    if (e instanceof z.ZodError) return res.status(400).json({ error: e.issues  })
     if (e instanceof Error) return res.status(400).json({ error: e.message })
     res.status(500).json({ error: 'Failed to create order' })
   }
@@ -101,7 +101,7 @@ router.get('/', requireAuth, async (req: AuthRequest, res) => {
 // GET /api/orders/:id
 router.get('/:id', requireAuth, async (req: AuthRequest, res) => {
   const order = await prisma.order.findFirst({
-    where: { id: req.params.id, userId: req.user!.id },
+    where: { id: String(req.params.id), userId: req.user!.id },
     include: { items: { include: { part: true } } },
   })
   if (!order) return res.status(404).json({ error: 'Order not found' })
