@@ -4,7 +4,6 @@
   "description": "priusparts server",
   "license": "ISC",
   "author": "Giorgi Karkashadze",
-  "type": "commonjs",
   "main": "index.js",
   "private": true,
   "prisma": {
