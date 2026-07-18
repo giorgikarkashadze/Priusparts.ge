@@ -14,7 +14,7 @@ const SORTS = [
 
 export default function CatalogPage() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const [showFilters, setShowFilters] = useState(false)
+  const [showFilters, setShowFilters] = useState(true)
   const [page, setPage] = useState(1)
 
   const [filters, setFilters] = useState<FilterState>({
@@ -44,7 +44,7 @@ export default function CatalogPage() {
   const activeFilterCount = [filters.makeId, filters.modelId, filters.year, filters.category, filters.minPrice, filters.maxPrice].filter(Boolean).length
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px 16px' }}>
+    <div style={{ width: 'auto', margin: '0 auto', padding: '24px 16px' }}>
 
       {/* Top toolbar */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>

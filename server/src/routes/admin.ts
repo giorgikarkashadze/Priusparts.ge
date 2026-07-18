@@ -39,6 +39,7 @@ const partSchema = z.object({
   stock: z.coerce.number().int().min(0),
   categoryId: z.string(),
   slug: z.string().optional(),
+  images: z.array(z.string()).optional(),
 })
 
 router.get('/parts', async (_req, res) => {
@@ -46,16 +47,33 @@ router.get('/parts', async (_req, res) => {
   res.json(parts)
 })
 
-router.post('/parts', upload.array('images', 5), async (req, res) => {
+router.post('/parts', async (req, res) => {
   try {
     const data = partSchema.parse(req.body)
-    const images = (req.files as Express.Multer.File[] | undefined)?.map(f => `/uploads/${f.filename}`) || []
-    const slug = data.slug || data.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-    const part = await prisma.part.create({ data: { ...data, slug, images }, include: { category: true } })
+    const slug = data.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+    const part = await prisma.part.create({
+      data: { ...data, slug, images: data.images || [] },
+      include: { category: true }
+    })
     res.status(201).json(part)
   } catch (e) {
     if (e instanceof z.ZodError) return res.status(400).json({ error: e.issues })
     res.status(500).json({ error: 'Failed to create part' })
+  }
+})
+
+router.put('/parts/:id', async (req, res) => {
+  try {
+    const data = partSchema.partial().parse(req.body)
+    const part = await prisma.part.update({
+      where: { id: req.params.id },
+      data,
+      include: { category: true }
+    })
+    res.json(part)
+  } catch (e) {
+    if (e instanceof z.ZodError) return res.status(400).json({ error: e.issues })
+    res.status(500).json({ error: 'Failed to update part' })
   }
 })
 
