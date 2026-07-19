@@ -1,16 +1,18 @@
 import axios from 'axios'
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:4000',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:4000/api',
   withCredentials: true,
 })
 
+// Attach JWT token to every request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token')
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
 
+// Auto-refresh on 401
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
@@ -19,8 +21,8 @@ api.interceptors.response.use(
       original._retry = true
       try {
         const refresh = localStorage.getItem('refresh_token')
-         const { data } = await axios.post(
-          `${import.meta.env.VITE_API_URL || 'http://localhost:4000'}/api/auth/refresh`,
+        const { data } = await axios.post(
+          `${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/auth/refresh`,
           { refreshToken: refresh }
         )
         localStorage.setItem('access_token', data.access)
