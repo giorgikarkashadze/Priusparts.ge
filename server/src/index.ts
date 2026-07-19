@@ -49,9 +49,11 @@ app.use(history({
 }))
 
 // Serve React build
-const clientBuild = path.join(process.cwd(), '../../client/dist')
+const clientBuild = path.join(process.cwd(), '../client/dist')
 app.use(express.static(clientBuild))
-
+console.log('Looking for client build at:', clientBuild)
+console.log('__dirname is:', __dirname)
+console.log('process.cwd() is:', process.cwd())
 app.get('/{*path}', (_req, res) => {
   res.sendFile(path.join(clientBuild, 'index.html'))
 })
