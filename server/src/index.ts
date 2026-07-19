@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import fs from 'fs'
 import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
@@ -14,6 +15,13 @@ import promotionsRouter from './routes/promotionsRouter'
 
 const app = express()
 const PORT = process.env.PORT || 4000
+const possiblePaths = [
+  path.join(process.cwd(), '../client/dist'),
+  path.join(process.cwd(), 'client/dist'),
+  path.join(__dirname, '../../../client/dist'),
+  path.join(__dirname, '../../client/dist'),
+  '/app/client/dist',
+]
 
 // Security & middleware
 app.use(helmet({ contentSecurityPolicy: false }))
@@ -49,11 +57,9 @@ app.use(history({
 }))
 
 // Serve React build
-const clientBuild = path.join(process.cwd(), '../client/dist')
+const clientBuild = possiblePaths.find(p => fs.existsSync(p)) || possiblePaths[0]
 app.use(express.static(clientBuild))
-console.log('Looking for client build at:', clientBuild)
-console.log('__dirname is:', __dirname)
-console.log('process.cwd() is:', process.cwd())
+
 app.get('/{*path}', (_req, res) => {
   res.sendFile(path.join(clientBuild, 'index.html'))
 })
