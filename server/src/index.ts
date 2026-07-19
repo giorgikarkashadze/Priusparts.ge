@@ -10,7 +10,7 @@ import authRouter from './routes/auth'
 import productsRouter from './routes/products'
 import ordersRouter from './routes/orders'
 import adminRouter from './routes/admin'
-import promotionsRouter from './routes/promotions'
+import promotionsRouter from './routes/promotionsRouter'
 
 const app = express()
 const PORT = process.env.PORT || 4000
