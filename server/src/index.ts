@@ -1,5 +1,4 @@
 import 'dotenv/config'
-import fs from 'fs'
 import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
@@ -15,27 +14,24 @@ import promotionsRouter from './routes/promotionsRouter'
 
 const app = express()
 const PORT = process.env.PORT || 4000
-const possiblePaths = [
-  path.join(process.cwd(), '../client/dist'),
-  path.join(process.cwd(), 'client/dist'),
-  path.join(__dirname, '../../../client/dist'),
-  path.join(__dirname, '../../client/dist'),
-  '/app/client/dist',
-]
+
 
 // Security & middleware
-app.use(helmet({ contentSecurityPolicy: false }))
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true
-}))
+app.use(helmet())
+app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }))
 app.use(express.json({ limit: '10mb' }))
 
+app.use('/uploads', (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  next()
+}, express.static(path.join(__dirname, '../uploads')))
+
+
 // Rate limiting
-const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 200 })
+const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 200, standardHeaders: true, legacyHeaders: false })
 app.use('/api/', limiter)
 
-// API Routes — must be before history fallback
+// Routes
 app.use('/api/auth', authRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/orders', ordersRouter)
@@ -44,24 +40,12 @@ app.use('/api/promotions', promotionsRouter)
 app.use('/uploads', express.static(path.join(__dirname, '../../uploads')))
 
 // Health check
-app.get('/api/health', (_, res) => res.json({ status: 'ok' }))
+app.get('/api/health', (_, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }))
 
-// React app — history fallback for client-side routing
-app.use(history({
-  rewrites: [
-    {
-      from: /^\/api\/.*$/,
-      to: (context) => context.parsedUrl.pathname!
-    }
-  ]
-}))
-
-// Serve React build
-const clientBuild = possiblePaths.find(p => fs.existsSync(p)) || possiblePaths[0]
-app.use(express.static(clientBuild))
-
-app.get('/{*path}', (_req, res) => {
-  res.sendFile(path.join(clientBuild, 'index.html'))
+// Global error handler
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error(err.stack)
+  res.status(500).json({ error: 'Internal server error' })
 })
 
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`))
