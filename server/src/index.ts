@@ -52,7 +52,7 @@ app.use(history({
 const clientBuild = path.join(process.cwd(), '../../client/dist')
 app.use(express.static(clientBuild))
 
-app.get(/.*/, (_req, res) => {
+app.get('/{*path}', (_req, res) => {
   res.sendFile(path.join(clientBuild, 'index.html'))
 })
 
