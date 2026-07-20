@@ -22,14 +22,14 @@ export default function Layout() {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: dark ? '#030712' : '#f9fafb', color: dark ? '#f9fafb' : '#0d1526' }}>
 
-      {/* Promo banner */}
+      {/* Promo banner
       <div style={{ background: '#1d6fe8', color: '#fff', textAlign: 'center', fontSize: 12, padding: '6px 16px', fontWeight: 500 }}>
         🚗 Genuine & aftermarket parts for Toyota Prius 2008–2024 — Fast delivery across Georgia
-      </div>
+      </div> */}
 
       {/* Navbar */}
       <nav style={{ background: '#0a0f1e', borderBottom: '1px solid #1a2744', position: 'sticky', top: 0, zIndex: 100 }}>
-        <div style={{ maxWidth: 2000, margin: '0 auto', padding: '0 16px', height: 56, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ maxWidth: '100%', margin: '0 auto', padding: '0 16px', height: 56, display: 'flex', alignItems: 'center', gap: 8 }}>
 
           {/* Logo */}
           <Link to="/" style={{ textDecoration: 'none', marginRight: 16, flexShrink: 0 }}>
