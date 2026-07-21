@@ -304,17 +304,6 @@ export default function CatalogPage() {
                 ))}
               </div>
             )}
-
-            {/* Pagination */}
-            {data && data.pages > 1 && (
-              <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 32 }}>
-                {Array.from({ length: data.pages }).map((_, i) => (
-                  <button key={i} className={`page-btn${page === i + 1 ? ' active' : ''}`} onClick={() => setPage(i + 1)}>
-                    {i + 1}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         </div>
       </div>
