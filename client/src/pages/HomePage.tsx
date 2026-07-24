@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { Search, Truck, RotateCcw, Shield, Headphones, ChevronRight } from 'lucide-react'
 import { useProducts, useCategories } from '@/hooks/useProducts'
 import PartCard from '@/components/PartCard'
+import { useTranslation } from 'react-i18next'
 
 const GENERATIONS = [
   { label: 'Gen 2', years: '2004–2009', emoji: '🚗', slug: '2004' },
@@ -11,18 +12,19 @@ const GENERATIONS = [
   { label: 'Gen 5', years: '2023+', emoji: '🚗', slug: '2023' },
 ]
 
-const FEATURES = [
-  { icon: Shield, title: 'OEM & Aftermarket', desc: 'Genuine Toyota parts alongside quality aftermarket alternatives built for Prius.' },
-  { icon: Truck, title: 'Fast delivery', desc: 'Quick delivery across Georgia. Same-day dispatch on orders before 2pm.' },
-  { icon: RotateCcw, title: '30-day returns', desc: 'Not the right part? Return within 30 days for a full refund or exchange.' },
-  { icon: Headphones, title: 'Prius experts', desc: 'Our team specializes exclusively in Toyota Prius — we know every part.' },
-]
-
 export default function HomePage() {
   const [search, setSearch] = useState('')
   const navigate = useNavigate()
   const { data: categories } = useCategories()
   const { data: popular } = useProducts({ sort: 'newest', limit: '4' } as any)
+  const { t } = useTranslation()
+
+  const FEATURES = [
+  { icon: Shield, title: t('home.WhyusSection.first.title'), desc: t('home.WhyusSection.first.desc') },
+  { icon: Truck, title: t('home.WhyusSection.second.title'), desc: t('home.WhyusSection.second.desc') },
+  { icon: RotateCcw, title: t('home.WhyusSection.third.title'), desc: t('home.WhyusSection.third.desc') },
+  { icon: Headphones, title: t('home.WhyusSection.fourth.title'), desc: t('home.WhyusSection.fourth.desc') },
+]
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -38,15 +40,14 @@ export default function HomePage() {
       }}>
         <div style={{ maxWidth: 640, margin: '0 auto' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(212,56,13,0.15)', color: '#4d9fff', padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 500, marginBottom: 20, border: '1px solid rgba(212,56,13,0.3)' }}>
-            🚗 Toyota Prius Specialist — 2008 to 2024
+            🚗 {t('home.hero.badge')}
           </div>
           <h1 style={{ fontSize: 40, fontWeight: 700, color: '#f9fafb', lineHeight: 1.2, marginBottom: 12, letterSpacing: '-1px' }}>
-            Parts for your<br />
-            <span style={{ color: '#4d9fff' }}>Toyota Prius</span>
+            {t('home.hero.title')}<br />
+            <span style={{ color: '#4d9fff' }}>{t('home.hero.titleHighlight')}</span>
           </h1>
           <p style={{ color: '#94a3b8', fontSize: 16, marginBottom: 32, lineHeight: 1.6 }}>
-            Genuine & aftermarket Prius parts delivered fast across Georgia.
-            All generations from 2008 to 2024.
+            {t('home.hero.subtitle')}
           </p>
           <form onSubmit={handleSearch} style={{ display: 'flex', gap: 8, maxWidth: 480, margin: '0 auto' }}>
             <div style={{ position: 'relative', flex: 1 }}>
@@ -54,7 +55,7 @@ export default function HomePage() {
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search Prius parts..."
+                placeholder={t('home.hero.searchPlaceholder')}
                 style={{
                   width: '100%', paddingLeft: 44, paddingRight: 16, paddingTop: 12, paddingBottom: 12,
                   borderRadius: 10, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)',
@@ -66,7 +67,7 @@ export default function HomePage() {
               background: '#1d6fe8', color: '#fff', border: 'none', padding: '12px 24px',
               borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap'
             }}>
-              Search
+              {t('home.hero.searchBtn')}
             </button>
           </form>
         </div>
@@ -76,10 +77,10 @@ export default function HomePage() {
       <div style={{ background: '#1a2744', borderBottom: '1px solid #334155' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '16px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, textAlign: 'center' }}>
           {[
-            ['5,000+', 'Prius parts'],
-            ['2008–2024', 'All generations'],
-            ['1–3 days', 'Delivery'],
-            ['4.9★', 'Customer rating'],
+            ['5,000+', t('home.stats.parts')],
+            ['2008–2024', t('home.stats.brands')],
+            ['1–3 ' + t('home.stats.days'), t('home.stats.delivery')],
+            ['4.9★', t('home.stats.rating')],
           ].map(([val, lbl]) => (
             <div key={lbl}>
               <div style={{ fontSize: 20, fontWeight: 700, color: '#4d9fff' }}>{val}</div>
@@ -93,7 +94,7 @@ export default function HomePage() {
 
         {/* Shop by generation */}
         <section style={{ marginBottom: 48 }}>
-          <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 16 }}>Shop by generation</h2>
+          <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 16 }}>{t('home.sections.byGeneration')}</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 }}>
             {GENERATIONS.map((gen) => (
               <Link key={gen.label} to={`/catalog?year=${gen.slug}`} style={{ textDecoration: 'none' }}>
@@ -109,7 +110,7 @@ export default function HomePage() {
                   <div style={{ fontSize: 15, fontWeight: 600, color: '#f9fafb', marginBottom: 2 }}>Toyota Prius {gen.label}</div>
                   <div style={{ fontSize: 12, color: '#6b7280' }}>{gen.years}</div>
                   <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, color: '#4d9fff', fontSize: 12, fontWeight: 500 }}>
-                    Browse parts <ChevronRight size={12} />
+                    {t('home.GenerationsSection.BrowseParts')} <ChevronRight size={12} />
                   </div>
                 </div>
               </Link>
@@ -120,7 +121,7 @@ export default function HomePage() {
         {/* Categories */}
         {Array.isArray(categories) && categories.length > 0 && (
           <section style={{ marginBottom: 48 }}>
-            <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 16 }}>Shop by category</h2>
+            <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 16 }}>{t('home.sections.byCategory')}</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 10 }}>
               {categories.map((c) => (
                 <Link key={c.id} to={`/catalog?category=${c.slug}`} style={{ textDecoration: 'none' }}>
@@ -150,14 +151,14 @@ export default function HomePage() {
           }}>
             <div style={{ fontSize: 40 }}>🏷️</div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 600, color: '#4d9fff', fontSize: 16 }}>Summer Sale — up to 30% off brake parts</div>
-              <div style={{ fontSize: 13, color: '#64748b', marginTop: 4 }}>Use code <strong style={{ color: '#f9fafb' }}>SUMMER30</strong> at checkout. Ends August 31.</div>
+              <div style={{ fontWeight: 600, color: '#4d9fff', fontSize: 16 }}>{t('home.promo.title')}</div>
+              <div style={{ fontSize: 13, color: '#64748b', marginTop: 4 }}>{t('home.promo.subtitle')} <strong style={{ color: '#f9fafb' }}>SUMMER30</strong> {t('home.promo.at')}</div>
             </div>
             <Link to="/catalog?category=brakes" style={{
               background: '#1d6fe8', color: '#fff', textDecoration: 'none',
               padding: '10px 20px', borderRadius: 8, fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap'
             }}>
-              Shop brakes
+              {t('home.promo.btn')}
             </Link>
           </div>
         </section>
@@ -166,9 +167,9 @@ export default function HomePage() {
         {popular?.data && popular.data.length > 0 && (
           <section style={{ marginBottom: 48 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-              <h2 style={{ fontSize: 20, fontWeight: 600 }}>New arrivals</h2>
+              <h2 style={{ fontSize: 20, fontWeight: 600 }}>{t('home.sections.newArrivals')}</h2>
               <Link to="/catalog" style={{ color: '#4d9fff', textDecoration: 'none', fontSize: 13, fontWeight: 500 }}>
-                View all →
+                {t('home.sections.viewAll')}
               </Link>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
@@ -179,10 +180,10 @@ export default function HomePage() {
 
         {/* Features */}
         <section>
-          <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 16 }}>Why PriusParts.ge?</h2>
+          <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 16 }}>{t('home.sections.whyUs')}</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
             {FEATURES.map(({ icon: Icon, title, desc }) => (
-              <div key={title} style={{ background: '#0d1526', border: '1px solid #111e35', borderRadius: 12, padding: 20 }}>
+              <div key={title} style={{ background: '#0d1526', border: '1px solid #111e35', borderRadius: 12, padding: 20, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
                 <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(212,56,13,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
                   <Icon size={18} style={{ color: '#4d9fff' }} />
                 </div>

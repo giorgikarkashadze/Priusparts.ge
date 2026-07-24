@@ -2,6 +2,9 @@ import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom'
 import { ShoppingCart, Sun, Moon, User, LogOut, Settings, Package, Menu, X } from 'lucide-react'
 import { useState } from 'react'
 import { useCartStore, useAuthStore, useThemeStore } from '@/store'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
+import { useTranslation } from 'react-i18next'
+
 
 export default function Layout() {
   const itemCount = useCartStore((s) => s.itemCount())
@@ -11,11 +14,12 @@ export default function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
+  const { t } = useTranslation()
 
   const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/catalog', label: 'Parts' },
-    { href: '/about', label: 'About' },
+    { href: '/', label: t('nav.home') },
+    { href: '/catalog', label: t('nav.parts') },
+    { href: '/about', label: t('nav.about') },
   ]
 
   const isActive = (href: string) => href === '/' ? location.pathname === '/' : location.pathname.startsWith(href)
@@ -152,6 +156,8 @@ export default function Layout() {
           {/* Right side */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginLeft: 'auto' }}>
 
+            <LanguageSwitcher />
+
             {/* Theme toggle */}
             <button onClick={toggle} className="plp-icon-btn" style={{
               background: 'rgba(255,255,255,0.08)', border: 'none', color: '#94a3b8',
@@ -237,7 +243,7 @@ export default function Layout() {
                   borderRadius: 8, background: 'rgba(255,255,255,0.08)', color: '#94a3b8',
                   textDecoration: 'none', fontSize: 13
                 }}>
-                  <User size={13} /> Sign in
+                  <User size={13} /> {t('nav.signIn')}
                 </Link>
               )}
             </div>

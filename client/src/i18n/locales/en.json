@@ -1,0 +1,162 @@
+{
+  "nav": {
+    "home": "Home",
+    "parts": "Parts",
+    "about": "About",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "myOrders": "My orders",
+    "adminPanel": "Admin panel"
+  },
+  "home": {
+    "hero": {
+      "badge": "Toyota Prius Specialist — 2008 to 2024",
+      "title": "Parts for your",
+      "titleHighlight": "Toyota Prius",
+      "subtitle": "Genuine & aftermarket Prius parts delivered fast across Georgia.",
+      "searchPlaceholder": "Search Prius parts...",
+      "searchBtn": "Search"
+    },
+    "stats": {
+      "parts": "Prius parts",
+      "brands": "All generations",
+      "days": "days",
+      "delivery": "Delivery",
+      "rating": "Customer rating"
+    },
+    "sections": {
+      "byGeneration": "Shop by generation",
+      "byCategory": "Shop by category",
+      "newArrivals": "New arrivals",
+      "viewAll": "View all →",
+      "whyUs": "Why PriusParts.ge?"
+    },
+    "promo": {
+      "title": "Summer Sale — up to 30% off brake parts",
+      "subtitle": "Use code",
+      "code": "SUMMER30",
+      "at": "at checkout. Ends August 31.",
+      "btn": "Shop brakes"
+    },
+    "GenerationsSection": {
+        "BrowseParts": "Browse Parts"
+    },
+    "WhyusSection": {
+      "first": {
+        "title": "OEM & Aftermarket",
+        "desc": "Genuine Toyota parts alongside quality aftermarket alternatives built for Prius."
+      },
+      "second": {
+        "title": "Fast delivery",
+        "desc": "Quick delivery across Georgia. Same-day dispatch on orders before 2pm."
+      },
+      "third": {
+        "title": "30-day returns",
+        "desc": "Not the right part? Return within 30 days for a full refund or exchange."
+      },
+      "fourth": {
+        "title": "Car experts",
+        "desc": "Our team specializes exclusively in Toyota Prius — we know every part."
+      }
+    }
+  },
+  "catalog": {
+    "title": "Prius Parts",
+    "searchPlaceholder": "Search parts...",
+    "filters": "Filters",
+    "newestFirst": "Newest first",
+    "priceLow": "Price: Low to High",
+    "priceHigh": "Price: High to Low",
+    "partsFound": "PARTS FOUND",
+    "scanning": "SCANNING…",
+    "noPartsTitle": "No parts found",
+    "noPartsSub": "Try adjusting your filters or search terms",
+    "clearFilters": "CLEAR FILTERS",
+    "allParts": "All parts",
+    "allYears": "All years (2008–2024)",
+    "priusYear": "Prius Year",
+    "category": "Category",
+    "priceRange": "Price Range"
+  },
+  "product": {
+    "addToCart": "Add to cart",
+    "added": "Added!",
+    "outOfStock": "OUT OF STOCK",
+    "lowStock": "LOW STOCK — only {{count}} left",
+    "inStock": "IN STOCK — {{count}} available",
+    "oem": "OEM",
+    "save": "SAVE {{percent}}%",
+    "freeReturns": "Free returns",
+    "freeReturnsSub": "within 30 days",
+    "oemQuality": "OEM quality",
+    "oemQualitySub": "genuine parts",
+    "fastDelivery": "Fast delivery",
+    "fastDeliverySub": "1–3 days GE",
+    "compatibility": "Vehicle Compatibility",
+    "reviews": "Customer Reviews",
+    "noReviews": "No reviews yet. Be the first to review this part.",
+    "make": "Make",
+    "model": "Model",
+    "years": "Years"
+  },
+  "cart": {
+    "title": "Your cart",
+    "items": "items in your cart",
+    "empty": "Your cart is empty",
+    "emptySub": "Add some Prius parts to get started",
+    "browseParts": "Browse parts",
+    "continueShopping": "Continue shopping",
+    "orderSummary": "Order summary",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "discount": "Discount",
+    "total": "Total",
+    "promoPlaceholder": "Promo code",
+    "apply": "Apply",
+    "checkout": "Proceed to checkout",
+    "signInToCheckout": "Sign in to checkout",
+    "secureSSL": "Secure SSL checkout",
+    "freeReturns": "Free returns within 30 days",
+    "genuineParts": "Genuine OEM parts guaranteed"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "register": "Register",
+    "email": "Email address",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "fullName": "Full name",
+    "forgotPassword": "Forgot password?",
+    "signingIn": "Signing in…",
+    "creatingAccount": "Creating account…",
+    "createAccount": "Create account",
+    "termsText": "By registering you agree to our",
+    "termsLink": "Terms of Service",
+    "signInSubtitle": "Welcome back — sign in to continue",
+    "registerSubtitle": "Create your account to get started",
+    "demoAdmin": "Demo admin"
+  },
+  "about": {
+    "title": "About PriusParts.ge",
+    "subtitle": "Founded in 2010 by Marcus Reid, a master mechanic with 20 years of experience...",
+    "whyUs": "Why choose us",
+    "team": "Our team",
+    "contact": "Get in touch",
+    "cta": "Ready to find your part?",
+    "ctaSub": "Browse our catalog of 5,000+ parts for Toyota Prius.",
+    "ctaBtn": "Browse catalog"
+  },
+  "footer": {
+    "tagline": "Genuine & aftermarket parts for Toyota Prius 2008–2024. Trusted by Prius owners across Georgia.",
+    "parts": "Parts",
+    "priusModels": "Prius Models",
+    "contact": "Contact",
+    "rights": "© 2025 PriusParts.ge — All rights reserved"
+  },
+  "common": {
+    "eachPrice": "each",
+    "qty": "Qty",
+    "loading": "Loading…",
+    "error": "Something went wrong"
+  }
+}
