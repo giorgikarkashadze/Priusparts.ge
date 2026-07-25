@@ -1,8 +1,8 @@
 {
   "nav": {
     "home": "მთავარი",
-    "parts": "ნაწილები",
-    "about": "ჩვენ შესახებ",
+    "parts": "ავტონაწილები",
+    "about": "ჩვენს შესახებ",
     "signIn": "შესვლა",
     "signOut": "გამოსვლა",
     "myOrders": "ჩემი შეკვეთები",
@@ -35,7 +35,7 @@
       "title": "ზაფხულის ფასდაკლება — 30%-მდე სამუხრუჭე სისტემაზე",
       "subtitle": "გამოიყენე პრომოკოდი:",
       "code": "SUMMER30",
-      "at": "გადახდამდე. მთავრდება 31 აგვისტოს-.",
+      "at": "გადახდამდე. მთავრდება 31 აგვისტოს.",
       "btn": "გადასვლა"
     },
     "GenerationsSection": {
@@ -44,97 +44,143 @@
     "WhyusSection": {
       "first": {
         "title": "OEM & Aftermarket",
-        "desc": "Genuine Toyota parts alongside quality aftermarket alternatives built for Prius."
+        "desc": "Toyota-ს ორიგინალი ნაწილები Prius-ისთვის, ხარისხიანი სათადარიგო ნაწილების ალტერნატივებთან ერთად.."
       },
       "second": {
         "title": "სწრაფი მიწოდება",
-        "desc": "Quick delivery across Georgia. Same-day dispatch on orders before 2pm."
+        "desc": "სწრაფი მიწოდება მთელი საქართველოს მასშტაბით. იმავე დღეს მიწოდება 14:00 საათამდე შეკვეთის შემთხვევაში."
       },
       "third": {
         "title": "30-დღიანი დაბრუნება",
-        "desc": "Not the right part? Return within 30 days for a full refund or exchange."
+        "desc": "არასწორი ნაწილი მიიღე? დაბრუნება 30 დღეში სრული თანხის დაბრუნებით ან ჩანაცვლებით."
       },
       "fourth": {
         "title": "მანქანის ექსპერტები",
-        "desc": "Our team specializes exclusively in Toyota Prius — we know every part."
+        "desc": "ჩვენი გუნდი სპეციალიზირებულია ექსკლუზიურად Toyota Prius-ზე — ჩვენ ვიცით ყველა ნაწილი."
       }
     }
   },
   "catalog": {
-    "title": "Prius Parts",
-    "searchPlaceholder": "Search parts...",
-    "filters": "Filters",
-    "newestFirst": "Newest first",
-    "priceLow": "Price: Low to High",
-    "priceHigh": "Price: High to Low",
-    "partsFound": "PARTS FOUND",
-    "scanning": "SCANNING…",
-    "noPartsTitle": "No parts found",
-    "noPartsSub": "Try adjusting your filters or search terms",
-    "clearFilters": "CLEAR FILTERS",
-    "allParts": "All parts",
-    "allYears": "All years (2008–2024)",
-    "priusYear": "Prius Year",
-    "category": "Category",
-    "priceRange": "Price Range"
+    "extraTitle": "// კატალოგი",
+    "title": "გამოფენა",
+    "searchPlaceholder": "მოძებნეთ...",
+    "filters": "ფილტრი",
+    "newestFirst": "ახალი დამატებული",
+    "priceLow": "ფასი: ქვემოდან ზემოთ",
+    "priceHigh": "ფასი: ზემოდან ქვემოთ",
+    "partsFound": "მოიძებნა",
+    "scanning": "ვეძებთ აბა აბა ვნახოთ",
+    "noPartsTitle": "მითითებული ფილტრებით ავტონაწილები ვერ მოიძებნა",
+    "noPartsSub": "სცადეთ ფილტრების ან ძიების პარამეტრების ცვლილება",
+    "clearFilters": "ფილტრების გასუფთავება",
+    "allParts": "ყველა",
+    "allYears": "ყველა (2008–2024)",
+    "priusYear": "წელი",
+    "category": "კატეგორია",
+    "priceRange": "ფასის დიაპაზონი",
+    "priceMin": "მინ",
+    "priceMax": "მაქს"
   },
   "product": {
-    "addToCart": "Add to cart",
-    "added": "Added!",
-    "outOfStock": "OUT OF STOCK",
-    "lowStock": "LOW STOCK — only {{count}} left",
-    "inStock": "IN STOCK — {{count}} available",
+    "addToCart": "კალათაში დამატება",
+    "added": "წარმატებით დაემატა!",
+    "outOfStock": "მარაგში აღარ არის...",
+    "lowStock": "მცირე რაოდენობა — დარჩენილია {{count}}",
+    "inStock": "ხელმისაწვდომია — {{count}}",
     "oem": "OEM",
-    "save": "SAVE {{percent}}%",
-    "freeReturns": "Free returns",
-    "freeReturnsSub": "within 30 days",
-    "oemQuality": "OEM quality",
-    "oemQualitySub": "genuine parts",
-    "fastDelivery": "Fast delivery",
-    "fastDeliverySub": "1–3 days GE",
-    "compatibility": "Vehicle Compatibility",
-    "reviews": "Customer Reviews",
-    "noReviews": "No reviews yet. Be the first to review this part.",
-    "make": "Make",
-    "model": "Model",
-    "years": "Years"
+    "save": "დაზოგე {{percent}}%",
+    "freeReturns": "უფასო დაბრუნება",
+    "freeReturnsSub": "30 დღეში",
+    "oemQuality": "OEM ხარისხი",
+    "oemQualitySub": "ხარისხიანი ნაწილები",
+    "fastDelivery": "სწრაფი მიწოდება",
+    "fastDeliverySub": "1–3 დღემდე",
+    "compatibility": "თავსებადობა",
+    "reviews": "მომხმარებელთა შეფასებები",
+    "noReviews": "ჯერ არ არის შეფასებები, იყავით პირველი.",
+    "make": "მწარმოებელი",
+    "model": "მოდელი",
+    "years": "წელი"
   },
   "cart": {
-    "title": "Your cart",
-    "items": "items in your cart",
-    "empty": "Your cart is empty",
-    "emptySub": "Add some Prius parts to get started",
-    "browseParts": "Browse parts",
-    "continueShopping": "Continue shopping",
-    "orderSummary": "Order summary",
-    "subtotal": "Subtotal",
-    "shipping": "Shipping",
-    "discount": "Discount",
-    "total": "Total",
-    "promoPlaceholder": "Promo code",
-    "apply": "Apply",
-    "checkout": "Proceed to checkout",
-    "signInToCheckout": "Sign in to checkout",
-    "secureSSL": "Secure SSL checkout",
-    "freeReturns": "Free returns within 30 days",
-    "genuineParts": "Genuine OEM parts guaranteed"
+    "title": "თქვენი კალათა",
+    "items": "ნივთი",
+    "empty": "თქვენი კალათა ცარიელია",
+    "emptySub": "დაამატეთ ნაწილები",
+    "browseParts": "ავტონაწილების დათვალიერება",
+    "continueShopping": "შოპინგის გაგრძელება",
+    "orderSummary": "შეკვეთის შეჯამება",
+    "subtotal": "ნივთების ჯამი",
+    "shipping": "მიტანის სერვისი",
+    "discount": "ფასდაკლება",
+    "total": "სულ",
+    "promoPlaceholder": "პრომო კოდი",
+    "apply": "დადასტურება",
+    "checkout": "შეკვეთის გაფორმება",
+    "signInToCheckout": "გაიარეთ ავტორიზაცია",
+    "signInNote": "შეკვეთის გასაფორმებლად გაიარეთ ავტორიზაცია",
+    "secureSSL": "დაცული SSL გადახდა",
+    "freeReturns": "უფასო დაბრუნება 30 დღეში",
+    "genuineParts": "ორიგინალური OEM ნაწილები გარანტიით"
   },
   "auth": {
-    "signIn": "Sign in",
-    "register": "Register",
-    "email": "Email address",
-    "password": "Password",
-    "confirmPassword": "Confirm password",
-    "fullName": "Full name",
-    "forgotPassword": "Forgot password?",
-    "signingIn": "Signing in…",
-    "creatingAccount": "Creating account…",
-    "createAccount": "Create account",
-    "termsText": "By registering you agree to our",
-    "termsLink": "Terms of Service",
-    "signInSubtitle": "Welcome back — sign in to continue",
-    "registerSubtitle": "Create your account to get started",
+    "signIn": "შესვლა",
+    "register": "რეგისტრაცია",
+    "email": "ელ.ფოსტა",
+    "password": "პაროლი",
+    "confirmPassword": "პაროლის დადასტურება",
+    "fullName": "სრული სახელი",
+    "forgotPassword": "პაროლი დაგავიწყდა?",
+    "signingIn": "იტვირთება...",
+    "creatingAccount": "იქმნება ანგარიში...",
+    "createAccount": "ანგარიშის შექმნა",
+    "termsText": "რეგისტრაციით თქვენ ეთანხმებით ჩვენს",
+    "termsLink": "მომსახურების პირობებს",
+    "signInSubtitle": "მოგესალმებით — შესასვლელად გაიარეთ ავტორიზაცია",
+    "registerSubtitle": "დასაწყებად შექმენით თქვენი ანგარიში",
     "demoAdmin": "Demo admin"
+  },
+  "checkout": {
+    "title": "დაცული გადახდა",
+    "subtitle": "თქვენი ინფორმაცია დაშიფრულია და უსაფრთხოა",
+    "contactInfo": {
+      "title": "საკონტაქტო ინფორმაცია",
+      "name": "სრული სახელი",
+      "email": "ელ.ფოსტა",
+      "phone": "ტელეფონის ნომერი"
+    },
+    "shipping": {
+      "title": "მიწოდების მისამართი",
+      "address": "ქუჩის დასახელება",
+      "apartment": "დამატებითი ინფორმაცია",
+      "city": "ქალაქი",
+      "region": "რეგიონი",
+      "zip": "ZIP / საფოსტო კოდი",
+      "country": {
+        "name": "ქვეყანა",
+        "Georgia": "საქართველო"
+      }
+    },
+    "payment": {
+      "title": "გადახდის მეთოდი",
+      "cardNumber": "ბარათის ნომერი",
+      "expiry": "ვადა",
+      "cvc": "CVC",
+      "placeOrder": "ყიდვა",
+      "paymentSub": "შეკვეთის განთავსებით თქვენ ეთანხმებით ჩვენს მომსახურების პირობებს და კონფიდენციალურობის პოლიტიკას",
+      "processing": "მუშავდება..."
+    },
+    "summary": {
+      "title": "შეკვეთის შეჯამება",
+      "items": "ნივთი",
+      "subtotal": "ნივთების ჯამი",
+      "shipping": "მიტანის სერვისი",
+      "discount": "ფასდაკლება",
+      "total": "სულ",
+      "sslSecure": "დაშიფრული და უსაფრთხო გადახდა",
+      "delivery": "1–3 დღეში მიწოდება საქართველოში",
+      "freeReturns": "30-დღიანი უფასო დაბრუნება"
+    }
   },
   "about": {
     "title": "About PriusParts.ge",
@@ -147,16 +193,16 @@
     "ctaBtn": "Browse catalog"
   },
   "footer": {
-    "tagline": "Genuine & aftermarket parts for Toyota Prius 2008–2024. Trusted by Prius owners across Georgia.",
-    "parts": "Parts",
-    "priusModels": "Prius Models",
-    "contact": "Contact",
-    "rights": "© 2025 PriusParts.ge — All rights reserved"
+    "tagline": "ორიგინალი და სათადარიგო ნაწილები ავტომობილებისთვის.",
+    "parts": "კატეგორიები",
+    "priusModels": "მოდელები",
+    "contact": "საკონტაქტო ინფორმაცია",
+    "rights": "© 2025 PriusParts.ge — ყველა უფლება დაცულია"
   },
   "common": {
-    "eachPrice": "each",
-    "qty": "Qty",
-    "loading": "Loading…",
-    "error": "Something went wrong"
+    "eachPrice": "თითო",
+    "qty": "რაოდენობა",
+    "loading": "იტვირთება…",
+    "error": "დაფიქსირდა შეცდომა, გთხოვთ სცადოთ მოგვიანებით."
   }
 }

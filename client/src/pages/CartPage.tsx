@@ -14,6 +14,7 @@ import {
 import { useCartStore, useAuthStore } from "@/store";
 import { formatPrice } from "@/lib/utils";
 import api from "@/lib/api";
+import { useTranslation } from "react-i18next";
 
 const CATEGORY_ICONS: Record<string, string> = {
   engine: "🔧",
@@ -28,6 +29,7 @@ export default function CartPage() {
   const { items, removeItem, updateQuantity, total } = useCartStore();
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [promoCode, setPromoCode] = useState("");
   const [promoResult, setPromoResult] = useState<{
@@ -99,10 +101,10 @@ export default function CartPage() {
               marginBottom: 8,
             }}
           >
-            Your cart is empty
+            {t('cart.empty')}
           </h2>
           <p style={{ color: "#6b7280", fontSize: 14, marginBottom: 24 }}>
-            Add some Prius parts to get started
+            {t('cart.emptySub')}
           </p>
           <Link
             to="/catalog"
@@ -116,7 +118,7 @@ export default function CartPage() {
               fontWeight: 600,
             }}
           >
-            Browse parts
+            {t('cart.browseParts')}
           </Link>
         </div>
       </div>
@@ -134,10 +136,10 @@ export default function CartPage() {
             marginBottom: 4,
           }}
         >
-          Your cart
+          {t('cart.title')}
         </h1>
         <p style={{ color: "#6b7280", fontSize: 14 }}>
-          {items.reduce((a, i) => a + i.quantity, 0)} items in your cart
+          {items.reduce((a, i) => a + i.quantity, 0)} {t('cart.items')}
         </p>
       </div>
 
@@ -338,7 +340,7 @@ export default function CartPage() {
                     </div>
                     {quantity > 1 && (
                       <div style={{ fontSize: 11, color: "#6b7280" }}>
-                        {formatPrice(Number(part.price))} each
+                        {formatPrice(Number(part.price))} {t('common.eachPrice')}
                       </div>
                     )}
                   </div>
@@ -380,7 +382,7 @@ export default function CartPage() {
               padding: "8px 0",
             }}
           >
-            <ShoppingBag size={14} /> Continue shopping
+            <ShoppingBag size={14} /> {t('cart.continueShopping')}
           </Link>
         </div>
 
@@ -403,7 +405,7 @@ export default function CartPage() {
               }}
             >
               <h2 style={{ fontSize: 16, fontWeight: 700, color: "#f9fafb" }}>
-                Order summary
+                {t('cart.orderSummary')}
               </h2>
             </div>
 
@@ -424,7 +426,7 @@ export default function CartPage() {
                 }}
               >
                 <span>
-                  Subtotal ({items.reduce((a, i) => a + i.quantity, 0)} items)
+                  {t('cart.subtotal')} ({items.reduce((a, i) => a + i.quantity, 0)})
                 </span>
                 <span style={{ color: "#f9fafb" }}>
                   {formatPrice(subtotal)}
@@ -439,7 +441,7 @@ export default function CartPage() {
                   marginBottom: 10,
                 }}
               >
-                <span>Shipping</span>
+                <span>{t('cart.shipping')}</span>
                 <span style={{ color: "#f9fafb" }}>
                   {formatPrice(shipping)}
                 </span>
@@ -454,7 +456,7 @@ export default function CartPage() {
                     marginBottom: 10,
                   }}
                 >
-                  <span>Discount ({promoCode.toUpperCase()})</span>
+                  <span>{t('cart.discount')} ({promoCode.toUpperCase()})</span>
                   <span>−{formatPrice(discountAmount)}</span>
                 </div>
               )}
@@ -496,7 +498,7 @@ export default function CartPage() {
                     }}
                   />
                   <input
-                    placeholder="Promo code"
+                    placeholder={t('cart.promoPlaceholder')}
                     value={promoCode}
                     onChange={(e) => {
                       setPromoCode(e.target.value);
@@ -536,7 +538,7 @@ export default function CartPage() {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {promoLoading ? "…" : "Apply"}
+                  {promoLoading ? "…" : t('cart.apply')}
                 </button>
               </div>
               {promoError && (
@@ -582,7 +584,7 @@ export default function CartPage() {
                   boxShadow: "0 4px 16px rgba(212,56,13,0.35)",
                 }}
               >
-                {user ? "Proceed to checkout" : "Sign in to checkout"}
+                {user ? t('cart.checkout') : t('cart.signInToCheckout')}
                 <ArrowRight size={16} />
               </button>
               {!user && (
@@ -594,7 +596,7 @@ export default function CartPage() {
                     marginTop: 10,
                   }}
                 >
-                  You need to be signed in to place an order
+                  {t('cart.signInNote')}
                 </p>
               )}
             </div>
@@ -611,9 +613,9 @@ export default function CartPage() {
             }}
           >
             {[
-              { icon: ShieldCheck, text: "Secure SSL checkout" },
-              { icon: RotateCcw, text: "Free returns within 30 days" },
-              { icon: BadgeCheck, text: "Genuine OEM parts guaranteed" },
+              { icon: ShieldCheck, text: t('cart.secureSSL') },
+              { icon: RotateCcw, text: t('cart.freeReturns') },
+              { icon: BadgeCheck, text: t('cart.genuineParts') },
             ].map(({ icon: Icon, text }) => (
               <div
                 key={text}

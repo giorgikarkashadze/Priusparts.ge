@@ -1,5 +1,6 @@
 import { useCategories } from '@/hooks/useProducts'
 import type { FilterState } from '@/types/types'
+import { useTranslation } from 'react-i18next'
 
 const GENERATIONS = [
   { label: 'Gen 2 (2008–2009)', years: [2008, 2009] },
@@ -15,7 +16,8 @@ interface Props {
 
 export default function FilterSidebar({ filters, onChange }: Props) {
   const { data: categories } = useCategories()
-
+  const { t } = useTranslation()
+  
   const sectionLabel: React.CSSProperties = {
     fontFamily: "'JetBrains Mono', monospace",
     fontSize: 10, fontWeight: 500, textTransform: 'uppercase' as const,
@@ -51,10 +53,10 @@ export default function FilterSidebar({ filters, onChange }: Props) {
 
       {/* Year */}
       <div style={{ marginBottom: 20 }}>
-        <span style={sectionLabel}>Prius Year</span>
+        <span style={sectionLabel}>{t('catalog.priusYear')}</span>
         <select style={selectStyle} value={filters.year}
           onChange={(e) => onChange({ year: e.target.value })}>
-          <option value="">All years (2008–2024)</option>
+          <option value="">{t('catalog.allYears')}</option>
           {GENERATIONS.map(gen => (
             <optgroup key={gen.label} label={gen.label} style={{ background: '#0a0f1e' }}>
               {gen.years.map(y => (
@@ -67,7 +69,7 @@ export default function FilterSidebar({ filters, onChange }: Props) {
 
       {/* Category */}
       <div style={{ marginBottom: 20 }}>
-        <span style={sectionLabel}>Category</span>
+        <span style={sectionLabel}>{t('catalog.category')}</span>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <button
             onClick={() => onChange({ category: '' })}
@@ -79,7 +81,7 @@ export default function FilterSidebar({ filters, onChange }: Props) {
               color: !filters.category ? '#EAF2FF' : '#7C8AA5',
               fontFamily: "'Inter', sans-serif", transition: 'all 0.15s'
             }}>
-            All parts
+            {t('catalog.allParts')}
           </button>
           {Array.isArray(categories) && categories.map((c) => (
             <button
@@ -104,13 +106,13 @@ export default function FilterSidebar({ filters, onChange }: Props) {
 
       {/* Price range */}
       <div style={{ marginBottom: 20 }}>
-        <span style={sectionLabel}>Price Range</span>
+        <span style={sectionLabel}>{t('catalog.priceRange')}</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <input type="number" placeholder="Min" value={filters.minPrice}
+          <input type="number" placeholder={t('catalog.priceMin')} value={filters.minPrice}
             onChange={(e) => onChange({ minPrice: e.target.value })}
             style={{ ...inputStyle, width: '50%' }} />
           <span style={{ color: '#4A5670', fontFamily: "'JetBrains Mono', monospace" }}>—</span>
-          <input type="number" placeholder="Max" value={filters.maxPrice}
+          <input type="number" placeholder={t('catalog.priceMax')} value={filters.maxPrice}
             onChange={(e) => onChange({ maxPrice: e.target.value })}
             style={{ ...inputStyle, width: '50%' }} />
         </div>
@@ -127,7 +129,7 @@ export default function FilterSidebar({ filters, onChange }: Props) {
             fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.05em',
             transition: 'all 0.15s'
           }}>
-          CLEAR FILTERS
+          {t('catalog.clearFilters')}
         </button>
       )}
     </div>

@@ -361,11 +361,11 @@ export default function Layout() {
               Prius<span style={{ color: '#4d9fff' }}>Parts</span><span style={{ color: '#475569', fontSize: 13 }}>.ge</span>
             </div>
             <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.7 }}>
-              Genuine & aftermarket parts for Toyota Prius 2008–2024. Trusted by Prius owners across Georgia.
+              {t('footer.tagline')}
             </p>
           </div>
           <div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: '#22D3B8', marginBottom: 12, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', textTransform: 'uppercase' }}>Parts</div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: '#22D3B8', marginBottom: 12, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t('footer.parts')}</div>
             {['Engine', 'Brakes', 'Suspension', 'Electrical', 'Filters', 'Hybrid Battery'].map(cat => (
               <Link key={cat} to={`/catalog?category=${cat.toLowerCase()}`} className="plp-footer-link" style={{ color: '#64748b', textDecoration: 'none', fontSize: 13, marginBottom: 6 }}>
                 {cat}
@@ -373,20 +373,20 @@ export default function Layout() {
             ))}
           </div>
           <div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: '#22D3B8', marginBottom: 12, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', textTransform: 'uppercase' }}>Prius Models</div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: '#22D3B8', marginBottom: 12, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t('footer.priusModels')}</div>
             {['Prius Gen 2 (2004–2009)', 'Prius Gen 3 (2010–2015)', 'Prius Gen 4 (2016–2022)', 'Prius Gen 5 (2023+)'].map(m => (
               <div key={m} style={{ color: '#64748b', fontSize: 13, marginBottom: 6 }}>{m}</div>
             ))}
           </div>
           <div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: '#22D3B8', marginBottom: 12, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', textTransform: 'uppercase' }}>Contact</div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: '#22D3B8', marginBottom: 12, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t('footer.contact')}</div>
             <div style={{ color: '#64748b', fontSize: 13, marginBottom: 6, fontFamily: "'JetBrains Mono', monospace" }}>support@priusparts.ge</div>
             <div style={{ color: '#64748b', fontSize: 13, marginBottom: 6, fontFamily: "'JetBrains Mono', monospace" }}>+995 XXX XXX XXX</div>
             <div style={{ color: '#64748b', fontSize: 13, fontFamily: "'JetBrains Mono', monospace" }}>Tbilisi, Georgia</div>
           </div>
         </div>
         <div style={{ position: 'relative', maxWidth: 1200, margin: '0 auto', paddingTop: 20, borderTop: '1px solid #1a2744', fontSize: 12, color: '#475569', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace" }}>
-          © 2025 PriusParts.ge — All rights reserved
+          {t('footer.rights')}
         </div>
       </footer>
     </div>

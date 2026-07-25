@@ -5,17 +5,14 @@ import { useProducts } from '@/hooks/useProducts'
 import PartCard from '@/components/PartCard'
 import FilterSidebar from '@/components/FilterSidebar'
 import type { FilterState } from '@/types/types'
+import { useTranslation } from 'react-i18next'
 
-const SORTS = [
-  { value: 'newest', label: 'Newest first' },
-  { value: 'price_asc', label: 'Price: Low to High' },
-  { value: 'price_desc', label: 'Price: High to Low' },
-]
 
 export default function CatalogPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [showFilters, setShowFilters] = useState(false)
   const [page, setPage] = useState(1)
+  const { t } = useTranslation()
 
   const [filters, setFilters] = useState<FilterState>({
     makeId: searchParams.get('makeId') || '',
@@ -27,6 +24,12 @@ export default function CatalogPage() {
     search: searchParams.get('search') || '',
     sort: searchParams.get('sort') || 'newest',
   })
+
+  const SORTS = [
+  { value: 'newest', label: t('catalog.newestFirst') },
+  { value: 'price_asc', label: t('catalog.priceLow') },
+  { value: 'price_desc', label: t('catalog.priceHigh') },
+ ]
 
   const { data, isLoading } = useProducts({ ...filters, page })
 
@@ -175,12 +178,12 @@ export default function CatalogPage() {
         <div style={{ marginBottom: 24, animation: 'fade-up 0.4s ease-out both' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
             <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#22D3B8', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-              // PARTS.CATALOG
+              {t('catalog.extraTitle')}
             </span>
           </div>
-          <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 26, fontWeight: 700, color: '#EAF2FF', letterSpacing: '-0.5px' }}>
-            Prius Parts
-          </h1>
+          {/* <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 26, fontWeight: 700, color: '#EAF2FF', letterSpacing: '-0.5px' }}>
+            {t('catalog.title')}
+          </h1> */}
         </div>
 
         {/* Toolbar */}
@@ -191,7 +194,7 @@ export default function CatalogPage() {
             <input
               className="catalog-input"
               style={{ width: '100%', paddingLeft: 36, paddingRight: 12, paddingTop: 10, paddingBottom: 10, boxSizing: 'border-box' }}
-              placeholder="Search parts..."
+              placeholder={t('catalog.searchPlaceholder')}
               value={filters.search}
               onChange={(e) => updateFilters({ search: e.target.value })}
             />
@@ -214,7 +217,7 @@ export default function CatalogPage() {
             onClick={() => setShowFilters(!showFilters)}
           >
             <SlidersHorizontal size={14} />
-            Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
+            {t('catalog.filters')} {activeFilterCount > 0 && `(${activeFilterCount})`}
           </button>
 
           {/* Desktop filter toggle */}
@@ -224,7 +227,7 @@ export default function CatalogPage() {
             onClick={() => setShowFilters(!showFilters)}
           >
             <SlidersHorizontal size={14} />
-            Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
+            {t('catalog.filters')} {activeFilterCount > 0 && `(${activeFilterCount})`}
           </button>
         </div>
 
@@ -278,7 +281,7 @@ export default function CatalogPage() {
             {/* Results bar */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
               <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#4A5670' }}>
-                {isLoading ? 'SCANNING…' : `${data?.total ?? 0} PARTS FOUND`}
+                {isLoading ? t('catalog.scanning') : `${data?.total ?? 0} ${t('catalog.partsFound')}`}
               </span>
             </div>
 
@@ -292,8 +295,8 @@ export default function CatalogPage() {
             ) : !data?.data?.length ? (
               <div style={{ textAlign: 'center', padding: '64px 0', animation: 'fade-up 0.4s ease-out both' }}>
                 <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
-                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 18, fontWeight: 600, color: '#EAF2FF', marginBottom: 6 }}>No parts found</div>
-                <div style={{ fontSize: 13, color: '#4A5670' }}>Try adjusting your filters or search terms</div>
+                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 18, fontWeight: 600, color: '#EAF2FF', marginBottom: 6 }}>{t('catalog.noPartsTitle')}</div>
+                <div style={{ fontSize: 13, color: '#4A5670' }}>{t('catalog.noPartsSub')}</div>
               </div>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 14 }}>

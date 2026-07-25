@@ -4,6 +4,7 @@ import { ShoppingCart, Star, ChevronRight, Package, RotateCcw, Shield, Zap, Chev
 import { usePart } from '@/hooks/useProducts'
 import { useCartStore } from '@/store'
 import { formatPrice, discount } from '@/lib/utils'
+import { useTranslation } from 'react-i18next'
 
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -12,6 +13,7 @@ export default function ProductPage() {
   const [quantity, setQuantity] = useState(1)
   const [activeImage, setActiveImage] = useState(0)
   const [added, setAdded] = useState(false)
+  const { t } = useTranslation()
 
   const handleAddToCart = () => {
     if (!part) return
@@ -352,22 +354,22 @@ export default function ProductPage() {
               </div>
               <button className={`add-cart-btn${added ? ' success' : part.stock > 0 ? ' ready' : ''}`}
                 onClick={handleAddToCart} disabled={part.stock === 0}>
-                {added ? <><Zap size={16} /> Added!</> : <><ShoppingCart size={16} /> Add to cart</>}
+                {added ? <><Zap size={16} /> {t('product.added')}</> : <><ShoppingCart size={16} /> {t('product.addToCart')}</>}
               </button>
             </div>
 
             {/* Trust badges */}
             <div className="trust-row" style={{ display: 'flex', gap: 8 }}>
               {[
-                { icon: Package, text: 'Free returns', sub: 'within 30 days' },
-                { icon: Shield, text: 'OEM quality', sub: 'genuine parts' },
-                { icon: RotateCcw, text: 'Fast delivery', sub: '1–3 days GE' },
+                { icon: Package, text: t('product.freeReturns'), sub: t('product.freeReturnsSub') },
+                { icon: Shield, text: t('product.oemQuality'), sub: t('product.oemQualitySub') },
+                { icon: RotateCcw, text: t('product.fastDelivery'), sub: t('product.fastDeliverySub') },
               ].map(({ icon: Icon, text, sub }) => (
                 <div key={text} className="trust-badge">
                   <Icon size={16} style={{ color: '#22D3B8' }} />
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 600, color: '#EAF2FF' }}>{text}</div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#4A5670', marginTop: 1 }}>{sub}</div>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 600, color: '#EAF2FF' }}>{text}</div>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#4A5670', marginTop: 1 }}>{sub}</div>
                   </div>
                 </div>
               ))}
@@ -381,7 +383,7 @@ export default function ProductPage() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
               <div className="energy-bar" style={{ height: 2, width: 32, borderRadius: 2 }} />
               <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 20, fontWeight: 700, color: '#EAF2FF' }}>
-                Vehicle Compatibility
+                {t('product.compatibility')}
               </h2>
             </div>
             <div style={{ background: 'rgba(13,18,30,0.8)', backdropFilter: 'blur(12px)', border: '1px solid rgba(124,138,165,0.12)', borderRadius: 14, overflow: 'hidden' }}>
@@ -389,8 +391,8 @@ export default function ProductPage() {
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                 <thead>
                   <tr style={{ background: 'rgba(76,124,255,0.06)' }}>
-                    {['Make', 'Model', 'Years'].map(h => (
-                      <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#22D3B8', borderBottom: '1px solid rgba(124,138,165,0.1)' }}>{h}</th>
+                    {[t('product.make'), t('product.model'), t('product.years')].map(h => (
+                      <th key={h} style={{ textAlign: 'center', padding: '12px 16px', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#22D3B8', borderBottom: '1px solid rgba(124,138,165,0.1)' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -415,7 +417,7 @@ export default function ProductPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
             <div className="energy-bar" style={{ height: 2, width: 32, borderRadius: 2 }} />
             <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 20, fontWeight: 700, color: '#EAF2FF' }}>
-              Customer Reviews
+              {t('product.reviews')}
             </h2>
             <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#4A5670' }}>
               ({part.reviews?.length ?? 0})
@@ -449,7 +451,7 @@ export default function ProductPage() {
           ) : (
             <div style={{ background: 'rgba(13,18,30,0.8)', border: '1px solid rgba(124,138,165,0.1)', borderRadius: 14, padding: '48px 24px', textAlign: 'center' }}>
               <Star size={28} style={{ color: '#1e293b', margin: '0 auto 12px' }} />
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: '#4A5670' }}>No reviews yet. Be the first to review this part.</div>
+              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: '#4A5670' }}>{t('product.noReviews')}</div>
             </div>
           )}
         </section>

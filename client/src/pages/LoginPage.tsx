@@ -3,9 +3,10 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, EyeOff, LogIn, UserPlus, Mail, Lock, User, ArrowRight } from 'lucide-react'
+import { Eye, EyeOff, LogIn, UserPlus, Mail, Lock, User } from 'lucide-react'
 import { useAuthStore } from '@/store'
 import api from '@/lib/api'
+import { useTranslation } from 'react-i18next'
 
 const loginSchema = z.object({
   email: z.string().email('Enter a valid email'),
@@ -31,6 +32,7 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const redirect = searchParams.get('redirect') || '/'
+  const { t } = useTranslation()
 
   const loginForm = useForm<LoginData>({ resolver: zodResolver(loginSchema) })
   const registerForm = useForm<RegisterData>({ resolver: zodResolver(registerSchema) })
@@ -161,7 +163,7 @@ export default function LoginPage() {
             PRIUS<span style={{ color: '#4d9fff' }}>PARTS</span>
           </Link>
           <p className="mt-2 text-sm" style={{ color: '#7C8AA5' }}>
-            {tab === 'login' ? 'Sign in to your account' : 'Create your account'}
+            {tab === 'login' ? t('auth.signInSubtitle') : t('auth.registerSubtitle')}
           </p>
         </div>
 
@@ -223,15 +225,15 @@ export default function LoginPage() {
                     border: '1px solid rgba(34,211,184,0.35)',
                   }}
                 />
-                {(['login', 'register'] as const).map((t) => (
+                {(['login', 'register'] as const).map((p) => (
                   <button
-                    key={t}
+                    key={p}
                     type="button"
-                    onClick={() => { setTab(t); setError('') }}
+                    onClick={() => { setTab(p); setError('') }}
                     className="relative z-10 flex-1 py-2 text-sm font-medium rounded-md transition-colors capitalize"
-                    style={{ color: tab === t ? '#EAF2FF' : '#7C8AA5', fontFamily: "'Inter', sans-serif" }}
+                    style={{ color: tab === p ? '#EAF2FF' : '#7C8AA5', fontFamily: "'Inter', sans-serif" }}
                   >
-                    {t === 'login' ? 'Sign in' : 'Register'}
+                    {p === 'login' ? t('auth.signIn') : t('auth.register')}
                   </button>
                 ))}
               </div>
@@ -253,7 +255,7 @@ export default function LoginPage() {
                       className="block text-[11px] tracking-[0.1em] uppercase mb-1.5"
                       style={{ fontFamily: "'JetBrains Mono', monospace", color: '#7C8AA5' }}
                     >
-                      Email
+                      {t('auth.email')}
                     </label>
                     <div className="hud-field rounded-lg flex items-center px-3">
                       <Mail size={15} style={{ color: '#4C7CFF' }} />
@@ -277,10 +279,10 @@ export default function LoginPage() {
                         className="text-[11px] tracking-[0.1em] uppercase"
                         style={{ fontFamily: "'JetBrains Mono', monospace", color: '#7C8AA5' }}
                       >
-                        Password
+                        {t('auth.password')}
                       </label>
                       <button type="button" className="text-xs hover:underline" style={{ color: '#22D3B8' }}>
-                        Forgot password?
+                        {t('auth.forgotPassword')}
                       </button>
                     </div>
                     <div className="hud-field rounded-lg flex items-center px-3">
@@ -314,7 +316,7 @@ export default function LoginPage() {
                       fontWeight: 600,
                     }}
                   >
-                    <LogIn size={15} /> {loading ? 'Signing in…' : 'Sign in'} {!loading && <ArrowRight size={14} />}
+                    <LogIn size={15} /> {loading ? t('auth.signingIn') : t('auth.signIn')} 
                   </button>
                 </div>
               )}
@@ -327,7 +329,7 @@ export default function LoginPage() {
                       className="block text-[11px] tracking-[0.1em] uppercase mb-1.5"
                       style={{ fontFamily: "'JetBrains Mono', monospace", color: '#7C8AA5' }}
                     >
-                      Full name
+                      {t('auth.fullName')}
                     </label>
                     <div className="hud-field rounded-lg flex items-center px-3">
                       <User size={15} style={{ color: '#4C7CFF' }} />
@@ -349,7 +351,7 @@ export default function LoginPage() {
                       className="block text-[11px] tracking-[0.1em] uppercase mb-1.5"
                       style={{ fontFamily: "'JetBrains Mono', monospace", color: '#7C8AA5' }}
                     >
-                      Email
+                      {t('auth.email')}
                     </label>
                     <div className="hud-field rounded-lg flex items-center px-3">
                       <Mail size={15} style={{ color: '#4C7CFF' }} />
@@ -372,7 +374,7 @@ export default function LoginPage() {
                       className="block text-[11px] tracking-[0.1em] uppercase mb-1.5"
                       style={{ fontFamily: "'JetBrains Mono', monospace", color: '#7C8AA5' }}
                     >
-                      Password
+                      {t('auth.password')}
                     </label>
                     <div className="hud-field rounded-lg flex items-center px-3">
                       <Lock size={15} style={{ color: '#4C7CFF' }} />
@@ -398,7 +400,7 @@ export default function LoginPage() {
                       className="block text-[11px] tracking-[0.1em] uppercase mb-1.5"
                       style={{ fontFamily: "'JetBrains Mono', monospace", color: '#7C8AA5' }}
                     >
-                      Confirm password
+                      {t('auth.confirmPassword')}
                     </label>
                     <div className="hud-field rounded-lg flex items-center px-3">
                       <Lock size={15} style={{ color: '#4C7CFF' }} />
@@ -428,12 +430,12 @@ export default function LoginPage() {
                       fontWeight: 600,
                     }}
                   >
-                    <UserPlus size={15} /> {loading ? 'Creating account…' : 'Create account'}
+                    <UserPlus size={15} /> {loading ? t('auth.creatingAccount') : t('auth.createAccount')}
                   </button>
 
                   <p className="text-xs text-center" style={{ color: '#4A5670' }}>
-                    By registering you agree to our{' '}
-                    <span className="hover:underline cursor-pointer" style={{ color: '#22D3B8' }}>Terms of Service</span>
+                   {t('auth.termsText')}{' '}
+                    <span className="hover:underline cursor-pointer" style={{ color: '#22D3B8' }}>{t('auth.termsLink')}</span>
                   </p>
                 </div>
               )}

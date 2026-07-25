@@ -76,10 +76,10 @@ export default function PartCard({ part }: { part: Part }) {
       >
         {/* Thumbnail */}
         <Link to={`/catalog/${part.slug}`} style={{ display: 'block', textDecoration: 'none' }}>
-          <div style={{ height: 140, background: '#0a0f1e', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ height: 200, background: '#0a0f1e', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
             {part.images?.[0] ? (
               <img src={part.images[0]} alt={part.name}
-                style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 8, transition: 'transform 0.3s ease', transform: hovered ? 'scale(1.05)' : 'scale(1)' }} />
+                style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s ease', transform: hovered ? 'scale(1.05)' : 'scale(1)' }} />
             ) : (
               <span style={{ fontSize: 44, transition: 'transform 0.3s ease', transform: hovered ? 'scale(1.1)' : 'scale(1)', display: 'block' }}>{icon}</span>
             )}
@@ -109,7 +109,7 @@ export default function PartCard({ part }: { part: Part }) {
             {part.stock > 0 && part.stock <= 5 && (
               <div style={{
                 position: 'absolute', top: 8, left: 8,
-                background: 'rgba(255,154,87,0.15)', color: '#FF9A57',
+                background: 'linear-gradient(135deg, #FF6B57, #FF9A57)', color: '#0f0803',
                 border: '1px solid rgba(255,154,87,0.3)',
                 fontSize: 9, fontWeight: 600, padding: '2px 7px', borderRadius: 20,
                 fontFamily: "'JetBrains Mono', monospace"

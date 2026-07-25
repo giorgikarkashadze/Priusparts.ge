@@ -14,6 +14,7 @@ import {
 import { useCartStore } from "@/store";
 import { formatPrice } from "@/lib/utils";
 import api from "@/lib/api";
+import { useTranslation } from "react-i18next";
 
 const schema = z.object({
   name: z.string().min(2, "Full name required"),
@@ -25,6 +26,7 @@ const schema = z.object({
   zip: z.string().min(3, "ZIP / postal code required"),
   country: z.string().min(2, "Country required"),
 });
+
 type FormData = z.infer<typeof schema>;
 
 const CATEGORY_ICONS: Record<string, string> = {
@@ -83,6 +85,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const {
     register,
@@ -170,10 +173,10 @@ export default function CheckoutPage() {
           </div>
           <div>
             <h1 style={{ fontSize: 22, fontWeight: 700, color: "#f9fafb" }}>
-              Secure checkout
+              {t('checkout.title')}
             </h1>
             <p style={{ fontSize: 12, color: "#475569" }}>
-              Your information is encrypted and secure
+              {t('checkout.subtitle')}
             </p>
           </div>
         </div>
@@ -227,7 +230,7 @@ export default function CheckoutPage() {
                 1
               </div>
               <span style={{ fontSize: 15, fontWeight: 600, color: "#f9fafb" }}>
-                Contact information
+                {t('checkout.contactInfo.title')}
               </span>
             </div>
             <div
@@ -238,24 +241,23 @@ export default function CheckoutPage() {
                 gap: 14,
               }}
             >
-              <Field label="Full name" error={errors.name?.message}>
+              <Field label={t('checkout.contactInfo.name')} error={errors.name?.message}>
                 <input
                   {...register("name")}
-                  placeholder="Giorgi Beridze"
                   style={getInputStyle("name")}
                   onFocus={() => setFocusedField("name")}
                   onBlur={() => setFocusedField(null)}
                 />
               </Field>
               <Field
-                label="Email address"
+                label={t('checkout.contactInfo.email')}
                 error={errors.email?.message}
                 hint="Order confirmation will be sent here"
               >
                 <input
                   {...register("email")}
                   type="email"
-                  placeholder="giorgi@example.com"
+                  placeholder="name@example.com"
                   style={getInputStyle("email")}
                   onFocus={() => setFocusedField("email")}
                   onBlur={() => setFocusedField(null)}
@@ -299,7 +301,7 @@ export default function CheckoutPage() {
                 2
               </div>
               <span style={{ fontSize: 15, fontWeight: 600, color: "#f9fafb" }}>
-                Shipping address
+                {t('checkout.shipping.title')}
               </span>
             </div>
             <div
@@ -310,7 +312,7 @@ export default function CheckoutPage() {
                 gap: 14,
               }}
             >
-              <Field label="Street address" error={errors.line1?.message}>
+              <Field label={t('checkout.shipping.address')} error={errors.line1?.message}>
                 <input
                   {...register("line1")}
                   placeholder="Rustaveli Ave 1"
@@ -320,7 +322,7 @@ export default function CheckoutPage() {
                 />
               </Field>
               <Field
-                label="Apartment, suite (optional)"
+                label={t('checkout.shipping.apartment')}
                 error={errors.line2?.message}
               >
                 <input
@@ -338,7 +340,7 @@ export default function CheckoutPage() {
                   gap: 12,
                 }}
               >
-                <Field label="City" error={errors.city?.message}>
+                <Field label={t('checkout.shipping.city')} error={errors.city?.message}>
                   <input
                     {...register("city")}
                     placeholder="Tbilisi"
@@ -347,7 +349,7 @@ export default function CheckoutPage() {
                     onBlur={() => setFocusedField(null)}
                   />
                 </Field>
-                <Field label="Region" error={errors.state?.message}>
+                <Field label={t('checkout.shipping.region')} error={errors.state?.message}>
                   <input
                     {...register("state")}
                     placeholder="Tbilisi"
@@ -364,7 +366,7 @@ export default function CheckoutPage() {
                   gap: 12,
                 }}
               >
-                <Field label="ZIP / Postal code" error={errors.zip?.message}>
+                <Field label={t('checkout.shipping.zip')} error={errors.zip?.message}>
                   <input
                     {...register("zip")}
                     placeholder="0105"
@@ -373,18 +375,14 @@ export default function CheckoutPage() {
                     onBlur={() => setFocusedField(null)}
                   />
                 </Field>
-                <Field label="Country" error={errors.country?.message}>
+                <Field label={t('checkout.shipping.country.name')} error={errors.country?.message}>
                   <select
                     {...register("country")}
                     style={{ ...getInputStyle("country"), cursor: "pointer" }}
                     onFocus={() => setFocusedField("country")}
                     onBlur={() => setFocusedField(null)}
                   >
-                    <option value="Georgia">Georgia</option>
-                    <option value="Armenia">Armenia</option>
-                    <option value="Azerbaijan">Azerbaijan</option>
-                    <option value="Turkey">Turkey</option>
-                    <option value="Other">Other</option>
+                    <option value="Georgia">{t('checkout.shipping.country.Georgia')}</option>
                   </select>
                 </Field>
               </div>
@@ -426,7 +424,7 @@ export default function CheckoutPage() {
                 3
               </div>
               <span style={{ fontSize: 15, fontWeight: 600, color: "#f9fafb" }}>
-                Payment
+                {t('checkout.payment.title')}
               </span>
               <CreditCard
                 size={14}
@@ -537,13 +535,12 @@ export default function CheckoutPage() {
           >
             <Lock size={16} />
             {loading
-              ? "Placing order…"
-              : `Place order — ${formatPrice(orderTotal)}`}
+              ? t('checkout.payment.processing')
+              : `${t('checkout.payment.placeOrder')} — ${formatPrice(orderTotal)}`}
           </button>
 
           <p style={{ textAlign: "center", fontSize: 12, color: "#334155" }}>
-            By placing your order you agree to our Terms of Service and Privacy
-            Policy
+            {t('checkout.payment.paymentSub')}
           </p>
         </form>
 
@@ -573,11 +570,11 @@ export default function CheckoutPage() {
               }}
             >
               <h2 style={{ fontSize: 15, fontWeight: 600, color: "#f9fafb" }}>
-                Order summary{" "}
+                {t('checkout.summary.title')}
                 <span
                   style={{ color: "#475569", fontWeight: 400, fontSize: 13 }}
                 >
-                  ({items.reduce((a, i) => a + i.quantity, 0)} items)
+                  ({items.reduce((a, i) => a + i.quantity, 0)} {t('checkout.summary.items')})
                 </span>
               </h2>
             </div>
@@ -698,7 +695,7 @@ export default function CheckoutPage() {
                   color: "#64748b",
                 }}
               >
-                <span>Subtotal</span>
+                <span>{t('checkout.summary.subtotal')}</span>
                 <span style={{ color: "#94a3b8" }}>
                   {formatPrice(subtotal)}
                 </span>
@@ -711,7 +708,7 @@ export default function CheckoutPage() {
                   color: "#64748b",
                 }}
               >
-                <span>Shipping</span>
+                <span>{t('checkout.summary.shipping')}</span>
                 <span style={{ color: "#94a3b8" }}>
                   {formatPrice(shipping)}
                 </span>
@@ -727,7 +724,7 @@ export default function CheckoutPage() {
                   marginTop: 2,
                 }}
               >
-                <span style={{ color: "#f9fafb" }}>Total</span>
+                <span style={{ color: "#f9fafb" }}>{t('checkout.summary.total')}</span>
                 <span style={{ color: "#4d9fff" }}>
                   {formatPrice(orderTotal)}
                 </span>
@@ -745,9 +742,9 @@ export default function CheckoutPage() {
             }}
           >
             {[
-              { icon: ShieldCheck, text: "SSL encrypted & secure" },
-              { icon: Truck, text: "1–3 day delivery across Georgia" },
-              { icon: RotateCcw, text: "30-day hassle-free returns" },
+              { icon: ShieldCheck, text: t('checkout.summary.sslSecure') },
+              { icon: Truck, text: t('checkout.summary.delivery') },
+              { icon: RotateCcw, text: t('checkout.summary.freeReturns') },
             ].map(({ icon: Icon, text }) => (
               <div
                 key={text}

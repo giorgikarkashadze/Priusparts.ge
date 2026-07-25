@@ -61,6 +61,7 @@
     }
   },
   "catalog": {
+    "extraTitle": "// PARTS.CATALOG",
     "title": "Prius Parts",
     "searchPlaceholder": "Search parts...",
     "filters": "Filters",
@@ -115,6 +116,7 @@
     "apply": "Apply",
     "checkout": "Proceed to checkout",
     "signInToCheckout": "Sign in to checkout",
+    "signInNote": "Sign in to continue",
     "secureSSL": "Secure SSL checkout",
     "freeReturns": "Free returns within 30 days",
     "genuineParts": "Genuine OEM parts guaranteed"
@@ -135,6 +137,48 @@
     "signInSubtitle": "Welcome back — sign in to continue",
     "registerSubtitle": "Create your account to get started",
     "demoAdmin": "Demo admin"
+  },
+  "checkout": {
+    "title": "Secure checkout",
+    "subtitle": "Your information is encrypted and secure",
+    "contactInfo": {
+      "title": "Contact information",
+      "name": "Full Name",
+      "email": "Email address",
+      "phone": "Phone Number"
+    },
+    "shipping": {
+      "title": "Shipping address",
+      "address": "Street address",
+      "apartment": "Apartment, suite, etc. (optional)",
+      "city": "City",
+      "region": "Region",
+      "zip": "ZIP / Postal Code",
+      "country": {
+        "name": "Country",
+        "Georgia": "Georgia"
+      }
+    },
+    "payment": {
+      "title": "Payment method",
+      "cardNumber": "Card number",
+      "expiry": "Expiry date",
+      "cvc": "CVC",
+      "placing": "Placing order…",
+      "placeOrder": "Place order",
+      "paymentSub": "By placing your order you agree to our Terms of Service and Privacy Policy"
+    },
+    "summary": {
+      "title": "Order summary",
+      "items": "items",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "discount": "Discount",
+      "total": "Total",
+      "sslSecure": "SSL encrypted & secure",
+      "delivery": "1–3 day delivery across Georgia",
+      "freeReturns": "30-day hassle-free returns"
+    }
   },
   "about": {
     "title": "About PriusParts.ge",

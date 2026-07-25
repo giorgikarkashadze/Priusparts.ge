@@ -5,9 +5,11 @@ import { Link } from 'react-router-dom'
 import api from '@/lib/api'
 import { formatPrice, formatDate, STATUS_LABELS, cn } from '@/lib/utils'
 import type { Order } from '../types/types'
+import { useTranslation } from 'react-i18next'
 
 export default function OrdersPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const { t } = useTranslation()
 
   const { data: orders, isLoading } = useQuery<Order[]>({
     queryKey: ['my-orders'],
@@ -84,7 +86,7 @@ export default function OrdersPage() {
                             <Link to={`/catalog/${item.part.slug}`} className="text-sm font-medium hover:text-brand flex items-center gap-1 line-clamp-1">
                               {item.part.name} <ExternalLink size={11} />
                             </Link>
-                            <div className="text-xs text-gray-500">Qty: {item.quantity} × {formatPrice(item.price)}</div>
+                            <div className="text-xs text-gray-500">{t('common.qty')}: {item.quantity} × {formatPrice(item.price)}</div>
                           </div>
                           <span className="text-sm font-medium shrink-0">{formatPrice(Number(item.price) * item.quantity)}</span>
                         </div>
