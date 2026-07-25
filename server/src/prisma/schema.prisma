@@ -52,8 +52,10 @@ model Category {
 model Part {
   id           String   @id @default(cuid())
   name         String
+  nameKa       String?
   slug         String   @unique
   description  String?
+  descriptionKa String?
   oemNumber    String?
   price        Decimal  @db.Decimal(10, 2)
   comparePrice Decimal? @db.Decimal(10, 2)
