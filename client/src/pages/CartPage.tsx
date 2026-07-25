@@ -193,9 +193,8 @@ export default function CartPage() {
                         style={{
                           width: "100%",
                           height: "100%",
-                          objectFit: "contain",
+                          objectFit: "cover",
                           objectPosition: "center",
-                          padding: 16,
                           background: "#1f2937",
                         }}
                       />

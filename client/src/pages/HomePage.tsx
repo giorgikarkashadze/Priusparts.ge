@@ -39,9 +39,6 @@ export default function HomePage() {
         padding: '64px 16px', textAlign: 'center'
       }}>
         <div style={{ maxWidth: 640, margin: '0 auto' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(212,56,13,0.15)', color: '#4d9fff', padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 500, marginBottom: 20, border: '1px solid rgba(212,56,13,0.3)' }}>
-            🚗 {t('home.hero.badge')}
-          </div>
           <h1 style={{ fontSize: 40, fontWeight: 700, color: '#f9fafb', lineHeight: 1.2, marginBottom: 12, letterSpacing: '-1px' }}>
             {t('home.hero.title')}<br />
             <span style={{ color: '#4d9fff' }}>{t('home.hero.titleHighlight')}</span>

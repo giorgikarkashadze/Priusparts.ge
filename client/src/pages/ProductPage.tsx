@@ -197,7 +197,7 @@ export default function ProductPage() {
 
               {images[activeImage] ? (
                 <img src={images[activeImage]!} alt={part.name}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', padding: 1, transition: 'transform 0.4s ease' }} />
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }} />
               ) : (
                 <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 80 }}>
                   {icon}

@@ -5,6 +5,7 @@ import { useCartStore } from '@/store'
 import { formatPrice, discount } from '@/lib/utils'
 import type { Part } from '@/types/types'
 import { useTranslation } from 'react-i18next'
+import { getCategoryName, getPartName } from '@/hooks/usePartLocale'
 
 const CATEGORY_ICONS: Record<string, string> = {
   engine: '🔧', brakes: '🛞', suspension: '⚙️', electrical: '⚡', filters: '🌀', hybrid: '🔋',
@@ -17,8 +18,6 @@ export default function PartCard({ part }: { part: Part }) {
   const disc = discount(part.price, part.comparePrice)
   const icon = CATEGORY_ICONS[part.category?.slug] || '🔩'
   const { i18n } = useTranslation()
-  const isKa = i18n.language.startsWith('ka')
-  const partName = isKa && part.nameKa ? part.nameKa : part.name
 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -128,7 +127,7 @@ export default function PartCard({ part }: { part: Part }) {
         <div style={{ padding: '10px 12px 12px' }}>
           {/* Category */}
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#22D3B8', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>
-            {part.category?.name}
+            {getCategoryName(part.category, i18n.language)}
           </div>
 
           {/* Name */}
@@ -139,7 +138,7 @@ export default function PartCard({ part }: { part: Part }) {
               display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden',
               transition: 'color 0.15s'
             }}>
-              {partName}
+              {getPartName(part, i18n.language)}
             </div>
           </Link>
 
