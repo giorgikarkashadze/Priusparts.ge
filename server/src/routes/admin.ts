@@ -32,7 +32,9 @@ router.get('/stats', async (_req, res) => {
 // Parts CRUD
 const partSchema = z.object({
   name: z.string().min(2),
+  nameKa: z.string().optional(),
   description: z.string().optional(),
+  descriptionKa: z.string().optional(),
   oemNumber: z.string().optional(),
   price: z.coerce.number().positive(),
   comparePrice: z.coerce.number().positive().optional(),

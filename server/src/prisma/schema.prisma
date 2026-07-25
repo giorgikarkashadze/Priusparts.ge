@@ -42,11 +42,12 @@ model Model {
 }
 
 model Category {
-  id    String  @id @default(cuid())
-  name  String  @unique
-  slug  String  @unique
-  icon  String?
-  parts Part[]
+  id     String  @id @default(cuid())
+  name   String  @unique
+  nameKa String?
+  slug   String  @unique
+  icon   String?
+  parts  Part[]
 }
 
 model Part {

@@ -13,6 +13,7 @@ export default function CatalogPage() {
   const [showFilters, setShowFilters] = useState(false)
   const [page, setPage] = useState(1)
   const { t } = useTranslation()
+  
 
   const [filters, setFilters] = useState<FilterState>({
     makeId: searchParams.get('makeId') || '',

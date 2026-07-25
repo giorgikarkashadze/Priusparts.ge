@@ -1,3 +1,4 @@
+import { getCategoryName } from '@/hooks/usePartLocale'
 import { useCategories } from '@/hooks/useProducts'
 import type { FilterState } from '@/types/types'
 import { useTranslation } from 'react-i18next'
@@ -17,6 +18,7 @@ interface Props {
 export default function FilterSidebar({ filters, onChange }: Props) {
   const { data: categories } = useCategories()
   const { t } = useTranslation()
+  const { i18n } = useTranslation()
   
   const sectionLabel: React.CSSProperties = {
     fontFamily: "'JetBrains Mono', monospace",
@@ -95,7 +97,7 @@ export default function FilterSidebar({ filters, onChange }: Props) {
                 color: filters.category === c.slug ? '#22D3B8' : '#7C8AA5',
                 fontFamily: "'Inter', sans-serif", transition: 'all 0.15s'
               }}>
-              <span>{c.icon} {c.name}</span>
+              <span>{c.icon} {getCategoryName(c, i18n.language)}</span>
               <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, opacity: 0.6 }}>
                 {c._count?.parts}
               </span>

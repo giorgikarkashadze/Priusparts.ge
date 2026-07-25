@@ -4,6 +4,7 @@ import { ShoppingCart, Star, Zap } from 'lucide-react'
 import { useCartStore } from '@/store'
 import { formatPrice, discount } from '@/lib/utils'
 import type { Part } from '@/types/types'
+import { useTranslation } from 'react-i18next'
 
 const CATEGORY_ICONS: Record<string, string> = {
   engine: '🔧', brakes: '🛞', suspension: '⚙️', electrical: '⚡', filters: '🌀', hybrid: '🔋',
@@ -15,6 +16,9 @@ export default function PartCard({ part }: { part: Part }) {
   const [hovered, setHovered] = useState(false)
   const disc = discount(part.price, part.comparePrice)
   const icon = CATEGORY_ICONS[part.category?.slug] || '🔩'
+  const { i18n } = useTranslation()
+  const isKa = i18n.language.startsWith('ka')
+  const partName = isKa && part.nameKa ? part.nameKa : part.name
 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -135,7 +139,7 @@ export default function PartCard({ part }: { part: Part }) {
               display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden',
               transition: 'color 0.15s'
             }}>
-              {part.name}
+              {partName}
             </div>
           </Link>
 

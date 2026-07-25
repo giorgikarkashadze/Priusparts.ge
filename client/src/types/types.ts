@@ -1,10 +1,12 @@
 export interface Part {
   id: string
   name: string
+  nameKa?: string
   slug: string
   comparePrice?: number
   oemNumber?: string
   description: string
+  descriptionKa?: string
   price: number
   originalPrice?: number
   stock: number
@@ -24,6 +26,7 @@ export interface Part {
 export interface Category {
   id: string
   name: string
+  nameKa?: string
   slug: string
   icon: string
   description?: string

@@ -77,7 +77,9 @@
     "allYears": "All years (2008–2024)",
     "priusYear": "Prius Year",
     "category": "Category",
-    "priceRange": "Price Range"
+    "priceRange": "Price Range",
+    "priceMin": "Min",
+    "priceMax": "Max"
   },
   "product": {
     "addToCart": "Add to cart",

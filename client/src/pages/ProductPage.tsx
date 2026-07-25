@@ -5,6 +5,7 @@ import { usePart } from '@/hooks/useProducts'
 import { useCartStore } from '@/store'
 import { formatPrice, discount } from '@/lib/utils'
 import { useTranslation } from 'react-i18next'
+import { getPartName, getPartDescription } from '@/hooks/usePartLocale'
 
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -14,6 +15,7 @@ export default function ProductPage() {
   const [activeImage, setActiveImage] = useState(0)
   const [added, setAdded] = useState(false)
   const { t } = useTranslation()
+  const { i18n } = useTranslation()
 
   const handleAddToCart = () => {
     if (!part) return
@@ -195,7 +197,7 @@ export default function ProductPage() {
 
               {images[activeImage] ? (
                 <img src={images[activeImage]!} alt={part.name}
-                  style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 24, transition: 'transform 0.4s ease' }} />
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', padding: 1, transition: 'transform 0.4s ease' }} />
               ) : (
                 <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 80 }}>
                   {icon}
@@ -275,7 +277,7 @@ export default function ProductPage() {
 
             {/* Name */}
             <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 28, fontWeight: 700, color: '#EAF2FF', lineHeight: 1.2, letterSpacing: '-0.5px' }}>
-              {part.name}
+              {getPartName(part, i18n.language)}
             </h1>
 
             {/* OEM */}
@@ -338,7 +340,7 @@ export default function ProductPage() {
             {/* Description */}
             {part.description && (
               <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: '#7C8AA5', lineHeight: 1.7 }}>
-                {part.description}
+                { getPartDescription(part, i18n.language) }
               </p>
             )}
 

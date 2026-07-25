@@ -30,15 +30,17 @@ type Tab = "dashboard" | "inventory" | "orders" | "promotions" | "settings";
 
 const partSchema = z.object({
   name: z.string().min(2),
+  nameKa: z.string().optional(),
   description: z.string().optional(),
+  descriptionKa: z.string().optional(),
   oemNumber: z.string().optional(),
-  price: z.string().min(1, 'Price is required'),
+  price: z.string().min(1, "Price is required"),
   comparePrice: z.string().optional(),
-  stock: z.string().min(1, 'Stock is required'),
-  categoryId: z.string().min(1, 'Select a category'),
-})
+  stock: z.string().min(1, "Stock is required"),
+  categoryId: z.string().min(1, "Select a category"),
+});
 
-type PartForm = z.infer<typeof partSchema>
+type PartForm = z.infer<typeof partSchema>;
 
 const promoSchema = z.object({
   code: z.string().min(3),
@@ -305,7 +307,7 @@ function InventoryTab() {
   const [editId, setEditId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [imageUrl, setImageUrl] = useState('')
+  const [imageUrl, setImageUrl] = useState("");
 
   const { data: parts, isLoading } = useQuery<Part[]>({
     queryKey: ["admin-parts"],
@@ -333,36 +335,40 @@ function InventoryTab() {
   });
 
   const saveMutation = useMutation({
-  mutationFn: async (data: PartForm) => {
-    const price = parseFloat(data.price)
-    const stock = parseInt(data.stock)
-    const comparePrice = data.comparePrice ? parseFloat(data.comparePrice) : undefined
+    mutationFn: async (data: PartForm) => {
+      const price = parseFloat(data.price);
+      const stock = parseInt(data.stock);
+      const comparePrice = data.comparePrice
+        ? parseFloat(data.comparePrice)
+        : undefined;
 
-    if (isNaN(price) || price <= 0) throw new Error('Invalid price')
-    if (isNaN(stock) || stock < 0) throw new Error('Invalid stock')
+      if (isNaN(price) || price <= 0) throw new Error("Invalid price");
+      if (isNaN(stock) || stock < 0) throw new Error("Invalid stock");
 
-    const payload = {
-      name: data.name,
-      description: data.description,
-      oemNumber: data.oemNumber,
-      categoryId: data.categoryId,
-      price,
-      stock,
-      comparePrice,
-      images: imageUrl ? [imageUrl] : [],
-    }
+      const payload = {
+        name: data.name,
+        nameKa: data.nameKa,
+        description: data.description,
+        descriptionKa: data.descriptionKa,
+        oemNumber: data.oemNumber,
+        categoryId: data.categoryId,
+        price,
+        stock,
+        comparePrice,
+        images: imageUrl ? [imageUrl] : [],
+      };
 
-    if (editId) return api.put(`/admin/parts/${editId}`, payload)
-    return api.post('/admin/parts', payload)
-  },
-  onSuccess: () => {
-    qc.invalidateQueries({ queryKey: ['admin-parts'] })
-    setShowForm(false)
-    setEditId(null)
-    setImageUrl('') 
-    reset()
-  },
-})
+      if (editId) return api.put(`/admin/parts/${editId}`, payload);
+      return api.post("/admin/parts", payload);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-parts"] });
+      setShowForm(false);
+      setEditId(null);
+      setImageUrl("");
+      reset();
+    },
+  });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => api.delete(`/admin/parts/${id}`),
@@ -467,12 +473,15 @@ function InventoryTab() {
                 gap: 16,
               }}
             >
-              {/* Part name — full width */}
+              {/* Part name English */}
               <div style={{ gridColumn: "1 / -1" }}>
-                <Field label="Part name *" error={errors.name?.message}>
+                <Field
+                  label="Part name — English *"
+                  error={errors.name?.message}
+                >
                   <input
                     {...register("name")}
-                    placeholder="e.g. Bosch Front Brake Pad Set — Prius Gen 3"
+                    placeholder="e.g. Bosch Front Brake Pad Set"
                     style={getInput("name")}
                     onFocus={() => setFocusedField("name")}
                     onBlur={() => setFocusedField(null)}
@@ -480,16 +489,39 @@ function InventoryTab() {
                 </Field>
               </div>
 
-              {/* Description — full width */}
+              {/* Part name Georgian */}
               <div style={{ gridColumn: "1 / -1" }}>
-                <Field label="Description">
+                <Field label="სახელი — Georgian (ქართული)">
+                  <input
+                    {...register("nameKa")}
+                    placeholder="მაგ. ბოშის წინა სამუხრუჭე პატჩების კომპლექტი"
+                    style={getInput("nameKa")}
+                    onFocus={() => setFocusedField("nameKa")}
+                    onBlur={() => setFocusedField(null)}
+                  />
+                </Field>
+              </div>
+
+              {/* Description English */}
+              <div style={{ gridColumn: "1 / -1" }}>
+                <Field label="Description — English">
                   <textarea
                     {...register("description")}
-                    rows={3}
-                    placeholder="Describe this part — compatibility, specifications, brand…"
+                    rows={2}
+                    placeholder="Describe this part in English…"
                     style={{ ...inputSt, resize: "vertical", lineHeight: 1.6 }}
-                    onFocus={() => setFocusedField("description")}
-                    onBlur={() => setFocusedField(null)}
+                  />
+                </Field>
+              </div>
+
+              {/* Description Georgian */}
+              <div style={{ gridColumn: "1 / -1" }}>
+                <Field label="აღწერა — Georgian (ქართული)">
+                  <textarea
+                    {...register("descriptionKa")}
+                    rows={2}
+                    placeholder="აღწერეთ ნაწილი ქართულად…"
+                    style={{ ...inputSt, resize: "vertical", lineHeight: 1.6 }}
                   />
                 </Field>
               </div>
@@ -550,19 +582,26 @@ function InventoryTab() {
                 </div>
               </Field>
               <Field label="Image URL">
-  <input
-    value={imageUrl}
-    onChange={(e) => setImageUrl(e.target.value)}
-    placeholder="https://example.com/image.jpg"
-    style={inputSt}
-  />
-  {imageUrl && (
-    <img src={imageUrl} alt="Preview"
-      style={{ marginTop: 8, height: 80, borderRadius: 8, objectFit: 'cover' }}
-      onError={(e) => (e.currentTarget.style.display = 'none')}
-    />
-  )}
-</Field>
+                <input
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder="https://example.com/image.jpg"
+                  style={inputSt}
+                />
+                {imageUrl && (
+                  <img
+                    src={imageUrl}
+                    alt="Preview"
+                    style={{
+                      marginTop: 8,
+                      height: 80,
+                      borderRadius: 8,
+                      objectFit: "cover",
+                    }}
+                    onError={(e) => (e.currentTarget.style.display = "none")}
+                  />
+                )}
+              </Field>
               {/* Compare price */}
               <Field label="Compare price — original (optional)">
                 <div style={{ position: "relative" }}>
