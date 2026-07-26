@@ -4,6 +4,9 @@ import jwt from 'jsonwebtoken'
 import { z } from 'zod'
 import { PrismaClient } from '@prisma/client'
 import { requireAuth, AuthRequest } from '../middleware/auth'
+import passport from 'passport'
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
+import session from 'express-session'
 
 const router = Router()
 const prisma = new PrismaClient()
@@ -73,5 +76,50 @@ router.get('/me', requireAuth, async (req: AuthRequest, res) => {
   const user = await prisma.user.findUnique({ where: { id: req.user!.id }, select: { id: true, email: true, name: true, role: true, createdAt: true } })
   res.json(user)
 })
+
+// Configure Google strategy
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID!,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+  callbackURL: `${process.env.BACKEND_URL || 'http://localhost:4000'}/api/auth/google/callback`,
+}, async (_accessToken, _refreshToken, profile, done) => {
+  try {
+    const email = profile.emails?.[0]?.value
+    if (!email) return done(new Error('No email from Google'))
+
+    // Find or create user
+    let user = await prisma.user.findUnique({ where: { email } })
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          email,
+          name: profile.displayName || email.split('@')[0],
+          passwordHash: '',  // no password for OAuth users
+          role: 'CUSTOMER',
+        }
+      })
+    }
+    done(null, user)
+  } catch (e) {
+    done(e as Error)
+  }
+}))
+
+// Google OAuth routes
+router.get('/google',
+  passport.authenticate('google', { scope: ['profile', 'email'], session: false })
+)
+
+router.get('/google/callback',
+  passport.authenticate('google', { session: false, failureRedirect: `${process.env.FRONTEND_URL}/login?error=google` }),
+  (req, res) => {
+    const user = req.user as any
+    const tokens = signTokens(user)
+    // Redirect to frontend with tokens in URL params
+    res.redirect(
+      `${process.env.FRONTEND_URL}/auth/callback?access=${tokens.access}&refresh=${tokens.refresh}&name=${encodeURIComponent(user.name)}&email=${encodeURIComponent(user.email)}&role=${user.role}&id=${user.id}`
+    )
+  }
+)
 
 export default router

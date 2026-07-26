@@ -100,7 +100,10 @@
     "noReviews": "No reviews yet. Be the first to review this part.",
     "make": "Make",
     "model": "Model",
-    "years": "Years"
+    "years": "Years",
+    "loading": "Loading Part Data...",
+    "notFound": "Part not found",
+    "backToCatalog": "← Back to CATALOG"
   },
   "cart": {
     "title": "Your cart",
@@ -143,6 +146,8 @@
   "checkout": {
     "title": "Secure checkout",
     "subtitle": "Your information is encrypted and secure",
+    "cart": "Cart",
+    "checkout": "Checkout",
     "contactInfo": {
       "title": "Contact information",
       "name": "Full Name",

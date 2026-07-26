@@ -152,10 +152,10 @@ export default function CheckoutPage() {
           }}
         >
           <Link to="/cart" style={{ color: "#64748b", textDecoration: "none" }}>
-            Cart
+            {t('checkout.cart')}
           </Link>
           <ChevronRight size={12} />
-          <span style={{ color: "#4d9fff", fontWeight: 500 }}>Checkout</span>
+          <span style={{ color: "#4d9fff", fontWeight: 500 }}>{t('checkout.checkout')}</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div

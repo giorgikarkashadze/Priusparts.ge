@@ -15,6 +15,7 @@ import { useCartStore, useAuthStore } from "@/store";
 import { formatPrice } from "@/lib/utils";
 import api from "@/lib/api";
 import { useTranslation } from "react-i18next";
+import { getPartName, getCategoryName } from "@/hooks/usePartLocale";
 
 const CATEGORY_ICONS: Record<string, string> = {
   engine: "🔧",
@@ -30,6 +31,7 @@ export default function CartPage() {
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { i18n } = useTranslation();
 
   const [promoCode, setPromoCode] = useState("");
   const [promoResult, setPromoResult] = useState<{
@@ -219,7 +221,7 @@ export default function CartPage() {
                         lineHeight: 1.3,
                       }}
                     >
-                      {part.name}
+                      {getPartName(part, i18n.language)}
                     </div>
                   </Link>
                   <div
@@ -240,7 +242,7 @@ export default function CartPage() {
                         borderRadius: 6,
                       }}
                     >
-                      {part.category?.name}
+                      {getCategoryName(part.category, i18n.language)}
                     </span>
                     {part.oemNumber && (
                       <span

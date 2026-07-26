@@ -32,7 +32,7 @@ export default function ProductPage() {
       `}</style>
       <div style={{ textAlign: 'center' }}>
         <div style={{ width: 48, height: 48, borderRadius: '50%', border: '2px solid transparent', borderTopColor: '#4C7CFF', borderRightColor: '#22D3B8', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
-        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#22D3B8', letterSpacing: '0.15em' }}>LOADING PART DATA…</div>
+        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#22D3B8', letterSpacing: '0.15em' }}>{t('product.loading')}</div>
       </div>
     </div>
   )
@@ -40,8 +40,8 @@ export default function ProductPage() {
   if (isError || !part) return (
     <div style={{ minHeight: '100vh', background: '#05070C', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
       <div style={{ fontSize: 48 }}>🔍</div>
-      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 20, fontWeight: 600, color: '#EAF2FF' }}>Part not found</div>
-      <Link to="/catalog" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#4C7CFF', textDecoration: 'none', letterSpacing: '0.1em' }}>← BACK TO CATALOG</Link>
+      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 20, fontWeight: 600, color: '#EAF2FF' }}>{t('product.notFound')}</div>
+      <Link to="/catalog" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#4C7CFF', textDecoration: 'none', letterSpacing: '0.1em' }}>{t('product.backToCatalog')}</Link>
     </div>
   )
 

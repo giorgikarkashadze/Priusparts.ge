@@ -11,12 +11,21 @@ import ordersRouter from './routes/orders'
 import adminRouter from './routes/admin'
 import promotionsRouter from './routes/promotionsRouter'
 
+import passport from 'passport'
+import session from 'express-session'
+
 const app = express()
 const PORT = process.env.PORT || 4000
 
 app.use(helmet())
 app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }))
 app.use(express.json({ limit: '10mb' }))
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'secret',
+  resave: false,
+  saveUninitialized: false,
+}))
+app.use(passport.initialize())
 app.use('/uploads', (req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   next()

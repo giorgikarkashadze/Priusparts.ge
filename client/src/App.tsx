@@ -10,6 +10,7 @@ import OrdersPage from '@/pages/OrdersPage'
 import AboutPage from '@/pages/AboutPage'
 import LoginPage from '@/pages/LoginPage'
 import AdminPage from '@/pages/AdminPage'
+import AuthCallbackPage from '@/pages/AuthCallbackPage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((s) => s.user)
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="checkout" element={<PrivateRoute><CheckoutPage /></PrivateRoute>} />
           <Route path="orders" element={<PrivateRoute><OrdersPage /></PrivateRoute>} />
           <Route path="admin/*" element={<AdminRoute><AdminPage /></AdminRoute>} />
+          <Route path="auth/callback" element={<AuthCallbackPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
