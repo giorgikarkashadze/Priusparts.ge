@@ -91,3 +91,18 @@ export const useThemeStore = create<ThemeState>()(
     }}
   )
 )
+
+interface CurrencyState {
+  currency: 'GEL' | 'USD'
+  toggle: () => void
+}
+
+export const useCurrencyStore = create<CurrencyState>()(
+  persist(
+    (set, get) => ({
+      currency: 'GEL',
+      toggle: () => set({ currency: get().currency === 'GEL' ? 'USD' : 'GEL' }),
+    }),
+    { name: 'currency-storage' }
+  )
+)

@@ -9,8 +9,12 @@ export function discount(price: number, comparePrice?: number): number | null {
   return Math.round((1 - price / comparePrice) * 100)
 }
 
-export function formatPrice(amount: number, currency = 'USD'): string {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(amount)
+export function formatPrice(price: number | string, currency: 'GEL' | 'USD' = 'GEL'): string {
+  const amount = Number(price)
+  if (currency === 'USD') {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount / 2.7)
+  }
+  return `${amount.toFixed(2)}₾`
 }
 
 export function formatDate(dateString: string): string {

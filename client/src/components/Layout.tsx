@@ -1,9 +1,9 @@
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom'
 import { ShoppingCart, Sun, Moon, User, LogOut, Settings, Package, Menu, X } from 'lucide-react'
 import { useState } from 'react'
-import { useCartStore, useAuthStore, useThemeStore } from '@/store'
-import LanguageSwitcher from '@/components/LanguageSwitcher'
+import { useCartStore, useAuthStore, useThemeStore, useCurrencyStore } from '@/store'
 import { useTranslation } from 'react-i18next'
+import { useEffect, useRef } from 'react'
 
 
 export default function Layout() {
@@ -15,12 +15,26 @@ export default function Layout() {
   const navigate = useNavigate()
   const location = useLocation()
   const { t } = useTranslation()
+  const { currency, toggle: toggleCurrency } = useCurrencyStore()
+  const { i18n } = useTranslation()
+  const currentLang = i18n.language?.startsWith('ka') ? 'ka' : 'en'
+  const settingsRef = useRef<HTMLDivElement>(null)
 
   const navLinks = [
     { href: '/', label: t('nav.home') },
     { href: '/catalog', label: t('nav.parts') },
     { href: '/about', label: t('nav.about') },
   ]
+
+  useEffect(() => {
+  function handleClickOutside(e: MouseEvent) {
+    if (settingsRef.current && !settingsRef.current.contains(e.target as Node)) {
+      setMobileMenuOpen(false)
+    }
+  }
+  if (mobileMenuOpen) document.addEventListener('mousedown', handleClickOutside)
+  return () => document.removeEventListener('mousedown', handleClickOutside)
+}, [mobileMenuOpen])
 
   const isActive = (href: string) => href === '/' ? location.pathname === '/' : location.pathname.startsWith(href)
 
@@ -153,194 +167,153 @@ export default function Layout() {
             ))}
           </div>
 
-          {/* Right side */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginLeft: 'auto' }}>
+          {/* Right side — only cart, user, menu toggle */}
+<div style={{ display: 'flex', alignItems: 'center', gap: 8, marginLeft: 'auto' }}>
 
-            <LanguageSwitcher />
+  {/* Hamburger + dropdown — wrap in relative container */}
+<div style={{ position: 'relative' }} ref={settingsRef} >
+  <button
+    onClick={() => setMobileMenuOpen((v) => !v)}
+    style={{
+      background: 'rgba(255,255,255,0.08)', border: 'none', color: '#f9fafb',
+      width: 36, height: 36, borderRadius: 8, cursor: 'pointer',
+      display: 'flex', alignItems: 'center', justifyContent: 'center'
+    }}
+  >
+    {mobileMenuOpen ? <X size={17} /> : <Menu size={17} />}
+  </button>
 
-            {/* Theme toggle */}
-            <button onClick={toggle} className="plp-icon-btn" style={{
-              background: 'rgba(255,255,255,0.08)', border: 'none', color: '#94a3b8',
-              width: 36, height: 36, borderRadius: 8, cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              transform: `rotate(${dark ? 0 : 180}deg)`,
-            }}>
-              {dark ? <Sun size={15} /> : <Moon size={15} />}
-            </button>
+  {/* Expansion panel — absolutely positioned below button */}
+  {mobileMenuOpen && (
+    <div style={{
+      position: 'absolute',
+      top: 'calc(100% + 8px)',
+      right: 0,
+      width: 260,
+      background: '#0d1526',
+      border: '1px solid #1a2744',
+      borderRadius: 14,
+      padding: 16,
+      zIndex: 200,
+      boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
+      backdropFilter: 'blur(12px)',
+    }}>
 
-            {/* Cart */}
-            <Link to="/cart" onClick={closeMenus} className="plp-icon-btn" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: 8, background: 'rgba(255,255,255,0.08)', color: '#94a3b8', textDecoration: 'none' }}>
-              <ShoppingCart size={16} />
-              {itemCount > 0 && (
-                <span className={`plp-cart-badge${itemCount > 0 ? ' has-items' : ''}`} style={{
-                  position: 'absolute', top: -4, right: -4, background: '#1d6fe8',
-                  color: '#fff', fontSize: 10, width: 16, height: 16, borderRadius: '50%',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600
-                }}>
-                  {itemCount > 9 ? '9+' : itemCount}
-                </span>
-              )}
-            </Link>
+      {/* Settings label */}
+      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#22D3B8', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 12 }}>
+        App settings
+      </div>
 
-            {/* User — desktop */}
-            <div className="plp-desktop-nav" style={{ position: 'relative' }}>
-              {user ? (
-                <div style={{ position: 'relative' }}>
-                  <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="plp-icon-btn" style={{
-                    display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px',
-                    borderRadius: 8, background: 'rgba(255,255,255,0.08)', border: 'none',
-                    color: '#f9fafb', cursor: 'pointer', fontSize: 13
-                  }}>
-                    <div style={{
-                      width: 22, height: 22, borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #4C7CFF, #22D3B8)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 11, fontWeight: 600, color: '#04121A'
-                    }}>
-                      {user.name[0].toUpperCase()}
-                    </div>
-                    <span>{user.name}</span>
-                  </button>
-                  {userMenuOpen && (
-                    <div className="plp-panel-in" style={{
-                      position: 'absolute', right: 0, top: '100%', marginTop: 4, width: 190,
-                      background: '#1a2744', border: '1px solid #334155', borderRadius: 12,
-                      padding: 4, zIndex: 50, boxShadow: '0 16px 48px rgba(0,0,0,0.4)',
-                      backdropFilter: 'blur(12px)',
-                    }}>
-                      <Link to="/orders" onClick={closeMenus} className="plp-footer-link" style={{
-                        display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px',
-                        borderRadius: 8, color: '#94a3b8', textDecoration: 'none', fontSize: 13
-                      }}>
-                        <Package size={13} /> My orders
-                      </Link>
-                      {user.role === 'ADMIN' && (
-                        <Link to="/admin" onClick={closeMenus} className="plp-footer-link" style={{
-                          display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px',
-                          borderRadius: 8, color: '#4d9fff', textDecoration: 'none', fontSize: 13
-                        }}>
-                          <Settings size={13} /> Admin panel
-                        </Link>
-                      )}
-                      <button onClick={() => {
-                        clearAuth()
-                        useCartStore.getState().clearCart()
-                        closeMenus()
-                        navigate('/')
-                      }} className="plp-footer-link" style={{
-                        display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px',
-                        borderRadius: 8, color: '#f87171', background: 'none', border: 'none',
-                        cursor: 'pointer', fontSize: 13, width: '100%', textAlign: 'left'
-                      }}>
-                        <LogOut size={13} /> Sign out
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <Link to="/login" onClick={closeMenus} className="plp-icon-btn" style={{
-                  display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px',
-                  borderRadius: 8, background: 'rgba(255,255,255,0.08)', color: '#94a3b8',
-                  textDecoration: 'none', fontSize: 13
-                }}>
-                  <User size={13} /> {t('nav.signIn')}
-                </Link>
-              )}
-            </div>
-
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setMobileMenuOpen((v) => !v)}
-              className="plp-icon-btn plp-mobile-toggle"
-              style={{
-                background: 'rgba(255,255,255,0.08)', border: 'none', color: '#f9fafb',
-                width: 36, height: 36, borderRadius: 8, cursor: 'pointer',
-                alignItems: 'center', justifyContent: 'center',
-              }}
-            >
-              {mobileMenuOpen ? <X size={17} /> : <Menu size={17} />}
-            </button>
-          </div>
+      {/* Dark / Light mode */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(124,138,165,0.1)', marginBottom: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {dark ? <Moon size={15} style={{ color: '#4C7CFF' }} /> : <Sun size={15} style={{ color: '#F59E0B' }} />}
+          <span style={{ fontSize: 13, color: '#EAF2FF', fontFamily: "'Inter', sans-serif" }}>
+            {dark ? 'Dark mode' : 'Light mode'}
+          </span>
         </div>
-
-        {/* HUD energy line */}
-        <div className="plp-energy-line" style={{ height: 2, width: '100%' }} />
-
-        {/* Mobile nav */}
-        <div className={`plp-mobile-panel${mobileMenuOpen ? ' open' : ''}`} style={{
-          background: '#0a0f1e', borderBottom: '1px solid #1a2744', padding: '8px 16px 16px',
+        <button onClick={toggle} style={{
+          width: 44, height: 24, borderRadius: 12, border: 'none', cursor: 'pointer', position: 'relative',
+          background: dark ? 'linear-gradient(135deg, #4C7CFF, #22D3B8)' : 'rgba(124,138,165,0.3)',
+          transition: 'all 0.2s', flexShrink: 0
         }}>
-          <div className="plp-panel-in" style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {navLinks.map((l) => (
-              <Link
-                key={l.href}
-                to={l.href}
-                onClick={closeMenus}
-                className={`plp-navlink${isActive(l.href) ? ' active' : ''}`}
-                style={{
-                  textDecoration: 'none', padding: '10px 12px', borderRadius: 8, fontSize: 15,
-                  background: isActive(l.href) ? 'rgba(255,255,255,0.1)' : 'transparent',
-                  color: isActive(l.href) ? '#fff' : '#94a3b8',
-                }}
-              >
-                {l.label}
-              </Link>
-            ))}
+          <div style={{
+            position: 'absolute', top: 3, width: 18, height: 18, borderRadius: '50%', background: '#fff',
+            transition: 'left 0.2s', left: dark ? 23 : 3,
+            boxShadow: '0 1px 4px rgba(0,0,0,0.3)'
+          }} />
+        </button>
+      </div>
 
-            <div style={{ height: 1, background: '#1a2744', margin: '8px 0' }} />
+      {/* Language */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(124,138,165,0.1)', marginBottom: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 15 }}>🌐</span>
+          <span style={{ fontSize: 13, color: '#EAF2FF', fontFamily: "'Inter', sans-serif" }}>Language</span>
+        </div>
+        <div style={{ display: 'flex', gap: 4, background: 'rgba(0,0,0,0.3)', borderRadius: 8, padding: 3 }}>
+          {(['en', 'ka'] as const).map((lang) => (
+            <button key={lang} onClick={() => i18n.changeLanguage(lang)} style={{
+              padding: '4px 10px', borderRadius: 6, border: 'none', cursor: 'pointer',
+              fontSize: 12, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace",
+              background: currentLang === lang ? 'linear-gradient(135deg, #4C7CFF, #22D3B8)' : 'transparent',
+              color: currentLang === lang ? '#04121A' : '#7C8AA5',
+              transition: 'all 0.15s'
+            }}>
+              {lang === 'en' ? 'EN' : 'ქა'}
+            </button>
+          ))}
+        </div>
+      </div>
 
-            {user ? (
-              <>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', fontSize: 13, color: '#f9fafb' }}>
-                  <div style={{
-                    width: 22, height: 22, borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #4C7CFF, #22D3B8)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 11, fontWeight: 600, color: '#04121A'
-                  }}>
-                    {user.name[0].toUpperCase()}
-                  </div>
-                  {user.name}
-                </div>
-                <Link to="/orders" onClick={closeMenus} style={{
-                  display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px',
-                  borderRadius: 8, color: '#94a3b8', textDecoration: 'none', fontSize: 14
-                }}>
-                  <Package size={14} /> My orders
-                </Link>
-                {user.role === 'ADMIN' && (
-                  <Link to="/admin" onClick={closeMenus} style={{
-                    display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px',
-                    borderRadius: 8, color: '#4d9fff', textDecoration: 'none', fontSize: 14
-                  }}>
-                    <Settings size={14} /> Admin panel
-                  </Link>
-                )}
-                <button onClick={() => {
-                  clearAuth()
-                  useCartStore.getState().clearCart()
-                  closeMenus()
-                  navigate('/')
-                }} style={{
-                  display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px',
-                  borderRadius: 8, color: '#f87171', background: 'none', border: 'none',
-                  cursor: 'pointer', fontSize: 14, textAlign: 'left'
-                }}>
-                  <LogOut size={14} /> Sign out
-                </button>
-              </>
-            ) : (
-              <Link to="/login" onClick={closeMenus} style={{
-                display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px',
-                borderRadius: 8, color: '#f9fafb',
-                background: 'linear-gradient(135deg, rgba(76,124,255,0.25), rgba(34,211,184,0.25))',
-                border: '1px solid rgba(34,211,184,0.35)',
-                textDecoration: 'none', fontSize: 14
-              }}>
-                <User size={14} /> Sign in
+      {/* Currency */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '5px 5px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(124,138,165,0.1)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontSize: 15 }}>💱</span>
+          <span style={{ fontSize: 13, color: '#EAF2FF', fontFamily: "'Inter', sans-serif" }}>Currency</span>
+        </div>
+        <div style={{ display: 'flex', gap: 4, background: 'rgba(0,0,0,0.3)', borderRadius: 8, padding: 3 }}>
+          {(['GEL', 'USD'] as const).map((cur) => (
+            <button key={cur} onClick={() => cur !== currency && toggleCurrency()} style={{
+              padding: '4px 10px', borderRadius: 6, border: 'none', cursor: 'pointer',
+              fontSize: 12, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace",
+              background: currency === cur ? 'linear-gradient(135deg, #4C7CFF, #22D3B8)' : 'transparent',
+              color: currency === cur ? '#04121A' : '#7C8AA5',
+              transition: 'all 0.15s'
+            }}>
+              {cur === 'GEL' ? '₾ GEL' : '$ USD'}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  )}
+</div>
+</div>
+
+  {/* Cart */}
+  <Link to="/cart" onClick={closeMenus} style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: 8, background: 'rgba(255,255,255,0.08)', color: '#94a3b8', textDecoration: 'none' }}>
+    <ShoppingCart size={16} />
+    {itemCount > 0 && (
+      <span style={{ position: 'absolute', top: -4, right: -4, background: '#1d6fe8', color: '#fff', fontSize: 10, width: 16, height: 16, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600 }}>
+        {itemCount > 9 ? '9+' : itemCount}
+      </span>
+    )}
+  </Link>
+
+  {/* User — desktop */}
+  <div style={{ position: 'relative' }}>
+    {user ? (
+      <>
+        <button onClick={() => setUserMenuOpen(!userMenuOpen)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', borderRadius: 8, background: 'rgba(255,255,255,0.08)', border: 'none', color: '#f9fafb', cursor: 'pointer', fontSize: 13 }}>
+          <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg, #4C7CFF, #22D3B8)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 600, color: '#04121A' }}>
+            {user.name[0].toUpperCase()}
+          </div>
+          <span className="plp-desktop-nav">{user.name}</span>
+        </button>
+        {userMenuOpen && (
+          <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, width: 190, background: '#1a2744', border: '1px solid #334155', borderRadius: 12, padding: 4, zIndex: 50, boxShadow: '0 16px 48px rgba(0,0,0,0.4)' }}>
+            <Link to="/orders" onClick={closeMenus} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: 8, color: '#94a3b8', textDecoration: 'none', fontSize: 13 }}>
+              <Package size={13} /> My orders
+            </Link>
+            {user.role === 'ADMIN' && (
+              <Link to="/admin" onClick={closeMenus} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: 8, color: '#4d9fff', textDecoration: 'none', fontSize: 13 }}>
+                <Settings size={13} /> Admin panel
               </Link>
             )}
+            <button onClick={() => { clearAuth(); useCartStore.getState().clearCart(); closeMenus(); navigate('/') }}
+              style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: 8, color: '#f87171', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, width: '100%', textAlign: 'left' }}>
+              <LogOut size={13} /> Sign out
+            </button>
           </div>
+        )}
+      </>
+    ) : (
+      <Link to="/login" onClick={closeMenus} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.08)', color: '#94a3b8', textDecoration: 'none', fontSize: 13 }}>
+        <User size={13} /> Sign in
+      </Link>
+    )}
+  </div>
         </div>
       </nav>
 
