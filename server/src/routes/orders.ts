@@ -20,9 +20,10 @@ const orderSchema = z.object({
 })
 
 // POST /api/orders — create order + Stripe payment intent
-router.post('/', requireAuth, async (req: AuthRequest, res) => {
+router.post('/', requireAuth, async (req, res) => {
   try {
-    const { items, promoCode, shippingAddress } = orderSchema.parse(req.body)
+    const authReq = req as AuthRequest
+    const { items, promoCode, shippingAddress } = orderSchema.parse(authReq.body)
 
     // Fetch parts & validate stock
     const parts = await Promise.all(items.map(async (item) => {
@@ -58,11 +59,10 @@ router.post('/', requireAuth, async (req: AuthRequest, res) => {
     //   metadata: { userId: req.user!.id },
     // })
     const paymentIntent = { id: `mock_${Date.now()}`, client_secret: null }
-
     // Create order
     const order = await prisma.order.create({
       data: {
-        userId: req.user!.id,
+        userId: authReq.user!.id,
         subtotal,
         shipping,
         discount,
@@ -89,9 +89,10 @@ router.post('/', requireAuth, async (req: AuthRequest, res) => {
 })
 
 // GET /api/orders — my orders
-router.get('/', requireAuth, async (req: AuthRequest, res) => {
+router.get('/', requireAuth, async (req, res) => {
+  const authReq = req as AuthRequest
   const orders = await prisma.order.findMany({
-    where: { userId: req.user!.id },
+    where: { userId: authReq.user!.id },
     include: { items: { include: { part: { select: { name: true, images: true } } } } },
     orderBy: { createdAt: 'desc' },
   })
@@ -99,9 +100,10 @@ router.get('/', requireAuth, async (req: AuthRequest, res) => {
 })
 
 // GET /api/orders/:id
-router.get('/:id', requireAuth, async (req: AuthRequest, res) => {
+router.get('/:id', requireAuth, async (req, res) => {
+  const authReq = req as AuthRequest
   const order = await prisma.order.findFirst({
-    where: { id: String(req.params.id), userId: req.user!.id },
+    where: { id: String(req.params.id), userId: authReq.user!.id },
     include: { items: { include: { part: true } } },
   })
   if (!order) return res.status(404).json({ error: 'Order not found' })

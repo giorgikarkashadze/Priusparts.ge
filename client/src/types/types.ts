@@ -98,10 +98,10 @@ export interface User {
   id: string
   email: string
   name: string
-  firstName: string
-  lastName: string
-  role: 'customer' | 'ADMIN'
-  createdAt: string
+  firstName?: string
+  lastName?: string
+  role: 'CUSTOMER' | 'ADMIN'
+  createdAt?: string
 }
 
 export interface AuthTokens {

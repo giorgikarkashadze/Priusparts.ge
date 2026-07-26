@@ -22,7 +22,7 @@ export default function AuthCallbackPage() {
     }
 
     setAuth(
-      { id: id!, name: name!, email: email!, role: role as 'CUSTOMER' | 'CUSTOMER' },
+      { id: id!, name: name!, email: email!, role: role as 'CUSTOMER' | 'ADMIN' },
       access,
       refresh
     )

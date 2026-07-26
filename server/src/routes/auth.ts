@@ -72,8 +72,9 @@ router.post('/refresh', async (req, res) => {
   }
 })
 
-router.get('/me', requireAuth, async (req: AuthRequest, res) => {
-  const user = await prisma.user.findUnique({ where: { id: req.user!.id }, select: { id: true, email: true, name: true, role: true, createdAt: true } })
+router.get('/me', requireAuth, async (req, res) => {
+  const authReq = req as AuthRequest
+  const user = await prisma.user.findUnique({ where: { id: authReq.user!.id }, select: { id: true, email: true, name: true, role: true, createdAt: true } })
   res.json(user)
 })
 

@@ -70,11 +70,12 @@ router.get('/:slug', async (req, res) => {
 // POST /api/products/:id/reviews
 const reviewSchema = z.object({ rating: z.number().min(1).max(5), comment: z.string().optional() })
 
-router.post('/:id/reviews', requireAuth, async (req: AuthRequest, res) => {
+router.post('/:id/reviews', requireAuth, async (req, res) => {
   try {
     const { rating, comment } = reviewSchema.parse(req.body)
+    const authReq = req as AuthRequest
     const review = await prisma.review.create({
-      data: { partId: String(req.params.id), userId: req.user!.id, rating, comment },
+      data: { partId: String(req.params.id), userId: authReq.user!.id, rating, comment },
       include: { user: { select: { name: true } } },
     })
     res.status(201).json(review)
