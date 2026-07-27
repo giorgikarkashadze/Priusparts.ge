@@ -1,7 +1,7 @@
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom'
 import { ShoppingCart, Sun, Moon, User, LogOut, Settings, Package, Menu, X } from 'lucide-react'
 import { useState } from 'react'
-import { useCartStore, useAuthStore, useThemeStore, useCurrencyStore } from '@/store'
+import { useCartStore, useAuthStore, useThemeStore } from '@/store'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useRef } from 'react'
 
@@ -15,7 +15,7 @@ export default function Layout() {
   const navigate = useNavigate()
   const location = useLocation()
   const { t } = useTranslation()
-  const { currency, toggle: toggleCurrency } = useCurrencyStore()
+  // const { currency, toggle: toggleCurrency } = useCurrencyStore()
   const { i18n } = useTranslation()
   const currentLang = i18n.language?.startsWith('ka') ? 'ka' : 'en'
   const settingsRef = useRef<HTMLDivElement>(null)
@@ -226,7 +226,7 @@ export default function Layout() {
       </div>
 
       {/* Language */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(124,138,165,0.1)', marginBottom: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 12px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(124,138,165,0.1)', marginBottom: 5 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: 15 }}>🌐</span>
           <span style={{ fontSize: 13, color: '#EAF2FF', fontFamily: "'Inter', sans-serif" }}>Language</span>
@@ -247,7 +247,7 @@ export default function Layout() {
       </div>
 
       {/* Currency */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '5px 5px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(124,138,165,0.1)' }}>
+      {/* <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '5px 5px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(124,138,165,0.1)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: 15 }}>💱</span>
           <span style={{ fontSize: 13, color: '#EAF2FF', fontFamily: "'Inter', sans-serif" }}>Currency</span>
@@ -265,7 +265,7 @@ export default function Layout() {
             </button>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   )}
 </div>

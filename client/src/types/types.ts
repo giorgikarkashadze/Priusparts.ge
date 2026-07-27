@@ -167,6 +167,8 @@ export interface FilterState {
   makeId: string
   modelId: string
   year: string
+  yearFrom: string
+  yearTo: string 
   category: string
   minPrice: string
   maxPrice: string

@@ -9,7 +9,7 @@ const prisma = new PrismaClient()
 // GET /api/products — list with filters
 router.get('/', async (req, res) => {
   try {
-    const { category, makeId, modelId, year, minPrice, maxPrice, search, page = '1', limit = '20', sort } = req.query as Record<string, string>
+    const { category, makeId, modelId, year, yearFrom, yearTo, minPrice, maxPrice, search, page = '1', limit = '20', sort } = req.query as Record<string, string>
     const skip = (parseInt(page) - 1) * parseInt(limit)
 
     const where: any = { isActive: true }
@@ -17,6 +17,20 @@ router.get('/', async (req, res) => {
     if (search) where.name = { contains: search, mode: 'insensitive' }
     if (minPrice || maxPrice) where.price = { gte: minPrice ? parseFloat(minPrice) : undefined, lte: maxPrice ? parseFloat(maxPrice) : undefined }
     if (modelId) where.compatibility = { some: { modelId } }
+    if (yearFrom || yearTo) {
+      where.compatibility = {
+        some: {
+          years: {
+            hasSome: Array.from(
+              { length: (Number(yearTo || 2024) - Number(yearFrom || 2008)) + 1 },
+              (_, i) => Number(yearFrom || 2008) + i
+            )
+          }
+        }
+      }
+    } else if (modelId) {
+      where.compatibility = { some: { modelId } }
+    }
 
     const orderBy: any =
       sort === 'price_asc' ? { price: 'asc' }

@@ -19,6 +19,8 @@ export default function CatalogPage() {
     makeId: searchParams.get('makeId') || '',
     modelId: searchParams.get('modelId') || '',
     year: searchParams.get('year') || '',
+    yearFrom: searchParams.get('yearFrom') || '',
+    yearTo: searchParams.get('yearTo') || '',
     category: searchParams.get('category') || '',
     minPrice: searchParams.get('minPrice') || '',
     maxPrice: searchParams.get('maxPrice') || '',
@@ -248,6 +250,11 @@ export default function CatalogPage() {
             {filters.search && (
               <span className="chip" style={{ background: 'rgba(34,211,184,0.1)', color: '#22D3B8', borderColor: 'rgba(34,211,184,0.25)' }} onClick={() => updateFilters({ search: '' })}>
                 "{filters.search}" <X size={10} />
+              </span>
+            )}
+            {(filters.yearFrom || filters.yearTo) && (
+              <span className="chip" onClick={() => updateFilters({ yearFrom: '', yearTo: '' })}>
+                {filters.yearFrom || '2008'} — {filters.yearTo || '2024'} <X size={10} />
               </span>
             )}
           </div>

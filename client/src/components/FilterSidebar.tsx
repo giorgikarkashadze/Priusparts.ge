@@ -3,12 +3,14 @@ import { useCategories } from '@/hooks/useProducts'
 import type { FilterState } from '@/types/types'
 import { useTranslation } from 'react-i18next'
 
-const GENERATIONS = [
-  { label: 'Gen 2 (2008–2009)', years: [2008, 2009] },
-  { label: 'Gen 3 (2010–2015)', years: [2010, 2011, 2012, 2013, 2014, 2015] },
-  { label: 'Gen 4 (2016–2022)', years: [2016, 2017, 2018, 2019, 2020, 2021, 2022] },
-  { label: 'Gen 5 (2023+)', years: [2023, 2024] },
-]
+// const GENERATIONS = [
+//   { label: 'Gen 2 (2008–2009)', years: [2008, 2009] },
+//   { label: 'Gen 3 (2010–2015)', years: [2010, 2011, 2012, 2013, 2014, 2015] },
+//   { label: 'Gen 4 (2016–2022)', years: [2016, 2017, 2018, 2019, 2020, 2021, 2022] },
+//   { label: 'Gen 5 (2023+)', years: [2023, 2024] },
+// ]
+
+const ALL_YEARS = Array.from({ length: 2024 - 2008 + 1 }, (_, i) => 2008 + i)
 
 interface Props {
   filters: FilterState
@@ -53,20 +55,55 @@ export default function FilterSidebar({ filters, onChange }: Props) {
         background: 'linear-gradient(90deg, #4C7CFF, #22D3B8)',
       }} />
 
-      {/* Year */}
+      {/* Year range */}
       <div style={{ marginBottom: 20 }}>
-        <span style={sectionLabel}>{t('catalog.priusYear')}</span>
-        <select style={selectStyle} value={filters.year}
-          onChange={(e) => onChange({ year: e.target.value })}>
-          <option value="">{t('catalog.allYears')}</option>
-          {GENERATIONS.map(gen => (
-            <optgroup key={gen.label} label={gen.label} style={{ background: '#0a0f1e' }}>
-              {gen.years.map(y => (
-                <option key={y} value={String(y)} style={{ background: '#0a0f1e' }}>{y}</option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
+        <span style={sectionLabel}>Prius Year</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <select
+            style={{ ...selectStyle, marginBottom: 0, flex: 1 }}
+            value={filters.yearFrom}
+            onChange={(e) => {
+              const from = e.target.value
+              // if yearTo is less than new yearFrom, reset yearTo
+              if (filters.yearTo && Number(from) > Number(filters.yearTo)) {
+                onChange({ yearFrom: from, yearTo: '' })
+              } else {
+                onChange({ yearFrom: from })
+              }
+            }}
+          >
+            <option value="">From</option>
+            {ALL_YEARS.map(y => (
+              <option key={y} value={String(y)}
+                disabled={filters.yearTo ? y > Number(filters.yearTo) : false}>
+                {y}
+              </option>
+            ))}
+          </select>
+
+          <span style={{ color: '#4A5670', fontFamily: "'JetBrains Mono', monospace", flexShrink: 0 }}>—</span>
+
+          <select
+            style={{ ...selectStyle, marginBottom: 0, flex: 1 }}
+            value={filters.yearTo}
+            onChange={(e) => onChange({ yearTo: e.target.value })}
+          >
+            <option value="">To</option>
+            {ALL_YEARS.map(y => (
+              <option key={y} value={String(y)}
+                disabled={filters.yearFrom ? y < Number(filters.yearFrom) : false}>
+                {y}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Show selected range */}
+        {(filters.yearFrom || filters.yearTo) && (
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#22D3B8', marginTop: 6 }}>
+            {filters.yearFrom || '2008'} → {filters.yearTo || '2024'}
+          </div>
+        )}
       </div>
 
       {/* Category */}

@@ -38,6 +38,8 @@ const partSchema = z.object({
   comparePrice: z.string().optional(),
   stock: z.string().min(1, "Stock is required"),
   categoryId: z.string().min(1, "Select a category"),
+  yearFrom: z.string().optional(),
+  yearTo: z.string().optional()
 });
 
 type PartForm = z.infer<typeof partSchema>;
@@ -301,6 +303,8 @@ function DashboardTab() {
 }
 
 // ─── Inventory ────────────────────────────────────────────────────────────────
+const ALL_YEARS = Array.from({ length: 2024 - 2008 + 1 }, (_, i) => 2008 + i)
+
 function InventoryTab() {
   const qc = useQueryClient();
   const [showForm, setShowForm] = useState(false);
@@ -345,6 +349,13 @@ function InventoryTab() {
       if (isNaN(price) || price <= 0) throw new Error("Invalid price");
       if (isNaN(stock) || stock < 0) throw new Error("Invalid stock");
 
+      const yearFrom = data.yearFrom ? parseInt(data.yearFrom) : 2008
+      const yearTo = data.yearTo ? parseInt(data.yearTo) : 2024
+      const years = Array.from(
+        { length: yearTo - yearFrom + 1 },
+        (_, i) => yearFrom + i
+      )
+
       const payload = {
         name: data.name,
         nameKa: data.nameKa,
@@ -356,6 +367,7 @@ function InventoryTab() {
         stock,
         comparePrice,
         images: imageUrl ? [imageUrl] : [],
+        years
       };
 
       if (editId) return api.put(`/admin/parts/${editId}`, payload);
@@ -526,6 +538,26 @@ function InventoryTab() {
                 </Field>
               </div>
 
+              <div style={labelSt}>
+                <Field label="Compatible from year">
+                  <select {...register('yearFrom')} style={{ ...getInput('yearFrom'), cursor: 'pointer' }}
+                    onFocus={() => setFocusedField('yearFrom')} onBlur={() => setFocusedField(null)}>
+                    <option value="">From year</option>
+                    {ALL_YEARS.map(y => <option key={y} value={String(y)}>{y}</option>)}
+                  </select>
+                </Field>
+              </div>
+
+              <div style={labelSt}>
+                <Field label="Compatible to year">
+                  <select {...register('yearTo')} style={{ ...getInput('yearTo'), cursor: 'pointer' }}
+                    onFocus={() => setFocusedField('yearTo')} onBlur={() => setFocusedField(null)}>
+                    <option value="">To year</option>
+                    {ALL_YEARS.map(y => <option key={y} value={String(y)}>{y}</option>)}
+                  </select>
+                </Field>
+              </div>
+
               {/* OEM number */}
               <Field label="OEM number" error={errors.oemNumber?.message}>
                 <input
@@ -690,7 +722,7 @@ function InventoryTab() {
         >
           <thead>
             <tr style={{ background: "#0a0f1e" }}>
-              {["Name", "Category", "Price", "Stock", "Actions"].map((h) => (
+              {['Name', 'Category', 'Years', 'Price', 'Stock', 'Actions'].map((h) => (
                 <th
                   key={h}
                   style={{
@@ -789,6 +821,14 @@ function InventoryTab() {
                     >
                       {part.category?.name}
                     </span>
+                  </td>
+                  <td style={{ padding: '14px 16px', color: '#4C7CFF', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>
+                    {part.compatibility && part.compatibility.length > 0 ? (() => {
+                      const allYears = part.compatibility.flatMap((c: any) => c.years).sort((a: number, b: number) => a - b)
+                      const min = allYears[0]
+                      const max = allYears[allYears.length - 1]
+                      return min === max ? String(min) : `${min}–${max}`
+                    })() : '—'}
                   </td>
                   <td
                     style={{

@@ -9,7 +9,7 @@ import api from '@/lib/api'
 import { useTranslation } from 'react-i18next'
 
 
-const BACKEND_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:4000'
+const BACKEND_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:4000/api'
 
 const loginSchema = z.object({
   email: z.string().email('Enter a valid email'),

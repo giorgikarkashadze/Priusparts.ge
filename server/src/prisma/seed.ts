@@ -19,7 +19,7 @@ async function main() {
     prisma.category.upsert({ where: { slug: 'engine' }, update: {}, create:      { name: 'Engine',        nameKa: 'ძრავი',               slug: 'engine', icon: '🔧' } }),
     prisma.category.upsert({ where: { slug: 'brakes' }, update: {}, create:      { name: 'Brakes',        nameKa: 'სამუხრუჭე სისტემა',          slug: 'brakes', icon: '🛞' } }),
     prisma.category.upsert({ where: { slug: 'suspension' }, update: {}, create:  { name: 'Suspension',    nameKa: 'საშუალო სისტემა',    slug: 'suspension', icon: '⚙️' } }),
-    prisma.category.upsert({ where: { slug: 'electrical' }, update: {}, create:  { name: 'Electrical',    nameKa: 'ელექტრონიკა',   slug: 'electrical', icon: '⚡' } }),
+    prisma.category.upsert({ where: { slug: 'electrical' }, update: {}, create:  { name: 'Electrical',    nameKa: 'ელექტროობა',   slug: 'electrical', icon: '⚡' } }),
     prisma.category.upsert({ where: { slug: 'filters' }, update: {}, create:     { name: 'Filters',       nameKa: 'ფილტრები',          slug: 'filters', icon: '🌀' } }),
     prisma.category.upsert({ where: { slug: 'hybrid' }, update: {}, create:      { name: 'Hybrid System', nameKa: 'ჰიბრიდული სისტემა', slug: 'hybrid', icon: '🔋' } }),
   ])

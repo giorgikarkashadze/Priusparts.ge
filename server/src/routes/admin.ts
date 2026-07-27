@@ -51,12 +51,26 @@ router.get('/parts', async (_req, res) => {
 
 router.post('/parts', async (req, res) => {
   try {
+    const { years, ...partData } = req.body
     const data = partSchema.parse(req.body)
     const slug = data.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
     const part = await prisma.part.create({
       data: { ...data, slug, images: data.images || [] },
       include: { category: true }
     })
+
+    if (years && years.length > 0) {
+      const models = await prisma.model.findMany()
+      for (const model of models) {
+        const compatibleYears = (years as number[]).filter(y => model.years.includes(y))
+        if (compatibleYears.length > 0) {
+          await prisma.partCompatibility.create({
+            data: { partId: part.id, modelId: model.id, years: compatibleYears }
+          })
+        }
+      }
+    }
+
     res.status(201).json(part)
   } catch (e) {
     if (e instanceof z.ZodError) return res.status(400).json({ error: e.issues })
@@ -66,12 +80,31 @@ router.post('/parts', async (req, res) => {
 
 router.put('/parts/:id', async (req, res) => {
   try {
+    const { years, ...partData } = req.body
     const data = partSchema.partial().parse(req.body)
     const part = await prisma.part.update({
       where: { id: req.params.id },
       data,
       include: { category: true }
     })
+
+    // Update compatibility years
+    if (years && years.length > 0) {
+      // Delete existing compatibility
+      await prisma.partCompatibility.deleteMany({ where: { partId: part.id } })
+
+      // Recreate with new years
+      const models = await prisma.model.findMany()
+      for (const model of models) {
+        const compatibleYears = (years as number[]).filter(y => model.years.includes(y))
+        if (compatibleYears.length > 0) {
+          await prisma.partCompatibility.create({
+            data: { partId: part.id, modelId: model.id, years: compatibleYears }
+          })
+        }
+      }
+    }
+
     res.json(part)
   } catch (e) {
     if (e instanceof z.ZodError) return res.status(400).json({ error: e.issues })

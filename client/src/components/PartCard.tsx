@@ -76,10 +76,11 @@ export default function PartCard({ part }: { part: Part }) {
       <div className="part-card-hud"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        style={{ height: 380, display: 'flex', flexDirection: 'column' }}
       >
         {/* Thumbnail */}
-        <Link to={`/catalog/${part.slug}`} style={{ display: 'block', textDecoration: 'none' }}>
-          <div style={{ height: 200, background: '#0a0f1e', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+        <Link to={`/catalog/${part.slug}`} style={{ display: 'block', textDecoration: 'none', flexShrink: 0 }}>
+          <div style={{ height: 160, background: '#0a0f1e', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
             {part.images?.[0] ? (
               <img src={part.images[0]} alt={part.name}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s ease', transform: hovered ? 'scale(1.05)' : 'scale(1)' }} />
@@ -124,7 +125,7 @@ export default function PartCard({ part }: { part: Part }) {
         </Link>
 
         {/* Info */}
-        <div style={{ padding: '10px 12px 12px' }}>
+        <div style={{ padding: '10px 12px 12px', display: 'flex', flexDirection: 'column', flex: 1 }}>
           {/* Category */}
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#22D3B8', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>
             {getCategoryName(part.category, i18n.language)}
@@ -136,7 +137,7 @@ export default function PartCard({ part }: { part: Part }) {
               fontSize: 13, fontWeight: 600, color: '#EAF2FF', lineHeight: 1.4, marginBottom: 4,
               fontFamily: "'Inter', sans-serif",
               display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden',
-              transition: 'color 0.15s'
+              transition: 'color 0.15s', minHeight: 36,
             }}>
               {getPartName(part, i18n.language)}
             </div>
@@ -144,8 +145,8 @@ export default function PartCard({ part }: { part: Part }) {
 
           {/* OEM */}
           {part.oemNumber && (
-            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#4A5670', marginBottom: 8 }}>
-              {part.oemNumber}
+            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#96a0b4', marginBottom: 8, minHeight: 16 }}>
+              OEM: {part.oemNumber || ''}
             </div>
           )}
 
@@ -158,7 +159,7 @@ export default function PartCard({ part }: { part: Part }) {
           </div>
 
           {/* Price + Add */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
             <div>
               <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, fontWeight: 700, color: '#4C7CFF' }}>
                 {formatPrice(part.price)}
