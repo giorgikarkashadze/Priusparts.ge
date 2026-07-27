@@ -311,7 +311,7 @@ function InventoryTab() {
   const [editId, setEditId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrls, setImageUrls] = useState<string[]>([''])
 
   const { data: parts, isLoading } = useQuery<Part[]>({
     queryKey: ["admin-parts"],
@@ -349,6 +349,7 @@ function InventoryTab() {
       if (isNaN(price) || price <= 0) throw new Error("Invalid price");
       if (isNaN(stock) || stock < 0) throw new Error("Invalid stock");
 
+      const validImages = imageUrls.filter(url => url.trim() !== '')
       const yearFrom = data.yearFrom ? parseInt(data.yearFrom) : 2008
       const yearTo = data.yearTo ? parseInt(data.yearTo) : 2024
       const years = Array.from(
@@ -366,7 +367,7 @@ function InventoryTab() {
         price,
         stock,
         comparePrice,
-        images: imageUrl ? [imageUrl] : [],
+        images: validImages,
         years
       };
 
@@ -377,7 +378,7 @@ function InventoryTab() {
       qc.invalidateQueries({ queryKey: ["admin-parts"] });
       setShowForm(false);
       setEditId(null);
-      setImageUrl("");
+      setImageUrls(['']);
       reset();
     },
   });
@@ -613,27 +614,64 @@ function InventoryTab() {
                   />
                 </div>
               </Field>
-              <Field label="Image URL">
-                <input
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="https://example.com/image.jpg"
-                  style={inputSt}
-                />
-                {imageUrl && (
-                  <img
-                    src={imageUrl}
-                    alt="Preview"
-                    style={{
-                      marginTop: 8,
-                      height: 80,
-                      borderRadius: 8,
-                      objectFit: "cover",
-                    }}
-                    onError={(e) => (e.currentTarget.style.display = "none")}
-                  />
-                )}
-              </Field>
+              {/* Multiple image URLs */}
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={labelSt}>
+                    Part images
+                    <span style={{ color: '#4A5670', fontWeight: 400, marginLeft: 6, fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }}>
+                      (add up to 5 image URLs)
+                    </span>
+                  </label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {imageUrls.map((url, index) => (
+                      <div key={index} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                        <div style={{ position: 'relative', flex: 1 }}>
+                          <input
+                            value={url}
+                            onChange={(e) => {
+                              const updated = [...imageUrls]
+                              updated[index] = e.target.value
+                              setImageUrls(updated)
+                            }}
+                            placeholder={`Image URL ${index + 1}...`}
+                            style={inputSt}
+                          />
+                        </div>
+                        {/* Preview */}
+                        {url && (
+                          <img
+                            src={url}
+                            alt=""
+                            style={{ width: 48, height: 48, borderRadius: 8, objectFit: 'contain', background: '#0f172a', border: '1px solid #1e293b', flexShrink: 0 }}
+                            onError={(e) => (e.currentTarget.style.display = 'none')}
+                            onLoad={(e) => (e.currentTarget.style.display = 'block')}
+                          />
+                        )}
+                        {/* Remove button — only show if more than 1 field */}
+                        {imageUrls.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => setImageUrls(imageUrls.filter((_, i) => i !== index))}
+                            style={{ width: 32, height: 32, borderRadius: 7, border: '1px solid rgba(239,68,68,0.3)', background: 'rgba(239,68,68,0.08)', color: '#f87171', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+
+                    {/* Add another URL button */}
+                    {imageUrls.length < 5 && (
+                      <button
+                        type="button"
+                        onClick={() => setImageUrls([...imageUrls, ''])}
+                        style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 12px', borderRadius: 8, border: '1px dashed rgba(34,211,184,0.3)', background: 'transparent', color: '#22D3B8', cursor: 'pointer', fontSize: 12, fontFamily: 'JetBrains Mono', width: 'fit-content' }}
+                      >
+                        <Plus size={13} /> Add another image
+                      </button>
+                    )}
+                  </div>
+                </div>
               {/* Compare price */}
               <Field label="Compare price — original (optional)">
                 <div style={{ position: "relative" }}>

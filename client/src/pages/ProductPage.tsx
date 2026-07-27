@@ -5,7 +5,7 @@ import { usePart } from '@/hooks/useProducts'
 import { useCartStore } from '@/store'
 import { formatPrice, discount } from '@/lib/utils'
 import { useTranslation } from 'react-i18next'
-import { getPartName, getPartDescription } from '@/hooks/usePartLocale'
+import { getPartName, getPartDescription, getCategoryName } from '@/hooks/usePartLocale'
 
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -171,13 +171,13 @@ export default function ProductPage() {
 
         {/* Breadcrumb */}
         <nav style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 28, animation: 'fade-up 0.3s ease-out both' }}>
-          <Link to="/" className="breadcrumb-link">Home</Link>
+          <Link to="/" className="breadcrumb-link">{t('product.nav.home')}</Link>
           <ChevronRight size={12} style={{ color: '#1e293b' }} />
-          <Link to="/catalog" className="breadcrumb-link">Catalog</Link>
+          <Link to="/catalog" className="breadcrumb-link">{t('product.nav.catalog')}</Link>
           <ChevronRight size={12} style={{ color: '#1e293b' }} />
-          <Link to={`/catalog?category=${part.category?.slug}`} className="breadcrumb-link">{part.category?.name}</Link>
+          <Link to={`/catalog?category=${part.category?.slug}`} className="breadcrumb-link">{getCategoryName(part.category, i18n.language)}</Link>
           <ChevronRight size={12} style={{ color: '#1e293b' }} />
-          <span style={{ fontSize: 12, color: '#7C8AA5', fontFamily: "'Inter', sans-serif" }}>{part.name}</span>
+          <span style={{ fontSize: 12, color: '#7C8AA5', fontFamily: "'Inter', sans-serif" }}>{getPartName(part, i18n.language)}</span>
         </nav>
 
         {/* Main grid */}
@@ -271,7 +271,7 @@ export default function ProductPage() {
             {/* Category tag */}
             <div>
               <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#22D3B8', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-                // {part.category?.name}
+                // {getCategoryName(part.category, i18n.language)}
               </span>
             </div>
 

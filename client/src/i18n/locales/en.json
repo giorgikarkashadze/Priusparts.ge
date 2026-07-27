@@ -82,6 +82,10 @@
     "priceMax": "Max"
   },
   "product": {
+    "nav": {
+      "home": "Home",
+      "catalog": "Catalog"
+    },
     "addToCart": "Add to cart",
     "added": "Added!",
     "outOfStock": "OUT OF STOCK",
