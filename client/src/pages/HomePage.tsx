@@ -16,15 +16,8 @@ export default function HomePage() {
   const [search, setSearch] = useState('')
   const navigate = useNavigate()
   const { data: categories } = useCategories()
-  const { data: popular } = useProducts({ sort: 'newest', limit: '20' } as any)
+  const { data: popular } = useProducts({ sort: 'newest', limit: '5' } as any)
   const { t } = useTranslation()
-  const itemsPerPage = 4;
-  const [page, setPage] = useState(0);
-
-  const visibleProducts = popular?.data.slice(
-  page * itemsPerPage,
-  (page + 1) * itemsPerPage
-);
 
   const FEATURES = [
   { icon: Shield, title: t('home.WhyusSection.first.title'), desc: t('home.WhyusSection.first.desc') },
@@ -40,58 +33,6 @@ export default function HomePage() {
 
   return (
     <div>
-
-    <style>{`
-    .nav-button-left {
-      position: 'absolute';
-      left: '-70px';
-      top: '50%';
-      transform: 'translateY(-50%)';
-
-      width: '52px';
-      height: '52px';
-      border-radius: '50%';
-      border: 'none';
-
-      background: '#171c28';
-      color: '#fff';
-      font-size: '24px';
-      cursor: 'pointer';
-
-      display: 'flex';
-      justify-content: 'center';
-      align-items: 'center';
-
-      transition: 'all .25s ease';
-      box-shadow: '0 8px 24px rgba(0,0,0,.35)';
-    }
-
-    .nav-button-right {
-      position: 'absolute';
-      right: '-70px';
-      top: '50%';
-      transform: 'translateY(-50%)';
-
-      width: '52px';
-      height: '52px';
-      border-radius: '50%';
-      border: 'none';
-
-      background: '#171c28';
-      color: '#fff';
-      font-size: '24px';
-      cursor: 'pointer';
-
-      display: 'flex';
-      justify-content: 'center';
-      align-items: 'center';
-
-      transition: 'all .25s ease';
-      box-shadow: '0 8px 24px rgba(0,0,0,.35)';
-    }
-  `}</style>
-
-
       {/* Hero */}
       <section style={{
         background: 'linear-gradient(135deg, #0a0f1e 0%, #1e1b4b 50%, #0a0f1e 100%)',
@@ -228,28 +169,9 @@ export default function HomePage() {
                 {t('home.sections.viewAll')}
               </Link>
             </div>
-
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
-              <button
-                disabled={page === 0}
-                onClick={() => setPage((p) => p - 1)}
-                className="nav-button-left"
-              >
-                Previous
-              </button>
-
-              {visibleProducts && visibleProducts.map((part) => 
-              <PartCard key={part.id} part={part} />)}
-
-              <button
-                disabled={(page + 1) * itemsPerPage >= (popular?.data.length ?? 0)}
-                onClick={() => setPage((p) => p + 1)}
-                className="nav-button-right"
-              >
-                Next
-              </button>
+              {popular.data.map((part) => <PartCard key={part.id} part={part} />)}
             </div>
-
           </section>
         )}
 
