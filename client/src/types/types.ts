@@ -137,6 +137,7 @@ export interface PaginatedResponse<T> {
   data: T[]
   total: number
   page: number
+  pages: number
   pageSize: number
   totalPages: number
 }

@@ -28,13 +28,15 @@ export default function CatalogPage() {
     sort: searchParams.get('sort') || 'newest',
   })
 
+  const ITEMS_PER_PAGE = 20
+
   const SORTS = [
   { value: 'newest', label: t('catalog.newestFirst') },
   { value: 'price_asc', label: t('catalog.priceLow') },
   { value: 'price_desc', label: t('catalog.priceHigh') },
  ]
 
-  const { data, isLoading } = useProducts({ ...filters, page })
+  const { data, isLoading } = useProducts({ ...filters, page, limit: String(ITEMS_PER_PAGE) })
 
   const updateFilters = (updates: Partial<FilterState>) => {
     setFilters((prev) => ({ ...prev, ...updates }))
@@ -316,7 +318,87 @@ export default function CatalogPage() {
               </div>
             )}
           </div>
+          {/* Pagination */}
         </div>
+        {data && data.pages > 1  && (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, marginTop: 40 }}>
+
+          {/* Prev button */}
+          <button
+            onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+            disabled={page === 1}
+            style={{
+              padding: '8px 14px', borderRadius: 8, border: '1px solid rgba(124,138,165,0.2)',
+              background: 'transparent', color: page === 1 ? '#4A5670' : '#EAF2FF',
+              cursor: page === 1 ? 'not-allowed' : 'pointer', fontSize: 13,
+              fontFamily: "'JetBrains Mono', monospace", opacity: page === 1 ? 0.4 : 1,
+              transition: 'all 0.15s'
+            }}>
+            ← PREV
+          </button>
+
+          {/* Page numbers */}
+          <div style={{ display: 'flex', gap: 4 }}>
+            {Array.from({ length: data.pages }).map((_, i) => {
+              const pageNum = i + 1
+              // Show first, last, current and neighbors — hide others with ellipsis
+              const showPage = pageNum === 1 || pageNum === data.pages ||
+                Math.abs(pageNum - page) <= 1
+
+              if (!showPage) {
+                // Show ellipsis only once between gaps
+                if (pageNum === 2 || pageNum === data.pages - 1) {
+                  return (
+                    <span key={i} style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4A5670', fontFamily: "'JetBrains Mono', monospace", fontSize: 13 }}>
+                      …
+                    </span>
+                  )
+                }
+                return null
+              }
+
+              return (
+                <button
+                  key={i}
+                  onClick={() => { setPage(pageNum); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+                  style={{
+                    width: 36, height: 36, borderRadius: 8, cursor: 'pointer',
+                    fontSize: 13, fontWeight: page === pageNum ? 700 : 400,
+                    fontFamily: "'JetBrains Mono', monospace",
+                    background: page === pageNum
+                      ? 'linear-gradient(135deg, #4C7CFF, #22D3B8)'
+                      : 'rgba(255,255,255,0.04)',
+                    color: page === pageNum ? '#04121A' : '#7C8AA5',
+                    border: page === pageNum ? 'none' : '1px solid rgba(124,138,165,0.2)',
+                    transition: 'all 0.15s',
+                    boxShadow: page === pageNum ? '0 4px 12px rgba(76,124,255,0.4)' : 'none'
+                  }}>
+                  {pageNum}
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Next button */}
+          <button
+            onClick={() => { setPage(p => Math.min(data.pages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+            disabled={page === data.pages}
+            style={{
+              padding: '8px 14px', borderRadius: 8, border: '1px solid rgba(124,138,165,0.2)',
+              background: 'transparent', color: page === data.pages ? '#4A5670' : '#EAF2FF',
+              cursor: page === data.pages ? 'not-allowed' : 'pointer', fontSize: 13,
+              fontFamily: "'JetBrains Mono', monospace", opacity: page === data.pages ? 0.4 : 1,
+              transition: 'all 0.15s'
+            }}>
+            NEXT →
+          </button>
+
+          {/* Page info */}
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#4A5670', marginLeft: 8 }}>
+            {((page - 1) * ITEMS_PER_PAGE) + 1}–{Math.min(page * ITEMS_PER_PAGE, data.total)} / {data.total}
+          </div>
+        </div>
+      )}
       </div>
     </div>
   )

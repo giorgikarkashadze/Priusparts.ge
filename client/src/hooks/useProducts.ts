@@ -2,11 +2,13 @@ import { useQuery } from '@tanstack/react-query'
 import api from '@/lib/api'
 import type { PaginatedResponse, Part, Category, Make, FilterState  } from '../types/types'
 
-export function useProducts(filters: Partial<FilterState> & { page?: number }) {
+export function useProducts(filters: Partial<FilterState> & { page?: number; pages?: number; limit?: string }) {
   return useQuery<PaginatedResponse<Part>>({
     queryKey: ['products', filters],
     queryFn: async () => {
-      const params = Object.fromEntries(Object.entries(filters).filter(([, v]) => v))
+      const params = Object.fromEntries(
+        Object.entries(filters).filter(([, v]) => v !== '' && v !== undefined)
+      )
       const { data } = await api.get('/products', { params })
       return data
     },
