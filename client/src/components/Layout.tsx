@@ -297,23 +297,23 @@ export default function Layout() {
         {userMenuOpen && (
           <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, width: 190, background: '#1a2744', border: '1px solid #334155', borderRadius: 12, padding: 4, zIndex: 50, boxShadow: '0 16px 48px rgba(0,0,0,0.4)' }}>
             <Link to="/orders" onClick={closeMenus} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: 8, color: '#94a3b8', textDecoration: 'none', fontSize: 13 }}>
-              <Package size={13} /> My orders
+              <Package size={13} /> {t('nav.myOrders')}
             </Link>
             {user.role === 'ADMIN' && (
               <Link to="/admin" onClick={closeMenus} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: 8, color: '#4d9fff', textDecoration: 'none', fontSize: 13 }}>
-                <Settings size={13} /> Admin panel
+                <Settings size={13} /> {t('nav.adminPanel')}
               </Link>
             )}
             <button onClick={() => { clearAuth(); useCartStore.getState().clearCart(); closeMenus(); navigate('/') }}
               style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: 8, color: '#f87171', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, width: '100%', textAlign: 'left' }}>
-              <LogOut size={13} /> Sign out
+              <LogOut size={13} /> {t('nav.signOut')}
             </button>
           </div>
         )}
       </>
     ) : (
       <Link to="/login" onClick={closeMenus} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.08)', color: '#94a3b8', textDecoration: 'none', fontSize: 13 }}>
-        <User size={13} /> Sign in
+        <User size={13} /> {t('nav.signIn')}
       </Link>
     )}
   </div>
