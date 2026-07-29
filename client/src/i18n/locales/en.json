@@ -75,11 +75,15 @@
     "clearFilters": "CLEAR FILTERS",
     "allParts": "All parts",
     "allYears": "All years (2008–2024)",
-    "priusYear": "Prius Year",
+    "year": "Year",
+    "from": "from",
+    "to": "to",
     "category": "Category",
     "priceRange": "Price Range",
     "priceMin": "Min",
-    "priceMax": "Max"
+    "priceMax": "Max",
+    "next": "NEXT",
+    "previous": "PREV"
   },
   "product": {
     "nav": {

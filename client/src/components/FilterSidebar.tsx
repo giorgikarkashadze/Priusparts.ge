@@ -49,62 +49,12 @@ export default function FilterSidebar({ filters, onChange }: Props) {
       border: '1px solid rgba(124,138,165,0.12)', borderRadius: 14,
       padding: 16, position: 'relative', overflow: 'hidden'
     }}>
+
       {/* Top energy line */}
       <div style={{
         position: 'absolute', top: 0, left: 0, right: 0, height: 2,
         background: 'linear-gradient(90deg, #4C7CFF, #22D3B8)',
       }} />
-
-      {/* Year range */}
-      <div style={{ marginBottom: 20 }}>
-        <span style={sectionLabel}>Prius Year</span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <select
-            style={{ ...selectStyle, marginBottom: 0, flex: 1 }}
-            value={filters.yearFrom}
-            onChange={(e) => {
-              const from = e.target.value
-              // if yearTo is less than new yearFrom, reset yearTo
-              if (filters.yearTo && Number(from) > Number(filters.yearTo)) {
-                onChange({ yearFrom: from, yearTo: '' })
-              } else {
-                onChange({ yearFrom: from })
-              }
-            }}
-          >
-            <option value="">From</option>
-            {ALL_YEARS.map(y => (
-              <option key={y} value={String(y)}
-                disabled={filters.yearTo ? y > Number(filters.yearTo) : false}>
-                {y}
-              </option>
-            ))}
-          </select>
-
-          <span style={{ color: '#4A5670', fontFamily: "'JetBrains Mono', monospace", flexShrink: 0 }}>—</span>
-
-          <select
-            style={{ ...selectStyle, marginBottom: 0, flex: 1 }}
-            value={filters.yearTo}
-            onChange={(e) => onChange({ yearTo: e.target.value })}
-          >
-            <option value="">To</option>
-            {ALL_YEARS.map(y => (
-              <option key={y} value={String(y)}
-                disabled={filters.yearFrom ? y < Number(filters.yearFrom) : false}>
-                {y}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Show selected range */}
-        {(filters.yearFrom || filters.yearTo) && (
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#22D3B8', marginTop: 6 }}>
-            {filters.yearFrom || '2008'} → {filters.yearTo || '2024'}
-          </div>
-        )}
-      </div>
 
       {/* Category */}
       <div style={{ marginBottom: 20 }}>
@@ -155,6 +105,57 @@ export default function FilterSidebar({ filters, onChange }: Props) {
             onChange={(e) => onChange({ maxPrice: e.target.value })}
             style={{ ...inputStyle, width: '50%' }} />
         </div>
+      </div>
+
+      {/* Year range */}
+      <div style={{ marginBottom: 20 }}>
+        <span style={sectionLabel}>{t('catalog.year')}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <select
+            style={{ ...selectStyle, marginBottom: 0, flex: 1 }}
+            value={filters.yearFrom}
+            onChange={(e) => {
+              const from = e.target.value
+              // if yearTo is less than new yearFrom, reset yearTo
+              if (filters.yearTo && Number(from) > Number(filters.yearTo)) {
+                onChange({ yearFrom: from, yearTo: '' })
+              } else {
+                onChange({ yearFrom: from })
+              }
+            }}
+          >
+            <option value="">{t('catalog.from')}</option>
+            {ALL_YEARS.map(y => (
+              <option key={y} value={String(y)}
+                disabled={filters.yearTo ? y > Number(filters.yearTo) : false}>
+                {y}
+              </option>
+            ))}
+          </select>
+
+          <span style={{ color: '#4A5670', fontFamily: "'JetBrains Mono', monospace", flexShrink: 0 }}>—</span>
+
+          <select
+            style={{ ...selectStyle, marginBottom: 0, flex: 1 }}
+            value={filters.yearTo}
+            onChange={(e) => onChange({ yearTo: e.target.value })}
+          >
+            <option value="">{t('catalog.to')}</option>
+            {ALL_YEARS.map(y => (
+              <option key={y} value={String(y)}
+                disabled={filters.yearFrom ? y < Number(filters.yearFrom) : false}>
+                {y}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Show selected range */}
+        {/* {(filters.yearFrom || filters.yearTo) && (
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#22D3B8', marginTop: 6 }}>
+            {filters.yearFrom || '2008'} → {filters.yearTo || '2024'}
+          </div>
+        )} */}
       </div>
 
       {/* Clear */}

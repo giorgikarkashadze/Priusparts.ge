@@ -75,11 +75,15 @@
     "clearFilters": "ფილტრების გასუფთავება",
     "allParts": "ყველა",
     "allYears": "ყველა (2008–2024)",
-    "priusYear": "წელი",
+    "year": "წელი",
+    "from": "დან",
+    "to": "მდე",
     "category": "კატეგორია",
     "priceRange": "ფასის დიაპაზონი",
     "priceMin": "მინ",
-    "priceMax": "მაქს"
+    "priceMax": "მაქს",
+    "next": "შემდეგი",
+    "previous": "წინა"
   },
   "product": {
     "nav": {

@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next'
 
 export default function CatalogPage() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const [showFilters, setShowFilters] = useState(false)
+  const [showFilters, setShowFilters] = useState(() => window.innerWidth >= 768);
   const [page, setPage] = useState(1)
   const { t } = useTranslation()
   
@@ -28,7 +28,6 @@ export default function CatalogPage() {
     sort: searchParams.get('sort') || 'newest',
   })
 
-  const ITEMS_PER_PAGE = 20
 
   const SORTS = [
   { value: 'newest', label: t('catalog.newestFirst') },
@@ -36,7 +35,8 @@ export default function CatalogPage() {
   { value: 'price_desc', label: t('catalog.priceHigh') },
  ]
 
-  const { data, isLoading } = useProducts({ ...filters, page, limit: String(ITEMS_PER_PAGE) })
+  let itemsPerPage = 20
+  const { data, isLoading } = useProducts({ ...filters, page, limit: String( showFilters ? itemsPerPage : itemsPerPage = 30) })
 
   const updateFilters = (updates: Partial<FilterState>) => {
     setFilters((prev) => ({ ...prev, ...updates }))
@@ -217,7 +217,7 @@ export default function CatalogPage() {
 
           {/* Mobile filter trigger */}
           <button
-            className={`filter-btn mobile-filter-trigger${showFilters ? ' active' : ''}`}
+            className={`filter-btn mobile-filter-trigger${showFilters ? '' : 'active'}`}
             style={{ display: 'none' }}
             onClick={() => setShowFilters(!showFilters)}
           >
@@ -334,7 +334,7 @@ export default function CatalogPage() {
               fontFamily: "'JetBrains Mono', monospace", opacity: page === 1 ? 0.4 : 1,
               transition: 'all 0.15s'
             }}>
-            ← PREV
+            ← {t('catalog.previous')}
           </button>
 
           {/* Page numbers */}
@@ -390,12 +390,12 @@ export default function CatalogPage() {
               fontFamily: "'JetBrains Mono', monospace", opacity: page === data.pages ? 0.4 : 1,
               transition: 'all 0.15s'
             }}>
-            NEXT →
+            {t('catalog.next')} →
           </button>
 
           {/* Page info */}
           <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#4A5670', marginLeft: 8 }}>
-            {((page - 1) * ITEMS_PER_PAGE) + 1}–{Math.min(page * ITEMS_PER_PAGE, data.total)} / {data.total}
+            {((page - 1) * itemsPerPage) + 1}–{Math.min(page * itemsPerPage, data.total)} / {data.total}
           </div>
         </div>
       )}
