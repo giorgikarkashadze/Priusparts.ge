@@ -4,6 +4,8 @@ import { Search, Truck, RotateCcw, Shield, Headphones, ChevronRight } from 'luci
 import { useProducts, useCategories } from '@/hooks/useProducts'
 import PartCard from '@/components/PartCard'
 import { useTranslation } from 'react-i18next'
+import { getCategoryName } from '@/hooks/usePartLocale'
+import i18n from '@/i18n/i18n'
 
 const GENERATIONS = [
   { label: 'Gen 2', years: '2004–2009', emoji: '🚗', slug: '2004' },
@@ -124,14 +126,15 @@ export default function HomePage() {
                 <Link key={c.id} to={`/catalog?category=${c.slug}`} style={{ textDecoration: 'none' }}>
                   <div style={{
                     background: '#0d1526', border: '1px solid #111e35', borderRadius: 12,
-                    padding: '16px 12px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.15s'
+                    padding: '16px 12px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.15s',
+                    minHeight: '146px'
                   }}
                     onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#1d6fe8' }}
                     onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#111e35' }}
                   >
                     <div style={{ fontSize: 28, marginBottom: 6 }}>{c.icon}</div>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: '#f9fafb' }}>{c.name}</div>
-                    <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2 }}>{c._count?.parts} parts</div>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: '#f9fafb', height: '52px'}}>{getCategoryName(c, i18n.language)}</div>
+                    <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2, bottom: '10px' }}>{c._count?.parts} {t('home.parts')}</div>
                   </div>
                 </Link>
               ))}
