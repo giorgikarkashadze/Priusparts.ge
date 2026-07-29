@@ -333,35 +333,35 @@ export default function Layout() {
 
         <div style={{ position: 'relative', maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 32, marginBottom: 32 }}>
           <div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#f9fafb', marginBottom: 8, fontFamily: "'Space Grotesk', sans-serif" }}>
+            <div style={{ fontSize: 25, fontWeight: 700, color: '#f9fafb', marginBottom: 8, fontFamily: "'Space Grotesk', sans-serif" }}>
               Prius<span style={{ color: '#4d9fff' }}>Parts</span><span style={{ color: '#475569', fontSize: 13 }}>.ge</span>
             </div>
-            <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.7 }}>
+            <p style={{ fontSize: 15, color: '#64748b', lineHeight: 1.7 }}>
               {t('footer.tagline')}
             </p>
           </div>
           <div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: '#22D3B8', marginBottom: 12, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t('footer.parts')}</div>
+            <div style={{ fontSize: 15, fontWeight: 600, color: '#22D3B8', marginBottom: 12, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t('footer.parts')}</div>
             {Array.isArray(categories) && categories.map(c => (
-              <Link key={c.id} to={`/catalog?category=${c.slug.toLowerCase()}&sort=newest`} className="plp-footer-link" style={{ color: '#64748b', textDecoration: 'none', fontSize: 13, marginBottom: 6, display: 'flex', justifyContent: 'center' }}>
+              <Link key={c.id} to={`/catalog?category=${c.slug.toLowerCase()}&sort=newest`} className="plp-footer-link" style={{ color: '#64748b', textDecoration: 'none', fontSize: 14, marginBottom: 6, display: 'flex', justifyContent: 'center' }}>
                 {getCategoryName(c, i18n.language)}
               </Link>
             ))}
           </div>
           <div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: '#22D3B8', marginBottom: 12, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t('footer.priusModels')}</div>
+            <div style={{ fontSize: 15, fontWeight: 600, color: '#22D3B8', marginBottom: 12, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t('footer.priusModels')}</div>
             {['Prius Gen 2 (2004–2009)', 'Prius Gen 3 (2010–2015)', 'Prius Gen 4 (2016–2022)', 'Prius Gen 5 (2023+)'].map(m => (
-              <div key={m} style={{ color: '#64748b', fontSize: 13, marginBottom: 6 }}>{m}</div>
+              <div key={m} style={{ color: '#64748b', fontSize: 14, marginBottom: 6 }}>{m}</div>
             ))}
           </div>
           <div>
-            <div style={{ fontSize: 11, fontWeight: 600, color: '#22D3B8', marginBottom: 12, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t('footer.contact')}</div>
-            <div style={{ color: '#64748b', fontSize: 13, marginBottom: 6, fontFamily: "'JetBrains Mono', monospace" }}>support@priusparts.ge</div>
-            <div style={{ color: '#64748b', fontSize: 13, marginBottom: 6, fontFamily: "'JetBrains Mono', monospace" }}>+995 XXX XXX XXX</div>
-            <div style={{ color: '#64748b', fontSize: 13, fontFamily: "'JetBrains Mono', monospace" }}>Tbilisi, Georgia</div>
+            <div style={{ fontSize: 15, fontWeight: 600, color: '#22D3B8', marginBottom: 12, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t('footer.contact')}</div>
+            <div style={{ color: '#64748b', fontSize: 14, marginBottom: 6, fontFamily: "'JetBrains Mono', monospace" }}>support@priusparts.ge</div>
+            <div style={{ color: '#64748b', fontSize: 14, marginBottom: 6, fontFamily: "'JetBrains Mono', monospace" }}>+995 XXX XXX XXX</div>
+            <div style={{ color: '#64748b', fontSize: 14, fontFamily: "'JetBrains Mono', monospace" }}>Tbilisi, Georgia</div>
           </div>
         </div>
-        <div style={{ position: 'relative', maxWidth: 1200, margin: '0 auto', paddingTop: 20, borderTop: '1px solid #1a2744', fontSize: 12, color: '#475569', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace" }}>
+        <div style={{ position: 'relative', maxWidth: 1200, margin: '0 auto', paddingTop: 20, borderTop: '1px solid #1a2744', fontSize: 13, color: '#475569', textAlign: 'center', fontFamily: "'JetBrains Mono', monospace" }}>
           {t('footer.rights')}
         </div>
       </footer>
