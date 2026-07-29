@@ -11,6 +11,7 @@ import AboutPage from '@/pages/AboutPage'
 import LoginPage from '@/pages/LoginPage'
 import AdminPage from '@/pages/AdminPage'
 import AuthCallbackPage from '@/pages/AuthCallbackPage'
+import ScrollToTop from '@/components/ScrollToTop'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((s) => s.user)
@@ -25,6 +26,7 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <BrowserRouter>
+     <ScrollToTop />
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<HomePage />} />
