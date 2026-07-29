@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ShoppingCart, Star, Zap } from 'lucide-react'
+import { ShoppingCart, Zap } from 'lucide-react'
 import { useCartStore } from '@/store'
 import { formatPrice, discount } from '@/lib/utils'
 import type { Part } from '@/types/types'
@@ -76,7 +76,7 @@ export default function PartCard({ part }: { part: Part }) {
       <div className="part-card-hud"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        style={{ height: 380, display: 'flex', flexDirection: 'column' }}
+        style={{ height: 340, display: 'flex', flexDirection: 'column' }}
       >
         {/* Thumbnail */}
         <Link to={`/catalog/${part.slug}`} style={{ display: 'block', textDecoration: 'none', flexShrink: 0 }}>
@@ -151,12 +151,12 @@ export default function PartCard({ part }: { part: Part }) {
           )}
 
           {/* Stars */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 3, marginBottom: 10 }}>
+          {/* <div style={{ display: 'flex', alignItems: 'center', gap: 3, marginBottom: 10 }}>
             {Array.from({ length: 5 }).map((_, i) => (
               <Star key={i} size={10} style={{ fill: i < 4 ? '#F59E0B' : 'none', color: i < 4 ? '#F59E0B' : '#1e293b' }} />
             ))}
             <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#4A5670', marginLeft: 2 }}>(24)</span>
-          </div>
+          </div> */}
 
           {/* Price + Add */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
