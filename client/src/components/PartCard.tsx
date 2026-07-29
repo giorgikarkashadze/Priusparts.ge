@@ -165,7 +165,7 @@ export default function PartCard({ part }: { part: Part }) {
                 {formatPrice(part.price)}
               </span>
               {part.comparePrice && (
-                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: '#4A5670', textDecoration: 'line-through', marginLeft: 6 }}>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: '#be6923', textDecoration: 'line-through', marginLeft: 6 }}>
                   {formatPrice(part.comparePrice)}
                 </span>
               )}
