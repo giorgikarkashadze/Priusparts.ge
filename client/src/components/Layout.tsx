@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useCartStore, useAuthStore, useThemeStore } from '@/store'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useRef } from 'react'
+import { useCategories } from '@/hooks/useProducts'
+import { getCategoryName } from '@/hooks/usePartLocale'
 
 
 export default function Layout() {
@@ -19,6 +21,7 @@ export default function Layout() {
   const { i18n } = useTranslation()
   const currentLang = i18n.language?.startsWith('ka') ? 'ka' : 'en'
   const settingsRef = useRef<HTMLDivElement>(null)
+  const { data: categories } = useCategories()
 
   const navLinks = [
     { href: '/', label: t('nav.home') },
@@ -339,9 +342,9 @@ export default function Layout() {
           </div>
           <div>
             <div style={{ fontSize: 11, fontWeight: 600, color: '#22D3B8', marginBottom: 12, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t('footer.parts')}</div>
-            {['Engine', 'Brakes', 'Suspension', 'Electrical', 'Filters', 'Hybrid Battery'].map(cat => (
-              <Link key={cat} to={`/catalog?category=${cat.toLowerCase()}`} className="plp-footer-link" style={{ color: '#64748b', textDecoration: 'none', fontSize: 13, marginBottom: 6 }}>
-                {cat}
+            {Array.isArray(categories) && categories.map(c => (
+              <Link key={c.id} to={`/catalog?category=${c.slug.toLowerCase()}&sort=newest`} className="plp-footer-link" style={{ color: '#64748b', textDecoration: 'none', fontSize: 13, marginBottom: 6, display: 'flex', justifyContent: 'center' }}>
+                {getCategoryName(c, i18n.language)}
               </Link>
             ))}
           </div>
