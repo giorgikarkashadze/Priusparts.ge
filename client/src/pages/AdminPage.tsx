@@ -46,6 +46,12 @@ const partSchema = z.object({
 }, {
   message: 'Compare price should be more than a price',
   path: ['comparePrice'],
+}).refine((data) => {
+  if (!data.yearFrom || !data.yearTo) return true
+  return parseInt(data.yearFrom) <= parseInt(data.yearTo)
+}, {
+  message: 'Year "from" cannot be greater than year "to"',
+  path: ['yearTo'],
 })
 
 type PartForm = z.infer<typeof partSchema>;
@@ -562,6 +568,9 @@ function InventoryTab() {
                     <option value="">To year</option>
                     {ALL_YEARS.map(y => <option key={y} value={String(y)}>{y}</option>)}
                   </select>
+                  {errors.yearTo && (
+                    <p style={{ fontSize: 11, color: '#f87171', marginTop: 4 }}>⚠ {errors.yearTo.message}</p>
+                  )}
                 </Field>
               </div>
 
