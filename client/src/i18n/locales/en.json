@@ -150,7 +150,14 @@
     "termsLink": "Terms of Service",
     "signInSubtitle": "Welcome back — sign in to continue",
     "registerSubtitle": "Create your account to get started",
-    "demoAdmin": "Demo admin"
+    "demoAdmin": "Demo admin",
+    "or": "OR",
+    "continueGoogle": "Continue With Google",
+    "validMail": "Enter a valid email",
+    "name2Char": "Name must be at least 2 characters",
+    "passRequired": "Password is required",
+    "pass8Char": "Password must be at least 8 characters",
+    "passDoesntMatch": "Password must be at least 8 characters"
   },
   "checkout": {
     "title": "Secure checkout",

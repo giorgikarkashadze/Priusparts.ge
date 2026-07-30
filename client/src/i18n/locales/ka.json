@@ -150,7 +150,14 @@
     "termsLink": "მომსახურეობის პირობებს",
     "signInSubtitle": "მოგესალმებით — შესასვლელად გაიარეთ ავტორიზაცია",
     "registerSubtitle": "დასაწყებად შექმენით თქვენი ანგარიში",
-    "demoAdmin": "Demo admin"
+    "demoAdmin": "Demo admin",
+    "or": "ან",
+    "continueGoogle": "გააგძელეთ Google ანგარიშით",
+    "validMail": "მეილი არასწორია",
+    "name2Char": "სახელი უნდა შეიცავდეს მინიმუმ 2 სიმბოლოს",
+    "passRequired": "საჭიროა პაროლის შევსება",
+    "pass8Char": "პაროლი უნდა შეიცავდეს მინიმუმ 8 სიმბოლოს",
+    "passDoesntMatch": "პაროლები არ ემთხვევა"
   },
   "checkout": {
     "title": "დაცული გადახდა",

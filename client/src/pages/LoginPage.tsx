@@ -11,21 +11,6 @@ import { useTranslation } from 'react-i18next'
 
 const BACKEND_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:4000/api'
 
-const loginSchema = z.object({
-  email: z.string().email('Enter a valid email'),
-  password: z.string().min(1, 'Password is required'),
-})
-
-const registerSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Enter a valid email'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  confirm: z.string(),
-}).refine((d) => d.password === d.confirm, { message: "Passwords don't match", path: ['confirm'] })
-
-type LoginData = z.infer<typeof loginSchema>
-type RegisterData = z.infer<typeof registerSchema>
-
 export default function LoginPage() {
   const [tab, setTab] = useState<'login' | 'register'>('login')
   const [showPass, setShowPass] = useState(false)
@@ -36,6 +21,21 @@ export default function LoginPage() {
   const [searchParams] = useSearchParams()
   const redirect = searchParams.get('redirect') || '/'
   const { t } = useTranslation()
+
+  const loginSchema = z.object({
+  email: z.string().email(t('auth.validMail')),
+  password: z.string().min(1, t('auth.passRequired')),
+})
+
+  const registerSchema = z.object({
+    name: z.string().min(2, t('auth.name2Char')),
+    email: z.string().email(t('auth.validMail')),
+    password: z.string().min(8, t('auth.pass8Char')),
+    confirm: z.string(),
+  }).refine((d) => d.password === d.confirm, { message: t('auth.passDoesntMatch'), path: ['confirm'] })
+
+  type LoginData = z.infer<typeof loginSchema>
+  type RegisterData = z.infer<typeof registerSchema>
 
   const loginForm = useForm<LoginData>({ resolver: zodResolver(loginSchema) })
   const registerForm = useForm<RegisterData>({ resolver: zodResolver(registerSchema) })
@@ -255,7 +255,7 @@ export default function LoginPage() {
                 <div className="space-y-4">
                   <div>
                     <label
-                      className="block text-[11px] tracking-[0.1em] uppercase mb-1.5"
+                      className="block text-[13px] tracking-[0.1em] uppercase mb-1.5"
                       style={{ fontFamily: "'JetBrains Mono', monospace", color: '#7C8AA5' }}
                     >
                       {t('auth.email')}
@@ -279,7 +279,7 @@ export default function LoginPage() {
                   <div>
                     <div className="flex justify-between mb-1.5">
                       <label
-                        className="text-[11px] tracking-[0.1em] uppercase"
+                        className="text-[13px] tracking-[0.1em] uppercase"
                         style={{ fontFamily: "'JetBrains Mono', monospace", color: '#7C8AA5' }}
                       >
                         {t('auth.password')}
@@ -325,7 +325,7 @@ export default function LoginPage() {
   {/* Divider */}
   <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
     <div style={{ flex: 1, height: 1, background: 'rgba(124,138,165,0.15)' }} />
-    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#4A5670', letterSpacing: '0.1em' }}>OR CONTINUE WITH</span>
+    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#4A5670', letterSpacing: '0.1em' }}> {t('auth.or')} </span>
     <div style={{ flex: 1, height: 1, background: 'rgba(124,138,165,0.15)' }} />
   </div>
 
@@ -357,7 +357,7 @@ export default function LoginPage() {
         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
         <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
       </svg>
-      Continue with Google
+        {t('auth.continueGoogle')}
     </button>
   </a>
 </div>
@@ -369,7 +369,7 @@ export default function LoginPage() {
                 <div className="space-y-4">
                   <div>
                     <label
-                      className="block text-[11px] tracking-[0.1em] uppercase mb-1.5"
+                      className="block text-[13px] tracking-[0.1em] uppercase mb-1.5"
                       style={{ fontFamily: "'JetBrains Mono', monospace", color: '#7C8AA5' }}
                     >
                       {t('auth.fullName')}
@@ -391,7 +391,7 @@ export default function LoginPage() {
 
                   <div>
                     <label
-                      className="block text-[11px] tracking-[0.1em] uppercase mb-1.5"
+                      className="block text-[13px] tracking-[0.1em] uppercase mb-1.5"
                       style={{ fontFamily: "'JetBrains Mono', monospace", color: '#7C8AA5' }}
                     >
                       {t('auth.email')}
@@ -414,7 +414,7 @@ export default function LoginPage() {
 
                   <div>
                     <label
-                      className="block text-[11px] tracking-[0.1em] uppercase mb-1.5"
+                      className="block text-[13px] tracking-[0.1em] uppercase mb-1.5"
                       style={{ fontFamily: "'JetBrains Mono', monospace", color: '#7C8AA5' }}
                     >
                       {t('auth.password')}
@@ -440,7 +440,7 @@ export default function LoginPage() {
 
                   <div>
                     <label
-                      className="block text-[11px] tracking-[0.1em] uppercase mb-1.5"
+                      className="block text-[13px] tracking-[0.1em] uppercase mb-1.5"
                       style={{ fontFamily: "'JetBrains Mono', monospace", color: '#7C8AA5' }}
                     >
                       {t('auth.confirmPassword')}
