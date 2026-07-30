@@ -45,7 +45,7 @@ const partSchema = z.object({
 })
 
 router.get('/parts', async (_req, res) => {
-  const parts = await prisma.part.findMany({ include: { category: true }, orderBy: { createdAt: 'desc' } })
+  const parts = await prisma.part.findMany({ include: { category: true, compatibility: true }, orderBy: { createdAt: 'desc' } })
   res.json(parts)
 })
 

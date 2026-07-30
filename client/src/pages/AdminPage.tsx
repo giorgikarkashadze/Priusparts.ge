@@ -964,6 +964,25 @@ function InventoryTab() {
                         onClick={() => {
                           setEditId(part.id);
                           setShowForm(true);
+                          setApiError('')
+                          setImageUrls(part.images && part.images.length > 0 ? part.images : [''])
+                          reset({
+                            name: part.name,
+                            nameKa: part.nameKa || '',
+                            description: part.description || '',
+                            descriptionKa: part.descriptionKa || '',
+                            oemNumber: part.oemNumber || '',
+                            price: String(part.price),
+                            comparePrice: part.comparePrice ? String(part.comparePrice) : '',
+                            stock: String(part.stock),
+                            categoryId: part.categoryId,
+                            yearFrom: part.compatibility && part.compatibility.length > 0
+                              ? String(Math.min(...part.compatibility.flatMap((c: any) => c.years)))
+                              : '',
+                            yearTo: part.compatibility && part.compatibility.length > 0
+                              ? String(Math.max(...part.compatibility.flatMap((c: any) => c.years)))
+                              : '',
+                          })
                         }}
                         style={{
                           width: 30,
