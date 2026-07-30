@@ -324,6 +324,7 @@ function InventoryTab() {
   const [search, setSearch] = useState("");
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>([''])
+  const [apiError, setApiError] = useState('')
 
   const { data: parts, isLoading } = useQuery<Part[]>({
     queryKey: ["admin-parts"],
@@ -361,6 +362,17 @@ function InventoryTab() {
       if (isNaN(price) || price <= 0) throw new Error("Invalid price");
       if (isNaN(stock) || stock < 0) throw new Error("Invalid stock");
 
+      // Check for duplicate name
+      const existingParts = await api.get('/admin/parts')
+      const duplicate = existingParts.data.find(
+        (p: Part) =>
+          p.name.toLowerCase().trim() === data.name.toLowerCase().trim() &&
+          p.id !== editId // allow same name when editing the same part
+      )
+      if (duplicate) {
+        throw new Error(`A part named "${data.name}" already exists`)
+      }
+
       const validImages = imageUrls.filter(url => url.trim() !== '')
       const yearFrom = data.yearFrom ? parseInt(data.yearFrom) : 2008
       const yearTo = data.yearTo ? parseInt(data.yearTo) : 2024
@@ -391,9 +403,13 @@ function InventoryTab() {
       setShowForm(false);
       setEditId(null);
       setImageUrls(['']);
+      setApiError('')
       reset();
     },
-  });
+      onError: (e: Error) => {
+        setApiError(e.message)
+      }
+    })
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => api.delete(`/admin/parts/${id}`),
@@ -506,6 +522,10 @@ function InventoryTab() {
                 >
                   <input
                     {...register("name")}
+                    onChange={(e) => {
+                      register('name').onChange(e)
+                      setApiError('') // clear error when typing
+                    }}
                     placeholder="e.g. Bosch Front Brake Pad Set"
                     style={getInput("name")}
                     onFocus={() => setFocusedField("name")}
@@ -738,6 +758,19 @@ function InventoryTab() {
                 borderTop: "1px solid #1a2744",
               }}
             >
+              {apiError && (
+                <div style={{
+                  gridColumn: '1 / -1',
+                  padding: '10px 14px', borderRadius: 8,
+                  background: 'rgba(239,68,68,0.08)',
+                  border: '1px solid rgba(239,68,68,0.25)',
+                  color: '#f87171', fontSize: 13,
+                  fontFamily: "'Inter', sans-serif",
+                  display: 'flex', alignItems: 'center', gap: 8
+                }}>
+                  ⚠ {apiError}
+                </div>
+              )}
               <button
                 type="button"
                 onClick={() => {
