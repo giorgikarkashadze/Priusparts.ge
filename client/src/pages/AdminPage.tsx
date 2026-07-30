@@ -40,7 +40,13 @@ const partSchema = z.object({
   categoryId: z.string().min(1, "Select a category"),
   yearFrom: z.string().optional(),
   yearTo: z.string().optional()
-});
+}).refine((data) => {
+  if (!data.comparePrice || data.comparePrice === '') return true
+  return parseFloat(data.comparePrice) > parseFloat(data.price)
+}, {
+  message: 'Compare price should be more than a price',
+  path: ['comparePrice'],
+})
 
 type PartForm = z.infer<typeof partSchema>;
 
@@ -673,7 +679,7 @@ function InventoryTab() {
                   </div>
                 </div>
               {/* Compare price */}
-              <Field label="Compare price — original (optional)">
+              <Field label="Compare price — original (optional)" error={errors.comparePrice?.message}>
                 <div style={{ position: "relative" }}>
                   <span
                     style={{
