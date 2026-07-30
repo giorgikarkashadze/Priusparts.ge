@@ -21,6 +21,7 @@ export default function Layout() {
   const { i18n } = useTranslation()
   const currentLang = i18n.language?.startsWith('ka') ? 'ka' : 'en'
   const settingsRef = useRef<HTMLDivElement>(null)
+  const userMenuRef = useRef<HTMLDivElement>(null)
   const { data: categories } = useCategories()
 
   const navLinks = [
@@ -28,6 +29,16 @@ export default function Layout() {
     { href: '/catalog', label: t('nav.parts') },
     { href: '/about', label: t('nav.about') },
   ]
+
+  useEffect(() => {
+  function handleClickOutside(e: MouseEvent) {
+    if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+      setUserMenuOpen(false)
+    }
+  }
+  if (userMenuOpen) document.addEventListener('mousedown', handleClickOutside)
+  return () => document.removeEventListener('mousedown', handleClickOutside)
+}, [userMenuOpen])
 
   useEffect(() => {
   function handleClickOutside(e: MouseEvent) {
@@ -285,7 +296,7 @@ export default function Layout() {
   </Link>
 
   {/* User — desktop */}
-  <div style={{ position: 'relative' }}>
+  <div style={{ position: 'relative' }} ref={userMenuRef}>
     {user ? (
       <>
         <button onClick={() => setUserMenuOpen(!userMenuOpen)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', borderRadius: 8, background: 'rgba(255,255,255,0.08)', border: 'none', color: '#f9fafb', cursor: 'pointer', fontSize: 13 }}>
