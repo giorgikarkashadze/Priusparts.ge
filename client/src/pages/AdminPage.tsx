@@ -1045,10 +1045,43 @@ function OrdersTab() {
   });
 
   const statusMutation = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: string }) =>
-      api.patch(`/admin/orders/${id}/status`, { status }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-orders"] }),
-  });
+  mutationFn: ({ id, status }: { id: string; status: string }) =>
+    api.patch(`/admin/orders/${id}/status`, { status }),
+
+  // ← Update UI immediately before server responds
+  onMutate: async ({ id, status }) => {
+    // Cancel any outgoing refetches
+    await qc.cancelQueries({ queryKey: ['admin-orders', statusFilter] })
+
+    // Snapshot previous value
+    const previous = qc.getQueryData(['admin-orders', statusFilter])
+
+    // Optimistically update the cache
+    qc.setQueryData(['admin-orders', statusFilter], (old: any) => {
+      if (!old) return old
+      return {
+        ...old,
+        data: old.data.map((order: Order) =>
+          order.id === id ? { ...order, status } : order
+        )
+      }
+    })
+
+    return { previous }
+  },
+
+  // If server returns error, roll back to previous value
+  onError: (_err, _vars, context) => {
+    if (context?.previous) {
+      qc.setQueryData(['admin-orders', statusFilter], context.previous)
+    }
+  },
+
+  // Always refetch after success or error to sync with server
+  onSettled: () => {
+    qc.invalidateQueries({ queryKey: ['admin-orders'] })
+  },
+})
 
   const STATUS_OPTIONS = [
     "PENDING",
