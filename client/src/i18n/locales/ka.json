@@ -204,14 +204,14 @@
     }
   },
   "about": {
-    "title": "About PriusParts.ge",
-    "subtitle": "Founded in 2010 by Marcus Reid, a master mechanic with 20 years of experience...",
-    "whyUs": "Why choose us",
-    "team": "Our team",
-    "contact": "Get in touch",
-    "cta": "Ready to find your part?",
-    "ctaSub": "Browse our catalog of 5,000+ parts for Toyota Prius.",
-    "ctaBtn": "Browse catalog"
+    "title": "PriusParts-ის შესახებ",
+    "subtitle": "დაფუძნდა 2010 წელს გიგა არაბიძის მიერ, PriusParts შეიქმნა იმისათვის, რომ ავტომობილის მფლობელებსა და პროფესიონალ სახელოსნოებს ჰქონდეთ ხელმისაწვდომობა ხარისხიან ნაწილებზე შეღავათიან ფასებში - სარეზერვო საექსპერტო ცოდნით.",
+    "whyUs": "რატომ ჩვენ?",
+    "team": "ჩვენი გუნდი",
+    "contact": "კონტაქტები",
+    "cta": "მზად ხართ იპოვნოთ თქვენი სასურველი ავტონაწილი?",
+    "ctaSub": "შეამოწმეთ ჩვენი კატალოგი სადაც იპოვნით ასობით, თქვენთვის სასურველ პროდუქციას.",
+    "ctaBtn": "ნახე კატალოგი"
   },
   "footer": {
     "tagline": "ორიგინალი და სათადარიგო ნაწილები ავტომობილებისთვის.",
