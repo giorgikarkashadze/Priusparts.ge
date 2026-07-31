@@ -6,7 +6,11 @@
     "signIn": "Sign in",
     "signOut": "Sign out",
     "myOrders": "My orders",
-    "adminPanel": "Admin panel"
+    "adminPanel": "Admin panel",
+    "appSetting": "APP SETTINGS",
+    "dark": "Dark mode",
+    "light": "Light mode",
+    "lang": "Language"
   },
   "home": {
     "parts": "parts",

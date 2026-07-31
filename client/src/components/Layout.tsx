@@ -158,7 +158,7 @@ export default function Layout() {
           {/* Logo */}
           <Link to="/" onClick={closeMenus} style={{ textDecoration: 'none', marginRight: 16, flexShrink: 0 }}>
             <span style={{ fontSize: 26, fontWeight: 700, color: '#f9fafb', letterSpacing: '-0.5px', fontFamily: "'Space Grotesk', sans-serif" }}>
-              Prius<span style={{ color: '#4d9fff' }}>Parts</span>
+              Prius<span style={{ background: 'linear-gradient(135deg, #4C7CFF, #22D3B8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Parts</span>
               <span style={{ color: '#6b7280', fontSize: 12, fontWeight: 400, fontFamily: "'JetBrains Mono', monospace" }}>.ge</span>
             </span>
           </Link>
@@ -215,7 +215,7 @@ export default function Layout() {
 
       {/* Settings label */}
       <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#22D3B8', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 12 }}>
-        App settings
+        {t('nav.appSetting')}
       </div>
 
       {/* Dark / Light mode */}
@@ -223,7 +223,7 @@ export default function Layout() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {dark ? <Moon size={15} style={{ color: '#4C7CFF' }} /> : <Sun size={15} style={{ color: '#F59E0B' }} />}
           <span style={{ fontSize: 13, color: '#EAF2FF', fontFamily: "'Inter', sans-serif" }}>
-            {dark ? 'Dark mode' : 'Light mode'}
+            {dark ? t('nav.dark') : t('nav.light')}
           </span>
         </div>
         <button onClick={toggle} style={{
@@ -243,7 +243,7 @@ export default function Layout() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 12px', borderRadius: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(124,138,165,0.1)', marginBottom: 5 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: 15 }}>🌐</span>
-          <span style={{ fontSize: 13, color: '#EAF2FF', fontFamily: "'Inter', sans-serif" }}>Language</span>
+          <span style={{ fontSize: 13, color: '#EAF2FF', fontFamily: "'Inter', sans-serif" }}> {t('nav.lang')} </span>
         </div>
         <div style={{ display: 'flex', gap: 4, background: 'rgba(0,0,0,0.3)', borderRadius: 8, padding: 3 }}>
           {(['en', 'ka'] as const).map((lang) => (

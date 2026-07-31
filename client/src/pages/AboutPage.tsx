@@ -275,7 +275,7 @@ export default function AboutPage() {
             </div>
 
             <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 44, fontWeight: 700, color: c.text, lineHeight: 1.15, letterSpacing: '-1px', marginBottom: 16 }}>
-              About <span style={{ background: c.gradientAccent, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>PriusParts.ge</span>
+              About <span style={{ background: `${c.gradientAccent} text`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>PriusParts.ge</span>
             </h1>
 
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, color: c.textMuted, lineHeight: 1.7, marginBottom: 32 }}>
