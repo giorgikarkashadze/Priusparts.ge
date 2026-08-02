@@ -18,6 +18,8 @@ import {
   CheckCircle,
   Search,
   X,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -28,31 +30,40 @@ import type { Part, Order, Promotion, Category } from "@/types/types";
 
 type Tab = "dashboard" | "inventory" | "orders" | "promotions" | "settings";
 
-const partSchema = z.object({
-  name: z.string().min(2),
-  nameKa: z.string().optional(),
-  description: z.string().optional(),
-  descriptionKa: z.string().optional(),
-  oemNumber: z.string().optional(),
-  price: z.string().min(1, "Price is required"),
-  comparePrice: z.string().optional(),
-  stock: z.string().min(1, "Stock is required"),
-  categoryId: z.string().min(1, "Select a category"),
-  yearFrom: z.string().optional(),
-  yearTo: z.string().optional()
-}).refine((data) => {
-  if (!data.comparePrice || data.comparePrice === '') return true
-  return parseFloat(data.comparePrice) > parseFloat(data.price)
-}, {
-  message: 'Compare price should be more than a price',
-  path: ['comparePrice'],
-}).refine((data) => {
-  if (!data.yearFrom || !data.yearTo) return true
-  return parseInt(data.yearFrom) <= parseInt(data.yearTo)
-}, {
-  message: 'Year "from" cannot be greater than year "to"',
-  path: ['yearTo'],
-})
+const partSchema = z
+  .object({
+    name: z.string().min(2),
+    nameKa: z.string().optional(),
+    description: z.string().optional(),
+    descriptionKa: z.string().optional(),
+    oemNumber: z.string().optional(),
+    price: z.string().min(1, "Price is required"),
+    comparePrice: z.string().optional(),
+    stock: z.string().min(1, "Stock is required"),
+    categoryId: z.string().min(1, "Select a category"),
+    yearFrom: z.string().optional(),
+    yearTo: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      if (!data.comparePrice || data.comparePrice === "") return true;
+      return parseFloat(data.comparePrice) > parseFloat(data.price);
+    },
+    {
+      message: "Compare price should be more than a price",
+      path: ["comparePrice"],
+    },
+  )
+  .refine(
+    (data) => {
+      if (!data.yearFrom || !data.yearTo) return true;
+      return parseInt(data.yearFrom) <= parseInt(data.yearTo);
+    },
+    {
+      message: 'Year "from" cannot be greater than year "to"',
+      path: ["yearTo"],
+    },
+  );
 
 type PartForm = z.infer<typeof partSchema>;
 
@@ -315,7 +326,7 @@ function DashboardTab() {
 }
 
 // ─── Inventory ────────────────────────────────────────────────────────────────
-const ALL_YEARS = Array.from({ length: 2024 - 2008 + 1 }, (_, i) => 2008 + i)
+const ALL_YEARS = Array.from({ length: 2024 - 2008 + 1 }, (_, i) => 2008 + i);
 
 function InventoryTab() {
   const qc = useQueryClient();
@@ -323,8 +334,8 @@ function InventoryTab() {
   const [editId, setEditId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [focusedField, setFocusedField] = useState<string | null>(null);
-  const [imageUrls, setImageUrls] = useState<string[]>([''])
-  const [apiError, setApiError] = useState('')
+  const [imageUrls, setImageUrls] = useState<string[]>([""]);
+  const [apiError, setApiError] = useState("");
 
   const { data: parts, isLoading } = useQuery<Part[]>({
     queryKey: ["admin-parts"],
@@ -351,6 +362,14 @@ function InventoryTab() {
     resolver: zodResolver(partSchema),
   });
 
+  const toggleMutation = useMutation({
+    mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
+      api.patch(`/admin/parts/${id}/toggle`, { isActive }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-parts"] }),
+  });
+
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
   const saveMutation = useMutation({
     mutationFn: async (data: PartForm) => {
       const price = parseFloat(data.price);
@@ -363,23 +382,23 @@ function InventoryTab() {
       if (isNaN(stock) || stock < 0) throw new Error("Invalid stock");
 
       // Check for duplicate name
-      const existingParts = await api.get('/admin/parts')
+      const existingParts = await api.get("/admin/parts");
       const duplicate = existingParts.data.find(
         (p: Part) =>
           p.name.toLowerCase().trim() === data.name.toLowerCase().trim() &&
-          p.id !== editId // allow same name when editing the same part
-      )
+          p.id !== editId, // allow same name when editing the same part
+      );
       if (duplicate) {
-        throw new Error(`A part named "${data.name}" already exists`)
+        throw new Error(`A part named "${data.name}" already exists`);
       }
 
-      const validImages = imageUrls.filter(url => url.trim() !== '')
-      const yearFrom = data.yearFrom ? parseInt(data.yearFrom) : 2008
-      const yearTo = data.yearTo ? parseInt(data.yearTo) : 2024
+      const validImages = imageUrls.filter((url) => url.trim() !== "");
+      const yearFrom = data.yearFrom ? parseInt(data.yearFrom) : 2008;
+      const yearTo = data.yearTo ? parseInt(data.yearTo) : 2024;
       const years = Array.from(
         { length: yearTo - yearFrom + 1 },
-        (_, i) => yearFrom + i
-      )
+        (_, i) => yearFrom + i,
+      );
 
       const payload = {
         name: data.name,
@@ -392,7 +411,7 @@ function InventoryTab() {
         stock,
         comparePrice,
         images: validImages,
-        years
+        years,
       };
 
       if (editId) return api.put(`/admin/parts/${editId}`, payload);
@@ -402,19 +421,21 @@ function InventoryTab() {
       qc.invalidateQueries({ queryKey: ["admin-parts"] });
       setShowForm(false);
       setEditId(null);
-      setImageUrls(['']);
-      setApiError('')
+      setImageUrls([""]);
+      setApiError("");
       reset();
     },
-      onError: (e: Error) => {
-        setApiError(e.message)
-      }
-    })
+    onError: (e: Error) => {
+      setApiError(e.message);
+    },
+  });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => api.delete(`/admin/parts/${id}`),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-parts"] }),
-  });
+    mutationFn: async (id: string) => {
+      await api.delete(`/admin/parts/${id}/hard`)
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin-parts'] }),
+  })
 
   const filtered = (Array.isArray(parts) ? parts : []).filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase()),
@@ -523,8 +544,8 @@ function InventoryTab() {
                   <input
                     {...register("name")}
                     onChange={(e) => {
-                      register('name').onChange(e)
-                      setApiError('') // clear error when typing
+                      register("name").onChange(e);
+                      setApiError(""); // clear error when typing
                     }}
                     placeholder="e.g. Bosch Front Brake Pad Set"
                     style={getInput("name")}
@@ -573,23 +594,41 @@ function InventoryTab() {
 
               <div style={labelSt}>
                 <Field label="Compatible from year">
-                  <select {...register('yearFrom')} style={{ ...getInput('yearFrom'), cursor: 'pointer' }}
-                    onFocus={() => setFocusedField('yearFrom')} onBlur={() => setFocusedField(null)}>
+                  <select
+                    {...register("yearFrom")}
+                    style={{ ...getInput("yearFrom"), cursor: "pointer" }}
+                    onFocus={() => setFocusedField("yearFrom")}
+                    onBlur={() => setFocusedField(null)}
+                  >
                     <option value="">From year</option>
-                    {ALL_YEARS.map(y => <option key={y} value={String(y)}>{y}</option>)}
+                    {ALL_YEARS.map((y) => (
+                      <option key={y} value={String(y)}>
+                        {y}
+                      </option>
+                    ))}
                   </select>
                 </Field>
               </div>
 
               <div style={labelSt}>
                 <Field label="Compatible to year">
-                  <select {...register('yearTo')} style={{ ...getInput('yearTo'), cursor: 'pointer' }}
-                    onFocus={() => setFocusedField('yearTo')} onBlur={() => setFocusedField(null)}>
+                  <select
+                    {...register("yearTo")}
+                    style={{ ...getInput("yearTo"), cursor: "pointer" }}
+                    onFocus={() => setFocusedField("yearTo")}
+                    onBlur={() => setFocusedField(null)}
+                  >
                     <option value="">To year</option>
-                    {ALL_YEARS.map(y => <option key={y} value={String(y)}>{y}</option>)}
+                    {ALL_YEARS.map((y) => (
+                      <option key={y} value={String(y)}>
+                        {y}
+                      </option>
+                    ))}
                   </select>
                   {errors.yearTo && (
-                    <p style={{ fontSize: 11, color: '#f87171', marginTop: 4 }}>⚠ {errors.yearTo.message}</p>
+                    <p style={{ fontSize: 11, color: "#f87171", marginTop: 4 }}>
+                      ⚠ {errors.yearTo.message}
+                    </p>
                   )}
                 </Field>
               </div>
@@ -650,65 +689,122 @@ function InventoryTab() {
                 </div>
               </Field>
               {/* Multiple image URLs */}
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={labelSt}>
-                    Part images
-                    <span style={{ color: '#4A5670', fontWeight: 400, marginLeft: 6, fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }}>
-                      (add up to 5 image URLs)
-                    </span>
-                  </label>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    {imageUrls.map((url, index) => (
-                      <div key={index} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                        <div style={{ position: 'relative', flex: 1 }}>
-                          <input
-                            value={url}
-                            onChange={(e) => {
-                              const updated = [...imageUrls]
-                              updated[index] = e.target.value
-                              setImageUrls(updated)
-                            }}
-                            placeholder={`Image URL ${index + 1}...`}
-                            style={inputSt}
-                          />
-                        </div>
-                        {/* Preview */}
-                        {url && (
-                          <img
-                            src={url}
-                            alt=""
-                            style={{ width: 48, height: 48, borderRadius: 8, objectFit: 'contain', background: '#0f172a', border: '1px solid #1e293b', flexShrink: 0 }}
-                            onError={(e) => (e.currentTarget.style.display = 'none')}
-                            onLoad={(e) => (e.currentTarget.style.display = 'block')}
-                          />
-                        )}
-                        {/* Remove button — only show if more than 1 field */}
-                        {imageUrls.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => setImageUrls(imageUrls.filter((_, i) => i !== index))}
-                            style={{ width: 32, height: 32, borderRadius: 7, border: '1px solid rgba(239,68,68,0.3)', background: 'rgba(239,68,68,0.08)', color: '#f87171', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
-                          >
-                            <Trash2 size={13} />
-                          </button>
-                        )}
+              <div style={{ gridColumn: "1 / -1" }}>
+                <label style={labelSt}>
+                  Part images
+                  <span
+                    style={{
+                      color: "#4A5670",
+                      fontWeight: 400,
+                      marginLeft: 6,
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontSize: 10,
+                    }}
+                  >
+                    (add up to 5 image URLs)
+                  </span>
+                </label>
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 8 }}
+                >
+                  {imageUrls.map((url, index) => (
+                    <div
+                      key={index}
+                      style={{ display: "flex", gap: 8, alignItems: "center" }}
+                    >
+                      <div style={{ position: "relative", flex: 1 }}>
+                        <input
+                          value={url}
+                          onChange={(e) => {
+                            const updated = [...imageUrls];
+                            updated[index] = e.target.value;
+                            setImageUrls(updated);
+                          }}
+                          placeholder={`Image URL ${index + 1}...`}
+                          style={inputSt}
+                        />
                       </div>
-                    ))}
+                      {/* Preview */}
+                      {url && (
+                        <img
+                          src={url}
+                          alt=""
+                          style={{
+                            width: 48,
+                            height: 48,
+                            borderRadius: 8,
+                            objectFit: "contain",
+                            background: "#0f172a",
+                            border: "1px solid #1e293b",
+                            flexShrink: 0,
+                          }}
+                          onError={(e) =>
+                            (e.currentTarget.style.display = "none")
+                          }
+                          onLoad={(e) =>
+                            (e.currentTarget.style.display = "block")
+                          }
+                        />
+                      )}
+                      {/* Remove button — only show if more than 1 field */}
+                      {imageUrls.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setImageUrls(
+                              imageUrls.filter((_, i) => i !== index),
+                            )
+                          }
+                          style={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: 7,
+                            border: "1px solid rgba(239,68,68,0.3)",
+                            background: "rgba(239,68,68,0.08)",
+                            color: "#f87171",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                          }}
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      )}
+                    </div>
+                  ))}
 
-                    {/* Add another URL button */}
-                    {imageUrls.length < 5 && (
-                      <button
-                        type="button"
-                        onClick={() => setImageUrls([...imageUrls, ''])}
-                        style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 12px', borderRadius: 8, border: '1px dashed rgba(34,211,184,0.3)', background: 'transparent', color: '#22D3B8', cursor: 'pointer', fontSize: 12, fontFamily: 'JetBrains Mono', width: 'fit-content' }}
-                      >
-                        <Plus size={13} /> Add another image
-                      </button>
-                    )}
-                  </div>
+                  {/* Add another URL button */}
+                  {imageUrls.length < 5 && (
+                    <button
+                      type="button"
+                      onClick={() => setImageUrls([...imageUrls, ""])}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        padding: "8px 12px",
+                        borderRadius: 8,
+                        border: "1px dashed rgba(34,211,184,0.3)",
+                        background: "transparent",
+                        color: "#22D3B8",
+                        cursor: "pointer",
+                        fontSize: 12,
+                        fontFamily: "JetBrains Mono",
+                        width: "fit-content",
+                      }}
+                    >
+                      <Plus size={13} /> Add another image
+                    </button>
+                  )}
                 </div>
+              </div>
               {/* Compare price */}
-              <Field label="Compare price — original (optional)" error={errors.comparePrice?.message}>
+              <Field
+                label="Compare price — original (optional)"
+                error={errors.comparePrice?.message}
+              >
                 <div style={{ position: "relative" }}>
                   <span
                     style={{
@@ -759,15 +855,21 @@ function InventoryTab() {
               }}
             >
               {apiError && (
-                <div style={{
-                  gridColumn: '1 / -1',
-                  padding: '10px 14px', borderRadius: 8,
-                  background: 'rgba(239,68,68,0.08)',
-                  border: '1px solid rgba(239,68,68,0.25)',
-                  color: '#f87171', fontSize: 13,
-                  fontFamily: "'Inter', sans-serif",
-                  display: 'flex', alignItems: 'center', gap: 8
-                }}>
+                <div
+                  style={{
+                    gridColumn: "1 / -1",
+                    padding: "10px 14px",
+                    borderRadius: 8,
+                    background: "rgba(239,68,68,0.08)",
+                    border: "1px solid rgba(239,68,68,0.25)",
+                    color: "#f87171",
+                    fontSize: 13,
+                    fontFamily: "'Inter', sans-serif",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
                   ⚠ {apiError}
                 </div>
               )}
@@ -808,23 +910,25 @@ function InventoryTab() {
         >
           <thead>
             <tr style={{ background: "#0a0f1e" }}>
-              {['Name', 'Category', 'Years', 'Price', 'Stock', 'Actions'].map((h) => (
-                <th
-                  key={h}
-                  style={{
-                    textAlign: "center",
-                    padding: "12px 16px",
-                    fontSize: 11,
-                    fontWeight: 600,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
-                    color: "#475569",
-                    borderBottom: "1px solid #1a2744",
-                  }}
-                >
-                  {h}
-                </th>
-              ))}
+              {["Name", "Category", "Years", "Price", "Stock", "Actions"].map(
+                (h) => (
+                  <th
+                    key={h}
+                    style={{
+                      textAlign: "center",
+                      padding: "12px 16px",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      color: "#475569",
+                      borderBottom: "1px solid #1a2744",
+                    }}
+                  >
+                    {h}
+                  </th>
+                ),
+              )}
             </tr>
           </thead>
           <tbody>
@@ -877,22 +981,23 @@ function InventoryTab() {
                       "transparent")
                   }
                 >
-                  <td style={{ padding: "14px 16px" }}>
-                    <div style={{ fontWeight: 500, color: "#e2e8f0" }}>
-                      {part.name}
-                    </div>
-                    {part.oemNumber && (
-                      <div
-                        style={{
-                          fontSize: 11,
-                          color: "#475569",
-                          fontFamily: "monospace",
-                          marginTop: 2,
-                        }}
-                      >
-                        {part.oemNumber}
+                  <td style={{ padding: '14px 16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      {/* Image thumbnail */}
+                      ...existing thumbnail code...
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <div style={{ fontWeight: 500, color: '#e2e8f0' }}>{part.name}</div>
+                          {/* Active status dot */}
+                          <div style={{
+                            width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
+                            background: part.isActive ? '#4ade80' : '#64748b',
+                            boxShadow: part.isActive ? '0 0 6px rgba(74,222,128,0.6)' : 'none'
+                          }} title={part.isActive ? 'Active' : 'Inactive'} />
+                        </div>
+                        {part.oemNumber && <div style={{ fontSize: 11, color: '#475569', fontFamily: 'monospace' }}>{part.oemNumber}</div>}
                       </div>
-                    )}
+                    </div>
                   </td>
                   <td style={{ padding: "14px 16px" }}>
                     <span
@@ -908,13 +1013,24 @@ function InventoryTab() {
                       {part.category?.name}
                     </span>
                   </td>
-                  <td style={{ padding: '14px 16px', color: '#4C7CFF', fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>
-                    {part.compatibility && part.compatibility.length > 0 ? (() => {
-                      const allYears = part.compatibility.flatMap((c: any) => c.years).sort((a: number, b: number) => a - b)
-                      const min = allYears[0]
-                      const max = allYears[allYears.length - 1]
-                      return min === max ? String(min) : `${min}–${max}`
-                    })() : '—'}
+                  <td
+                    style={{
+                      padding: "14px 16px",
+                      color: "#4C7CFF",
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontSize: 11,
+                    }}
+                  >
+                    {part.compatibility && part.compatibility.length > 0
+                      ? (() => {
+                          const allYears = part.compatibility
+                            .flatMap((c: any) => c.years)
+                            .sort((a: number, b: number) => a - b);
+                          const min = allYears[0];
+                          const max = allYears[allYears.length - 1];
+                          return min === max ? String(min) : `${min}–${max}`;
+                        })()
+                      : "—"}
                   </td>
                   <td
                     style={{
@@ -964,25 +1080,47 @@ function InventoryTab() {
                         onClick={() => {
                           setEditId(part.id);
                           setShowForm(true);
-                          setApiError('')
-                          setImageUrls(part.images && part.images.length > 0 ? part.images : [''])
+                          setApiError("");
+                          setImageUrls(
+                            part.images && part.images.length > 0
+                              ? part.images
+                              : [""],
+                          );
                           reset({
                             name: part.name,
-                            nameKa: part.nameKa || '',
-                            description: part.description || '',
-                            descriptionKa: part.descriptionKa || '',
-                            oemNumber: part.oemNumber || '',
+                            nameKa: part.nameKa || "",
+                            description: part.description || "",
+                            descriptionKa: part.descriptionKa || "",
+                            oemNumber: part.oemNumber || "",
                             price: String(part.price),
-                            comparePrice: part.comparePrice ? String(part.comparePrice) : '',
+                            comparePrice: part.comparePrice
+                              ? String(part.comparePrice)
+                              : "",
                             stock: String(part.stock),
                             categoryId: part.categoryId,
-                            yearFrom: part.compatibility && part.compatibility.length > 0
-                              ? String(Math.min(...part.compatibility.flatMap((c: any) => c.years)))
-                              : '',
-                            yearTo: part.compatibility && part.compatibility.length > 0
-                              ? String(Math.max(...part.compatibility.flatMap((c: any) => c.years)))
-                              : '',
-                          })
+                            yearFrom:
+                              part.compatibility &&
+                              part.compatibility.length > 0
+                                ? String(
+                                    Math.min(
+                                      ...part.compatibility.flatMap(
+                                        (c: any) => c.years,
+                                      ),
+                                    ),
+                                  )
+                                : "",
+                            yearTo:
+                              part.compatibility &&
+                              part.compatibility.length > 0
+                                ? String(
+                                    Math.max(
+                                      ...part.compatibility.flatMap(
+                                        (c: any) => c.years,
+                                      ),
+                                    ),
+                                  )
+                                : "",
+                          });
                         }}
                         style={{
                           width: 30,
@@ -999,23 +1137,102 @@ function InventoryTab() {
                       >
                         <Pencil size={12} />
                       </button>
+                      {/* Active/Inactive toggle */}
                       <button
-                        onClick={() => deleteMutation.mutate(part.id)}
+                        onClick={() =>
+                          toggleMutation.mutate({
+                            id: part.id,
+                            isActive: !part.isActive,
+                          })
+                        }
+                        title={
+                          part.isActive
+                            ? "Deactivate (hide from catalog)"
+                            : "Activate (show in catalog)"
+                        }
                         style={{
                           width: 30,
                           height: 30,
                           borderRadius: 7,
-                          border: "1px solid rgba(239,68,68,0.2)",
-                          background: "rgba(239,68,68,0.08)",
-                          color: "#f87171",
                           cursor: "pointer",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
+                          border: part.isActive
+                            ? "1px solid rgba(34,197,94,0.3)"
+                            : "1px solid rgba(124,138,165,0.2)",
+                          background: part.isActive
+                            ? "rgba(34,197,94,0.1)"
+                            : "rgba(124,138,165,0.08)",
+                          color: part.isActive ? "#4ade80" : "#64748b",
+                          transition: "all 0.15s",
                         }}
                       >
-                        <Trash2 size={12} />
+                        {part.isActive ? (
+                          <Eye size={12} />
+                        ) : (
+                          <EyeOff size={12} />
+                        )}
                       </button>
+
+                      {/* Delete — shows confirm */}
+                      {confirmDeleteId === part.id ? (
+                        <div style={{ display: "flex", gap: 4 }}>
+                          <button
+                            onClick={() => {
+                              deleteMutation.mutate(part.id);
+                              setConfirmDeleteId(null);
+                            }}
+                            style={{
+                              padding: "4px 8px",
+                              borderRadius: 6,
+                              border: "1px solid rgba(239,68,68,0.4)",
+                              background: "rgba(239,68,68,0.15)",
+                              color: "#f87171",
+                              cursor: "pointer",
+                              fontSize: 11,
+                              fontFamily: "'JetBrains Mono', monospace",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            ✓ Yes
+                          </button>
+                          <button
+                            onClick={() => setConfirmDeleteId(null)}
+                            style={{
+                              padding: "4px 8px",
+                              borderRadius: 6,
+                              border: "1px solid #1e293b",
+                              background: "#1e293b",
+                              color: "#94a3b8",
+                              cursor: "pointer",
+                              fontSize: 11,
+                              fontFamily: "'JetBrains Mono', monospace",
+                            }}
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setConfirmDeleteId(part.id)}
+                          title="Permanently delete from database"
+                          style={{
+                            width: 30,
+                            height: 30,
+                            borderRadius: 7,
+                            border: "1px solid rgba(239,68,68,0.2)",
+                            background: "rgba(239,68,68,0.08)",
+                            color: "#f87171",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -1045,43 +1262,43 @@ function OrdersTab() {
   });
 
   const statusMutation = useMutation({
-  mutationFn: ({ id, status }: { id: string; status: string }) =>
-    api.patch(`/admin/orders/${id}/status`, { status }),
+    mutationFn: ({ id, status }: { id: string; status: string }) =>
+      api.patch(`/admin/orders/${id}/status`, { status }),
 
-  // ← Update UI immediately before server responds
-  onMutate: async ({ id, status }) => {
-    // Cancel any outgoing refetches
-    await qc.cancelQueries({ queryKey: ['admin-orders', statusFilter] })
+    // ← Update UI immediately before server responds
+    onMutate: async ({ id, status }) => {
+      // Cancel any outgoing refetches
+      await qc.cancelQueries({ queryKey: ["admin-orders", statusFilter] });
 
-    // Snapshot previous value
-    const previous = qc.getQueryData(['admin-orders', statusFilter])
+      // Snapshot previous value
+      const previous = qc.getQueryData(["admin-orders", statusFilter]);
 
-    // Optimistically update the cache
-    qc.setQueryData(['admin-orders', statusFilter], (old: any) => {
-      if (!old) return old
-      return {
-        ...old,
-        data: old.data.map((order: Order) =>
-          order.id === id ? { ...order, status } : order
-        )
+      // Optimistically update the cache
+      qc.setQueryData(["admin-orders", statusFilter], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          data: old.data.map((order: Order) =>
+            order.id === id ? { ...order, status } : order,
+          ),
+        };
+      });
+
+      return { previous };
+    },
+
+    // If server returns error, roll back to previous value
+    onError: (_err, _vars, context) => {
+      if (context?.previous) {
+        qc.setQueryData(["admin-orders", statusFilter], context.previous);
       }
-    })
+    },
 
-    return { previous }
-  },
-
-  // If server returns error, roll back to previous value
-  onError: (_err, _vars, context) => {
-    if (context?.previous) {
-      qc.setQueryData(['admin-orders', statusFilter], context.previous)
-    }
-  },
-
-  // Always refetch after success or error to sync with server
-  onSettled: () => {
-    qc.invalidateQueries({ queryKey: ['admin-orders'] })
-  },
-})
+    // Always refetch after success or error to sync with server
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ["admin-orders"] });
+    },
+  });
 
   const STATUS_OPTIONS = [
     "PENDING",

@@ -181,4 +181,34 @@ router.patch('/promotions/:id', async (req, res) => {
   res.json(promo)
 })
 
+router.patch('/parts/:id/toggle', async (req, res) => {
+  try {
+    const { isActive } = req.body
+    const part = await prisma.part.update({
+      where: { id: req.params.id },
+      data: { isActive },
+      include: { category: true }
+    })
+    res.json(part)
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to toggle part' })
+  }
+})
+
+router.delete('/parts/:id/hard', async (req, res) => {
+  try {
+    // Delete all related records first
+    await prisma.partCompatibility.deleteMany({ where: { partId: req.params.id } })
+    await prisma.review.deleteMany({ where: { partId: req.params.id } })
+    await prisma.promoItem.deleteMany({ where: { partId: req.params.id } })
+    await prisma.orderItem.deleteMany({ where: { partId: req.params.id } })
+
+    // Then delete the part itself
+    await prisma.part.delete({ where: { id: req.params.id } })
+    res.json({ success: true })
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to delete part' })
+  }
+})
+
 export default router
