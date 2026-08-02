@@ -6,9 +6,43 @@ import PartCard from '@/components/PartCard'
 import FilterSidebar from '@/components/FilterSidebar'
 import type { FilterState } from '@/types/types'
 import { useTranslation } from 'react-i18next'
+import { useThemeStore } from '@/store'
 
 
 export default function CatalogPage() {
+  const { dark } = useThemeStore()
+
+  const c = dark ? {
+      pageBg: '#05070C',
+      cardBg: 'rgba(13,18,30,0.8)',
+      cardBorder: 'rgba(124,138,165,0.12)',
+      text: '#EAF2FF',
+      textMuted: '#7C8AA5',
+      accent: '#4C7CFF',
+      gradientHero: 'linear-gradient(135deg, #05070C 0%, #0a1628 50%, #05070C 100%)',
+      gradientAccent: 'linear-gradient(135deg, #4C7CFF, #22D3B8)',
+      energyLine: 'linear-gradient(90deg, #4C7CFF, #22D3B8, #4C7CFF, #22D3B8)',
+      gridColor: 'rgba(76,124,255,0.04)',
+      glowBlue: 'rgba(76,124,255,0.08)',
+      glowTeal: 'rgba(34,211,184,0.06)',
+      inputPlaceholder: '#b9bfca',
+    } : {
+      pageBg: '#F0F4FF',
+      cardBg: 'rgba(255,255,255,0.9)',
+      cardBorder: 'rgba(60,90,200,0.12)',
+      text: '#4e5157',
+      textMuted: '#4A5A7A',
+      accent: '#2952CC',
+      gradientHero: 'linear-gradient(135deg, #E8EEFF 0%, #F0F4FF 50%, #E8F6F4 100%)',
+      gradientAccent: 'linear-gradient(135deg, #2952CC, #0A8C7A)',
+      energyLine: 'linear-gradient(90deg, #2952CC, #0A8C7A, #2952CC, #0A8C7A)',
+      gridColor: 'rgba(41,82,204,0.04)',
+      glowBlue: 'rgba(41,82,204,0.06)',
+      glowTeal: 'rgba(10,140,122,0.05)',
+      inputPlaceholder: '#515357',
+    }
+
+
   const [searchParams, setSearchParams] = useSearchParams()
   const [showFilters, setShowFilters] = useState(() => window.innerWidth >= 768);
   const [page, setPage] = useState(1)
@@ -52,7 +86,7 @@ export default function CatalogPage() {
   const activeFilterCount = [filters.makeId, filters.modelId, filters.year, filters.category, filters.minPrice, filters.maxPrice].filter(Boolean).length
 
   return (
-    <div style={{ minHeight: '100vh', background: '#05070C', color: '#EAF2FF' }}>
+    <div style={{ minHeight: '100vh', background:c.pageBg, color: c.text, position: 'relative', overflow: 'hidden' }}> 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -75,6 +109,13 @@ export default function CatalogPage() {
         @keyframes shimmer {
           0% { background-position: -200% 0; }
           100% { background-position: 200% 0; }
+        }
+        .about-grid-bg {
+          background-image:
+          linear-gradient(${c.gridColor} 1px, transparent 1px),
+          linear-gradient(90deg, ${c.gridColor} 1px, transparent 1px);
+          background-size: 48px 48px;
+          animation: grid-drift 20s linear infinite;
         }
         .catalog-grid-bg {
           background-image:
@@ -103,20 +144,20 @@ export default function CatalogPage() {
           box-shadow: 0 0 0 3px rgba(34,211,184,0.1);
           background: rgba(34,211,184,0.03);
         }
-        .catalog-input::placeholder { color: #4A5670; }
-        .sort-select option { background: #0a0f1e; }
+        .catalog-input::placeholder { color: ${c.inputPlaceholder} }
+        .sort-select option { background: ${c.cardBg}; color: ${c.text}; }
         .filter-btn {
           display: flex; align-items: center; gap: 6px;
           padding: 10px 16px; border-radius: 10px; border: 1px solid rgba(124,138,165,0.2);
-          background: rgba(255,255,255,0.03); color: #7C8AA5; font-size: 13px;
+          background: rgba(255,255,255,0.03); color: ${c.text}; font-size: 13px;
           cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 500;
           transition: all 0.2s ease;
         }
         .filter-btn:hover { border-color: #22D3B8; color: #22D3B8; background: rgba(34,211,184,0.05); }
-        .filter-btn.active { border-color: #4C7CFF; color: #EAF2FF; background: rgba(76,124,255,0.15); }
+        .filter-btn.active { border-color: #1796834b; color: ${c.text}; background: rgba(22, 202, 175, 0.28); }
         .chip {
           display: inline-flex; align-items: center; gap: 4px;
-          padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
+          padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 500;
           background: rgba(76,124,255,0.12); color: #4C7CFF;
           border: 1px solid rgba(76,124,255,0.25); cursor: pointer;
           font-family: 'JetBrains Mono', monospace; transition: all 0.15s;
@@ -173,16 +214,16 @@ export default function CatalogPage() {
       `}</style>
 
       {/* Background */}
-      <div className="catalog-grid-bg" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }} />
-      <div style={{ position: 'fixed', top: '20%', right: '10%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(76,124,255,0.06), transparent 70%)', filter: 'blur(40px)', pointerEvents: 'none', zIndex: 0 }} />
-      <div style={{ position: 'fixed', bottom: '20%', left: '5%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(34,211,184,0.05), transparent 70%)', filter: 'blur(40px)', pointerEvents: 'none', zIndex: 0 }} />
+      <div className="about-grid-bg" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }} />
+      <div style={{ position: 'fixed', top: '5%', right: '5%', width: 500, height: 500, borderRadius: '50%', background: `radial-gradient(circle, ${c.glowBlue}, transparent 70%)`, filter: 'blur(60px)', pointerEvents: 'none', zIndex: 0 }} />
+      <div style={{ position: 'fixed', bottom: '10%', left: '5%', width: 400, height: 400, borderRadius: '50%', background: `radial-gradient(circle, ${c.glowTeal}, transparent 70%)`, filter: 'blur(60px)', pointerEvents: 'none', zIndex: 0 }} />
 
       <div style={{ position: 'relative', zIndex: 1, maxWidth: 1280, margin: '0 auto', padding: '24px 16px' }}>
 
         {/* Header */}
         <div style={{ marginBottom: 24, animation: 'fade-up 0.4s ease-out both' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#22D3B8', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, background: `${c.gradientAccent} text`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
               {t('catalog.extraTitle')}
             </span>
           </div>
@@ -195,10 +236,14 @@ export default function CatalogPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, flexWrap: 'wrap', animation: 'fade-up 0.4s 0.05s ease-out both' }}>
           {/* Search */}
           <div style={{ position: 'relative', flex: 1, minWidth: 180 }}>
-            <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#4A5670' }} />
+            <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#6b7280' }} />
             <input
               className="catalog-input"
-              style={{ width: '100%', paddingLeft: 36, paddingRight: 12, paddingTop: 10, paddingBottom: 10, boxSizing: 'border-box' }}
+              style={{
+                  width: '100%', paddingLeft: 44, paddingRight: 16, paddingTop: 12, paddingBottom: 12,
+                  borderRadius: 10, background: dark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.9)', border: dark ? '1px solid rgba(255,255,255,0.15)' : '1px solid rgba(41,82,204,0.2)',
+                  color: dark ? '#f9fafb' : '#0B1220', fontSize: 14, outline: 'none', boxSizing: 'border-box'
+                }}
               placeholder={t('catalog.searchPlaceholder')}
               value={filters.search}
               onChange={(e) => updateFilters({ search: e.target.value })}
@@ -208,7 +253,7 @@ export default function CatalogPage() {
           {/* Sort */}
           <select
             className="catalog-input sort-select"
-            style={{ padding: '10px 12px', cursor: 'pointer', minWidth: 160 }}
+            style={{ padding: '10px 12px', cursor: 'pointer', minWidth: 160, color: c.text, fontSize: 14, outline: 'none', boxSizing: 'border-box' }}
             value={filters.sort}
             onChange={(e) => updateFilters({ sort: e.target.value })}
           >
@@ -241,7 +286,7 @@ export default function CatalogPage() {
           <div style={{ display: 'flex', gap: 6, marginBottom: 16, flexWrap: 'wrap', animation: 'fade-up 0.3s ease-out both' }}>
             {filters.category && (
               <span className="chip" onClick={() => updateFilters({ category: '' })}>
-                {filters.category} <X size={10} />
+                {filters.category} <X size={14} />
               </span>
             )}
             {filters.year && (
@@ -290,7 +335,7 @@ export default function CatalogPage() {
           <div style={{ flex: 1, minWidth: 0 }}>
             {/* Results bar */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#4A5670' }}>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: c.text }}>
                 {isLoading ? t('catalog.scanning') : `${data?.total ?? 0} ${t('catalog.partsFound')}`}
               </span>
             </div>

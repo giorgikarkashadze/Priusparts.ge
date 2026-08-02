@@ -28,6 +28,7 @@ export default function HomePage() {
       gradientHero: 'linear-gradient(135deg, #05070C 0%, #0a1628 50%, #05070C 100%)',
       gradientAccent: 'linear-gradient(135deg, #4C7CFF, #22D3B8)',
       energyLine: 'linear-gradient(90deg, #4C7CFF, #22D3B8, #4C7CFF, #22D3B8)',
+      gridColor: 'rgba(76,124,255,0.04)',
       glowBlue: 'rgba(76,124,255,0.08)',
       glowTeal: 'rgba(34,211,184,0.06)'
     } : {
@@ -40,6 +41,7 @@ export default function HomePage() {
       gradientHero: 'linear-gradient(135deg, #E8EEFF 0%, #F0F4FF 50%, #E8F6F4 100%)',
       gradientAccent: 'linear-gradient(135deg, #2952CC, #0A8C7A)',
       energyLine: 'linear-gradient(90deg, #2952CC, #0A8C7A, #2952CC, #0A8C7A)',
+      gridColor: 'rgba(41,82,204,0.04)',
       glowBlue: 'rgba(41,82,204,0.06)',
       glowTeal: 'rgba(10,140,122,0.05)'
     }
@@ -88,6 +90,13 @@ export default function HomePage() {
               @keyframes glow-pulse {
                   0%, 100% { opacity: 0.6; }
                   50% { opacity: 1; }
+              }
+              .about-grid-bg {
+                background-image:
+                linear-gradient(${c.gridColor} 1px, transparent 1px),
+                linear-gradient(90deg, ${c.gridColor} 1px, transparent 1px);
+                background-size: 48px 48px;
+                animation: grid-drift 20s linear infinite;
               }
               .energy-bar {
                 background: ${c.energyLine};
@@ -163,7 +172,7 @@ export default function HomePage() {
 
       {/* Hero */}
       <section style={{ background: c.gradientHero, padding: '72px 16px 80px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ maxWidth: 640, margin: '0 auto' }}>
+        <div style={{ maxWidth: 640, margin: '0 auto', animation: 'fade-up 0.5s ease-out both' }}>
           <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 44, fontWeight: 700, color: c.text, lineHeight: 1.15, letterSpacing: '-1px', marginBottom: 16 }}>
             {t('home.hero.title')}<br />
             <span style={{ background: `${c.gradientAccent} text`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{t('home.hero.titleHighlight')}</span>
@@ -197,7 +206,7 @@ export default function HomePage() {
 
       {/* Stats */}
       <section style={{ background: c.gradientAccent, borderBottom: '1px solid #334155' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '16px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, textAlign: 'center' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '16px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, textAlign: 'center', animation: 'fade-up 0.5s ease-out both' }}>
           {[
             ['5,000+', t('home.stats.parts')],
             ['2008–2024', t('home.stats.brands')],
@@ -243,7 +252,7 @@ export default function HomePage() {
 
         {/* Categories */}
         {Array.isArray(categories) && categories.length > 0 && (
-          <section style={{ marginBottom: 48 }}>
+          <section style={{ marginBottom: 48, animation: 'fade-up 0.5s ease-out both' }}>
             <h2 className='section-title'>{t('home.sections.byCategory')}</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 10 }}>
               {categories.map((d) => (
@@ -261,7 +270,7 @@ export default function HomePage() {
         )}
 
         {/* Promo banner */}
-        <section style={{ marginBottom: 48 }}>
+        <section style={{ marginBottom: 48, animation: 'fade-up 0.5s ease-out both' }}>
           <div style={{
             background: 'linear-gradient(135deg, rgba(212,56,13,0.15), rgba(255,107,53,0.1))',
             border: '1px solid rgba(212,56,13,0.3)', borderRadius: 16, padding: '24px',
@@ -272,12 +281,12 @@ export default function HomePage() {
               <div style={{ fontWeight: 600, color: '#4d9fff', fontSize: 16 }}>{t('home.promo.title')}</div>
               <div style={{ fontSize: 13, color: '#64748b', marginTop: 4 }}>{t('home.promo.subtitle')} <strong style={{ color: '#f9fafb' }}>SUMMER30</strong> {t('home.promo.at')}</div>
             </div>
-            <Link to="/catalog?category=brakes" style={{
+            {/* <Link to="/catalog?category=brakes" style={{
               background: '#1d6fe8', color: '#fff', textDecoration: 'none',
               padding: '10px 20px', borderRadius: 8, fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap'
             }}>
               {t('home.promo.btn')}
-            </Link>
+            </Link> */}
           </div>
         </section>
 
