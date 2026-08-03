@@ -26,26 +26,9 @@ const CATEGORY_ICONS: Record<string, string> = {
 }
 
 export default function CheckoutPage() {
-  const { items, total, clearCart } = useCartStore()
-  const { dark } = useThemeStore()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const promoCode = (location.state as any)?.promoCode
-
-  const [loading, setLoading] = useState(false)
-  // const [error, setError] = useState('')
-  const [focusedField, setFocusedField] = useState<string | null>(null)
-
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema),
-    defaultValues: { city: 'Tbilisi' },
-  })
-
-  const subtotal = total()
-  const shipping = 9.99
-  const orderTotal = subtotal + shipping
 
   // Theme tokens
+  const { dark } = useThemeStore()
   const c = dark ? {
     pageBg: '#05070C',
     cardBg: 'rgba(13,18,30,0.8)',
@@ -111,6 +94,24 @@ export default function CheckoutPage() {
     errorBorder: 'rgba(220,38,38,0.2)',
     errorColor: '#DC2626',
   }
+
+  const { items, total, clearCart } = useCartStore()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const promoCode = (location.state as any)?.promoCode
+
+  const [loading, setLoading] = useState(false)
+  // const [error, setError] = useState('')
+  const [focusedField, setFocusedField] = useState<string | null>(null)
+
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: { city: 'Tbilisi' },
+  })
+
+  const subtotal = total()
+  const shipping = 9.99
+  const orderTotal = subtotal + shipping
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);

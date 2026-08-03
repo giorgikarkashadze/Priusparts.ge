@@ -1,34 +1,37 @@
 import { Link } from 'react-router-dom'
-import { Shield, Truck, RotateCcw, Headphones, Star, MapPin, Mail, Phone, Zap, Award, Users, Package } from 'lucide-react'
+import { Shield, Truck, RotateCcw, Headphones, MapPin, Mail, Phone, Zap, Award, Users, Package } from 'lucide-react'
 import { useThemeStore } from '@/store'
+import { useTranslation } from 'react-i18next'
 
-const FEATURES = [
-  { icon: Shield, title: 'OEM & Aftermarket parts', desc: 'We stock genuine Toyota parts alongside quality aftermarket alternatives built specifically for Prius.' },
-  { icon: Truck, title: 'Fast delivery across Georgia', desc: '1–3 day delivery nationwide. Same-day dispatch on orders placed before 2pm on weekdays.' },
-  { icon: RotateCcw, title: '30-day easy returns', desc: 'Not the right part? Return any unused part within 30 days for a full refund or exchange — no questions asked.' },
-  { icon: Headphones, title: 'Prius expert support', desc: 'Our team specializes exclusively in Toyota Prius. We know every generation, every part, every issue.' },
-]
 
-const STATS = [
-  { value: '5,000+', label: 'Parts in stock', icon: Package },
-  { value: '2008–2024', label: 'All generations', icon: Zap },
-  { value: '15 years', label: 'In business', icon: Award },
-  { value: '98%', label: 'Satisfaction rate', icon: Users },
-]
-
-const TEAM = [
-  { name: 'Giorgi Beridze', role: 'Founder & Lead Mechanic', emoji: '🧑‍🔧', exp: '20 years experience' },
-  { name: 'Nino Kvaratskhelia', role: 'Parts Specialist', emoji: '👩‍💼', exp: 'Toyota certified' },
-  { name: 'Luka Maisuradze', role: 'Logistics Manager', emoji: '🧑‍💼', exp: 'Fast & reliable' },
-]
-
-const REVIEWS = [
-  { text: 'Ordered brake pads on Monday, arrived Wednesday. Fit perfectly on my Gen 4 Prius. Will definitely order again.', author: 'Alex M.', rating: 5 },
-  { text: 'Called support to check compatibility for my 2015 model — the mechanic knew exactly what I needed. Outstanding service.', author: 'Nina P.', rating: 5 },
-]
+// const REVIEWS = [
+//   { text: 'Ordered brake pads on Monday, arrived Wednesday. Fit perfectly on my Gen 4 Prius. Will definitely order again.', author: 'Alex M.', rating: 5 },
+//   { text: 'Called support to check compatibility for my 2015 model — the mechanic knew exactly what I needed. Outstanding service.', author: 'Nina P.', rating: 5 },
+// ]
 
 export default function AboutPage() {
   const { dark } = useThemeStore()
+  const { t } = useTranslation()
+
+  const FEATURES = [
+  { icon: Shield, title: t('home.WhyusSection.first.title'), desc: t('home.WhyusSection.first.desc') },
+  { icon: Truck, title: t('home.WhyusSection.second.title'), desc: t('home.WhyusSection.second.desc') },
+  { icon: RotateCcw, title: t('home.WhyusSection.third.title'), desc: t('home.WhyusSection.third.desc') },
+  { icon: Headphones, title: t('home.WhyusSection.fourth.title'), desc: t('home.WhyusSection.fourth.desc') },
+]
+
+const STATS = [
+  { value: '5,000+', label: t('about.stock'), icon: Package },
+  { value: '2008–2024', label: t('about.oldAndNew'), icon: Zap },
+  { value: '15 years', label: t('about.inBusiness'), icon: Award },
+  { value: '98%', label: t('about.satRate'), icon: Users },
+]
+
+const TEAM = [
+  { name: t('about.ceoName'), role: t('about.ceoSubtitle'), emoji: '🧑‍💼', exp: t('about.ceoChip') },
+  { name: t('about.devName'), role: t('about.devSubtitle'), emoji: '💻🛠️', exp: t('about.devChip') },
+  { name: t('about.testerName'), role: t('about.testerSubtitle'), emoji: '🚀⚙️', exp: t('about.testerChip') },
+]
 
   const c = dark ? {
     pageBg: '#05070C',
@@ -271,21 +274,19 @@ export default function AboutPage() {
             {/* Tag */}
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: c.tagBg, border: `1px solid ${c.tagBorder}`, borderRadius: 20, padding: '6px 14px', marginBottom: 24 }}>
               <div style={{ width: 6, height: 6, borderRadius: '50%', background: c.teal, boxShadow: dark ? `0 0 8px ${c.teal}` : 'none', animation: 'glow-pulse 2s ease-in-out infinite' }} />
-              <span className="section-label">Georgia's Prius Specialist since 2010</span>
+              <span className="section-label">{t('about.sectionLabel')}</span>
             </div>
 
             <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 44, fontWeight: 700, color: c.text, lineHeight: 1.15, letterSpacing: '-1px', marginBottom: 16 }}>
-              About <span style={{ background: `${c.gradientAccent} text`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>PriusParts.ge</span>
+              <span style={{ background: `${c.gradientAccent} text`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{t('about.title')}</span>
             </h1>
 
             <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, color: c.textMuted, lineHeight: 1.7, marginBottom: 32 }}>
-              Founded in 2010, PriusParts.ge was built by Prius mechanics for Prius owners.
-              We stock everything you need — from engine components to hybrid batteries —
-              for all generations from 2008 to 2024.
+              {t('about.subtitle')}
             </p>
 
             <Link to="/catalog" className="cta-btn">
-              Browse our catalog →
+              {t('about.browseCatalog')} →
             </Link>
           </div>
         </section>
@@ -310,9 +311,8 @@ export default function AboutPage() {
           {/* Why us */}
           <section style={{ marginBottom: 64, animation: 'fade-up 0.5s 0.1s ease-out both' }}>
             <div style={{ marginBottom: 28 }}>
-              <span className="section-label">// WHY CHOOSE US</span>
-              <h2 className="section-title">Built for Prius owners</h2>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: c.textMuted }}>Everything we do is focused on one car — the Toyota Prius.</p>
+              <h2 className="section-title">{t('about.whyUs')}</h2>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: c.textMuted }}>{t('about.whyUsSubtitle')}</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14 }}>
               {FEATURES.map(({ icon: Icon, title, desc }) => (
@@ -330,9 +330,8 @@ export default function AboutPage() {
           {/* Team */}
           <section style={{ marginBottom: 64, animation: 'fade-up 0.5s 0.15s ease-out both' }}>
             <div style={{ marginBottom: 28 }}>
-              <span className="section-label">// OUR TEAM</span>
-              <h2 className="section-title">Meet the experts</h2>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: c.textMuted }}>A dedicated team of Prius specialists ready to help.</p>
+              <h2 className="section-title">{t('about.team')}</h2>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: c.textMuted }}>{t('about.teamSubtitle')}</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
               {TEAM.map(({ name, role, emoji, exp }) => (
@@ -353,7 +352,7 @@ export default function AboutPage() {
           </section>
 
           {/* Reviews */}
-          <section style={{ marginBottom: 64, animation: 'fade-up 0.5s 0.2s ease-out both' }}>
+          {/* <section style={{ marginBottom: 64, animation: 'fade-up 0.5s 0.2s ease-out both' }}>
             <div style={{ marginBottom: 28 }}>
               <span className="section-label">// CUSTOMER REVIEWS</span>
               <h2 className="section-title">What our customers say</h2>
@@ -384,20 +383,19 @@ export default function AboutPage() {
                 </div>
               ))}
             </div>
-          </section>
+          </section> */}
 
           {/* Contact */}
           <section style={{ marginBottom: 64, animation: 'fade-up 0.5s 0.25s ease-out both' }}>
             <div style={{ marginBottom: 28 }}>
-              <span className="section-label">// GET IN TOUCH</span>
-              <h2 className="section-title">Contact us</h2>
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: c.textMuted }}>Our team is available Monday–Saturday, 9am–7pm.</p>
+              <h2 className="section-title">{t('about.contact')}</h2>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: c.textMuted }}>{t('about.available')}</p>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 12 }}>
               {[
-                { icon: Mail, label: 'Email us', value: 'support@priusparts.ge', href: 'mailto:support@priusparts.ge' },
-                { icon: Phone, label: 'Call us', value: '+995 XXX XXX XXX', href: 'tel:+995000000000' },
-                { icon: MapPin, label: 'Visit us', value: 'Tbilisi, Georgia', href: '#' },
+                { icon: Mail, label: t('about.email'), value: 'support@priusparts.ge', href: 'mailto:support@priusparts.ge' },
+                { icon: Phone, label: t('about.phone'), value: '+995 XXX XXX XXX', href: 'tel:+995000000000' },
+                { icon: MapPin, label: t('about.visitUs'), value: 'Tbilisi, Georgia', href: '#' },
               ].map(({ icon: Icon, label, value, href }) => (
                 <a key={label} href={href} className="contact-card">
                   <div style={{ width: 40, height: 40, borderRadius: 10, background: c.gradientAccent, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -413,7 +411,7 @@ export default function AboutPage() {
           </section>
 
           {/* CTA */}
-          <section style={{ animation: 'fade-up 0.5s 0.3s ease-out both' }}>
+          {/* <section style={{ animation: 'fade-up 0.5s 0.3s ease-out both' }}>
             <div style={{
               background: dark
                 ? 'linear-gradient(135deg, rgba(76,124,255,0.12), rgba(34,211,184,0.08))'
@@ -435,7 +433,7 @@ export default function AboutPage() {
                 <Zap size={16} /> Browse catalog
               </Link>
             </div>
-          </section>
+          </section> */}
 
         </div>
       </div>
