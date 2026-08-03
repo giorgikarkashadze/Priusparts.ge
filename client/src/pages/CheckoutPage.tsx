@@ -33,7 +33,7 @@ export default function CheckoutPage() {
   const promoCode = (location.state as any)?.promoCode
 
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  // const [error, setError] = useState('')
   const [focusedField, setFocusedField] = useState<string | null>(null)
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
@@ -113,7 +113,7 @@ export default function CheckoutPage() {
   }
 
   const onSubmit = async (data: FormData) => {
-    setLoading(true); setError('')
+    setLoading(true);
     try {
       const { email, phone, ...shippingAddress } = data
       const res = await api.post('/orders', {
@@ -124,7 +124,7 @@ export default function CheckoutPage() {
       clearCart()
       navigate(`/orders`, { state: { success: true, orderId: res.data.order.id } })
     } catch (e: any) {
-      setError(e.response?.data?.error || 'Order failed. Please try again.')
+      // setError(e.response?.data?.error || 'Order failed. Please try again.')
     } finally {
       setLoading(false)
     }
