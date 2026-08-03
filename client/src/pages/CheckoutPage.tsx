@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Lock, CreditCard, ChevronRight, ShieldCheck, Truck, RotateCcw, Zap } from 'lucide-react'
+import { Lock, ChevronRight, ShieldCheck, Truck, RotateCcw, Zap } from 'lucide-react'
 import { useCartStore, useThemeStore } from '@/store'
 import api from '@/lib/api'
 
@@ -36,7 +36,7 @@ export default function CheckoutPage() {
   const [error, setError] = useState('')
   const [focusedField, setFocusedField] = useState<string | null>(null)
 
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: { city: 'Tbilisi' },
   })
