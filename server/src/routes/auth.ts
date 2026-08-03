@@ -48,11 +48,18 @@ router.post('/login', async (req, res) => {
     const { email, password } = loginSchema.parse(req.body)
     const user = await prisma.user.findUnique({ where: { email } })
     if (!user) return res.status(401).json({ error: 'Invalid credentials' })
+
+    if (!user.passwordHash) {
+      return res.status(401).json({ error: 'This account uses Google sign in' })
+    }
+
     const valid = await bcrypt.compare(password, user.passwordHash)
     if (!valid) return res.status(401).json({ error: 'Invalid credentials' })
+
     const tokens = signTokens(user)
     res.json({ user: { id: user.id, email: user.email, name: user.name, role: user.role }, ...tokens })
   } catch (e) {
+    console.error('Login error:', e)
     if (e instanceof z.ZodError) return res.status(400).json({ error: e.issues })
     res.status(500).json({ error: 'Login failed' })
   }

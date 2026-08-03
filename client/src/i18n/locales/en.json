@@ -120,7 +120,7 @@
   },
   "cart": {
     "title": "Your cart",
-    "items": "items in your cart",
+    "items": "Items",
     "empty": "Your cart is empty",
     "emptySub": "Add some Prius parts to get started",
     "browseParts": "Browse parts",

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ShoppingCart, Zap } from 'lucide-react'
-import { useCartStore } from '@/store'
+import { useCartStore, useThemeStore } from '@/store'
 import { formatPrice, discount } from '@/lib/utils'
 import type { Part } from '@/types/types'
 import { useTranslation } from 'react-i18next'
@@ -12,6 +12,15 @@ const CATEGORY_ICONS: Record<string, string> = {
 }
 
 export default function PartCard({ part }: { part: Part }) {
+
+const { dark } = useThemeStore()
+
+  const c = dark ? {
+      borderColor: '#rgba(124,138,165,0.12)',
+    } : {
+      borderColor: '#F0F4FF',
+    }
+
   const addItem = useCartStore((s) => s.addItem)
   const [added, setAdded] = useState(false)
   const [hovered, setHovered] = useState(false)
@@ -37,7 +46,7 @@ export default function PartCard({ part }: { part: Part }) {
         }
         .part-card-hud {
           background: rgba(13,18,30,0.75);
-          border: 1px solid rgba(124,138,165,0.12);
+          border: 1px solid ${c.borderColor};
           border-radius: 14px; overflow: hidden;
           transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
           cursor: pointer; position: relative;

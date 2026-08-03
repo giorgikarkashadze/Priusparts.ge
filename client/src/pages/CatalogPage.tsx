@@ -214,7 +214,7 @@ export default function CatalogPage() {
       `}</style>
 
       {/* Background */}
-      <div className="about-grid-bg" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }} />
+    <div className="about-grid-bg" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }} />
       <div style={{ position: 'fixed', top: '5%', right: '5%', width: 500, height: 500, borderRadius: '50%', background: `radial-gradient(circle, ${c.glowBlue}, transparent 70%)`, filter: 'blur(60px)', pointerEvents: 'none', zIndex: 0 }} />
       <div style={{ position: 'fixed', bottom: '10%', left: '5%', width: 400, height: 400, borderRadius: '50%', background: `radial-gradient(circle, ${c.glowTeal}, transparent 70%)`, filter: 'blur(60px)', pointerEvents: 'none', zIndex: 0 }} />
 
@@ -239,6 +239,7 @@ export default function CatalogPage() {
             <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#6b7280' }} />
             <input
               className="catalog-input"
+              maxLength={10}
               style={{
                   width: '100%', paddingLeft: 44, paddingRight: 16, paddingTop: 12, paddingBottom: 12,
                   borderRadius: 10, background: dark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.9)', border: dark ? '1px solid rgba(255,255,255,0.15)' : '1px solid rgba(41,82,204,0.2)',
@@ -282,30 +283,27 @@ export default function CatalogPage() {
         </div>
 
         {/* Active chips */}
-        {(filters.category || filters.search || filters.year) && (
           <div style={{ display: 'flex', gap: 6, marginBottom: 16, flexWrap: 'wrap', animation: 'fade-up 0.3s ease-out both' }}>
-            {filters.category && (
-              <span className="chip" onClick={() => updateFilters({ category: '' })}>
+              <span style={{visibility: filters.category ? 'visible' : 'hidden'}} className="chip" onClick={() => updateFilters({ category: '' })}>
                 {filters.category} <X size={14} />
               </span>
-            )}
             {filters.year && (
-              <span className="chip" onClick={() => updateFilters({ year: '' })}>
+              <span style={{visibility: filters.year ? 'visible' : 'hidden'}} className="chip" onClick={() => updateFilters({ year: '' })}>
                 {filters.year} <X size={10} />
               </span>
             )}
-            {filters.search && (
-              <span className="chip" style={{ background: 'rgba(34,211,184,0.1)', color: '#22D3B8', borderColor: 'rgba(34,211,184,0.25)' }} onClick={() => updateFilters({ search: '' })}>
-                "{filters.search}" <X size={10} />
+            
+            {(filters.minPrice ||filters.maxPrice) &&(
+              <span className="chip" style={{ visibility: filters.minPrice || filters.maxPrice ? 'visible' : 'hidden'}}  onClick={() => updateFilters({ minPrice: '', maxPrice: '' })}>
+                 {filters.minPrice || '0'} - {filters.maxPrice || '*'} ₾  <X size={10} />
               </span>
             )}
             {(filters.yearFrom || filters.yearTo) && (
-              <span className="chip" onClick={() => updateFilters({ yearFrom: '', yearTo: '' })}>
+              <span style={{ visibility: filters.yearFrom || filters.yearTo ? 'visible' : 'hidden'}} className="chip" onClick={() => updateFilters({ yearFrom: '', yearTo: '' })}>
                 {filters.yearFrom || '2008'} — {filters.yearTo || '2024'} <X size={10} />
               </span>
             )}
           </div>
-        )}
 
         {/* Main layout */}
         <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
@@ -363,8 +361,8 @@ export default function CatalogPage() {
               </div>
             )}
           </div>
-          {/* Pagination */}
         </div>
+        {/* Pagination */}
         {data && data.pages > 1  && (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, marginTop: 40 }}>
 
@@ -374,7 +372,7 @@ export default function CatalogPage() {
             disabled={page === 1}
             style={{
               padding: '8px 14px', borderRadius: 8, border: '1px solid rgba(124,138,165,0.2)',
-              background: 'transparent', color: page === 1 ? '#4A5670' : '#EAF2FF',
+              background: 'transparent', color: page === 1 ? dark ? '#f9fafb' : '#0B1220' : dark ? '#f9fafb' : '#0B1220',
               cursor: page === 1 ? 'not-allowed' : 'pointer', fontSize: 13,
               fontFamily: "'JetBrains Mono', monospace", opacity: page === 1 ? 0.4 : 1,
               transition: 'all 0.15s'
@@ -430,7 +428,7 @@ export default function CatalogPage() {
             disabled={page === data.pages}
             style={{
               padding: '8px 14px', borderRadius: 8, border: '1px solid rgba(124,138,165,0.2)',
-              background: 'transparent', color: page === data.pages ? '#4A5670' : '#EAF2FF',
+              background: 'transparent', color: page === data.pages ? dark ? '#f9fafb' : '#0B1220' : dark ? '#f9fafb' : '#0B1220',
               cursor: page === data.pages ? 'not-allowed' : 'pointer', fontSize: 13,
               fontFamily: "'JetBrains Mono', monospace", opacity: page === data.pages ? 0.4 : 1,
               transition: 'all 0.15s'

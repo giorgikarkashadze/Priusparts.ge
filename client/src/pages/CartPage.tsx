@@ -1,639 +1,305 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  Trash2,
-  ShoppingBag,
-  Tag,
-  ArrowRight,
-  ShieldCheck,
-  RotateCcw,
-  BadgeCheck,
-  Minus,
-  Plus,
-} from "lucide-react";
-import { useCartStore, useAuthStore } from "@/store";
-import { formatPrice } from "@/lib/utils";
-import api from "@/lib/api";
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { ShoppingBag, Tag, ArrowRight, ShieldCheck, RotateCcw, BadgeCheck, Minus, Plus } from 'lucide-react'
+import { useCartStore, useAuthStore, useThemeStore } from '@/store'
+import api from '@/lib/api'
 import { useTranslation } from "react-i18next";
 import { getPartName, getCategoryName } from "@/hooks/usePartLocale";
 
 const CATEGORY_ICONS: Record<string, string> = {
-  engine: "🔧",
-  brakes: "🛞",
-  suspension: "⚙️",
-  electrical: "⚡",
-  filters: "🌀",
-  hybrid: "🔋",
-};
+  engine: '🔧', brakes: '🛞', suspension: '⚙️', electrical: '⚡', filters: '🌀', hybrid: '🔋',
+}
 
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, total } = useCartStore();
-  const user = useAuthStore((s) => s.user);
-  const navigate = useNavigate();
-  const { t } = useTranslation();
-  const { i18n } = useTranslation();
+  const { items, updateQuantity, total } = useCartStore()
+  const user = useAuthStore((s) => s.user)
+  const { dark } = useThemeStore()
+  const navigate = useNavigate()
+  const { t } = useTranslation()
+  const { i18n } = useTranslation()
 
-  const [promoCode, setPromoCode] = useState("");
-  const [promoResult, setPromoResult] = useState<{
-    discount: number;
-    type: string;
-    description?: string;
-  } | null>(null);
-  const [promoError, setPromoError] = useState("");
-  const [promoLoading, setPromoLoading] = useState(false);
+  const [promoCode, setPromoCode] = useState('')
+  const [promoResult, setPromoResult] = useState<{ discount: number; type: string; description?: string } | null>(null)
+  const [promoError, setPromoError] = useState('')
+  const [promoLoading, setPromoLoading] = useState(false)
 
-  const subtotal = total();
-  const shipping = subtotal > 0 ? 9.99 : 0;
+  const c = dark ? {
+    pageBg: '#05070C',
+    cardBg: 'rgba(13,18,30,0.8)',
+    cardBorder: 'rgba(124,138,165,0.12)',
+    text: '#EAF2FF',
+    textMuted: '#7C8AA5',
+    textFaint: '#8694b3',
+    accent: '#4C7CFF',
+    teal: '#22D3B8',
+    inputBg: 'rgba(255,255,255,0.03)',
+    inputBorder: 'rgba(124,138,165,0.2)',
+    divider: 'rgba(124,138,165,0.1)',
+    qtyBg: 'rgba(255,255,255,0.04)',
+    qtyBorder: 'rgba(124,138,165,0.2)',
+    deleteBg: 'rgba(239,68,68,0.08)',
+    deleteBorder: 'rgba(239,68,68,0.2)',
+    deleteColor: '#f87171',
+    gradientBtn: 'linear-gradient(135deg, #4C7CFF, #22D3B8)',
+    energyLine: 'linear-gradient(90deg, #4C7CFF, #22D3B8, #4C7CFF, #22D3B8)',
+    glowBtn: 'rgba(76,124,255,0.35)',
+    thumbBg: '#0a0f1e',
+    glowBlue: 'rgba(76,124,255,0.08)',
+    glowTeal: 'rgba(34,211,184,0.06)',
+    gridColor: 'rgba(76,124,255,0.04)'
+  } : {
+    pageBg: '#F0F4FF',
+    cardBg: 'rgba(255,255,255,0.9)',
+    cardBorder: 'rgba(60,90,200,0.12)',
+    text: '#0B1220',
+    textMuted: '#4A5A7A',
+    textFaint: '#8A9AB8',
+    accent: '#2952CC',
+    teal: '#0A8C7A',
+    inputBg: '#f8faff',
+    inputBorder: 'rgba(60,90,200,0.2)',
+    divider: 'rgba(60,90,200,0.1)',
+    qtyBg: '#f8faff',
+    qtyBorder: 'rgba(60,90,200,0.2)',
+    deleteBg: 'rgba(220,38,38,0.06)',
+    deleteBorder: 'rgba(220,38,38,0.2)',
+    deleteColor: '#dc2626',
+    gradientBtn: 'linear-gradient(135deg, #2952CC, #0A8C7A)',
+    energyLine: 'linear-gradient(90deg, #2952CC, #0A8C7A, #2952CC, #0A8C7A)',
+    glowBtn: 'rgba(41,82,204,0.3)',
+    thumbBg: '#f0f4ff',
+    glowBlue: 'rgba(41,82,204,0.06)',
+    glowTeal: 'rgba(10,140,122,0.05)',
+    gridColor: 'rgba(41,82,204,0.04)'
+  }
+
+  const subtotal = total()
+  const shipping = subtotal > 0 ? 9.99 : 0
   const discountAmount = promoResult
-    ? promoResult.type === "PERCENTAGE"
+    ? promoResult.type === 'PERCENTAGE'
       ? subtotal * (promoResult.discount / 100)
       : Math.min(promoResult.discount, subtotal)
-    : 0;
-  const orderTotal = Math.max(0, subtotal - discountAmount + shipping);
+    : 0
+  const orderTotal = Math.max(0, subtotal - discountAmount + shipping)
 
   const handleApplyPromo = async () => {
-    if (!promoCode.trim()) return;
-    setPromoLoading(true);
-    setPromoError("");
-    setPromoResult(null);
+    if (!promoCode.trim()) return
+    setPromoLoading(true); setPromoError(''); setPromoResult(null)
     try {
-      const { data } = await api.post("/orders/validate-promo", {
-        code: promoCode.trim().toUpperCase(),
-      });
-      setPromoResult(data);
+      const { data } = await api.post('/orders/validate-promo', { code: promoCode.trim().toUpperCase() })
+      setPromoResult(data)
     } catch {
-      setPromoError("Invalid or expired promo code");
+      setPromoError('Invalid or expired promo code')
     } finally {
-      setPromoLoading(false);
+      setPromoLoading(false)
     }
-  };
+  }
 
-  if (items.length === 0)
-    return (
-      <div
-        style={{
-          minHeight: "60vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 24,
-        }}
-      >
-        <div style={{ textAlign: "center" }}>
-          <div
-            style={{
-              width: 80,
-              height: 80,
-              borderRadius: "50%",
-              background: "#111e35",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              margin: "0 auto 20px",
-              fontSize: 36,
-            }}
-          >
-            🛒
-          </div>
-          <h2
-            style={{
-              fontSize: 22,
-              fontWeight: 600,
-              color: "#f9fafb",
-              marginBottom: 8,
-            }}
-          >
-            {t('cart.empty')}
-          </h2>
-          <p style={{ color: "#6b7280", fontSize: 14, marginBottom: 24 }}>
-            {t('cart.emptySub')}
-          </p>
-          <Link
-            to="/catalog"
-            style={{
-              background: "#1d6fe8",
-              color: "#fff",
-              textDecoration: "none",
-              padding: "12px 28px",
-              borderRadius: 10,
-              fontSize: 14,
-              fontWeight: 600,
-            }}
-          >
-            {t('cart.browseParts')}
-          </Link>
-        </div>
+  if (items.length === 0) return (
+    <div style={{ minHeight: '70vh', background: c.pageBg, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ width: 72, height: 72, borderRadius: '50%', background: dark ? 'rgba(76,124,255,0.1)' : 'rgba(41,82,204,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', fontSize: 32 }}>🛒</div>
+        <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 22, fontWeight: 700, color: c.text, marginBottom: 8 }}>{t('cart.empty')}</h2>
+        <p style={{ fontFamily: "'Inter', sans-serif", color: c.textMuted, fontSize: 14, marginBottom: 24 }}>{t('cart.emptySub')}</p>
+        <Link to="/catalog" style={{ background: c.gradientBtn, color: dark ? '#04121A' : '#fff', textDecoration: 'none', padding: '12px 28px', borderRadius: 10, fontSize: 14, fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>{t('cart.browseParts')}</Link>
       </div>
-    );
+    </div>
+  )
 
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "40px 16px" }}>
-      {/* Header */}
-      <div style={{ marginBottom: 32 }}>
-        <h1
-          style={{
-            fontSize: 28,
-            fontWeight: 700,
-            color: "#f9fafb",
-            marginBottom: 4,
-          }}
-        >
-          {t('cart.title')}
-        </h1>
-        <p style={{ color: "#6b7280", fontSize: 14 }}>
-          {items.reduce((a, i) => a + i.quantity, 0)} {t('cart.items')}
-        </p>
-      </div>
+    <div style={{ minHeight: '100vh', background: c.pageBg }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+        @keyframes energy-flow { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
+        .energy-bar { background: ${c.energyLine}; background-size:200% 100%; animation:energy-flow 4s linear infinite; }
+        .cart-layout { display:grid; grid-template-columns:1fr 340px; gap:20px; align-items:flex-start; }
+        .cart-item-card { background:${c.cardBg}; border:1px solid ${c.cardBorder}; border-radius:14px; padding:14px; display:flex; align-items:center; gap:12px; backdrop-filter:blur(8px); transition:border-color 0.2s; position:relative; overflow:hidden; }
+        .cart-item-card:hover { border-color:${dark ? 'rgba(76,124,255,0.25)' : 'rgba(41,82,204,0.25)'}; }
+        .cart-thumb { width:72px; height:72px; border-radius:10px; background:${c.thumbBg}; display:flex; align-items:center; justify-content:center; overflow:hidden; border:1px solid ${c.cardBorder}; flex-shrink:0; }
+        .cart-info { flex:1; min-width:0; }
+        .cart-price-block { display:flex; align-items:; gap:10px; flex-shrink:0; }
+        .qty-btn { width:30px; height:30px; display:flex; align-items:center; justify-content:center; background:${c.qtyBg}; border:1px solid ${c.qtyBorder}; color:${c.text}; cursor:pointer; border-radius:7px; transition:all 0.15s; flex-shrink:0; }
+        .qty-btn:hover { border-color:${c.teal}; color:${c.teal}; }
+        .qty-btn:disabled { opacity:0.3; cursor:not-allowed; }
+        .del-btn { width:30px; height:30px; display:flex; align-items:center; justify-content:center; background:${c.deleteBg}; border:1px solid ${c.deleteBorder}; color:${c.deleteColor}; cursor:pointer; border-radius:7px; transition:all 0.15s; flex-shrink:0; }
+        .del-btn:hover { opacity:0.8; }
+        .summary-card { background:${c.cardBg}; border:1px solid ${c.cardBorder}; border-radius:16px; overflow:hidden; backdrop-filter:blur(8px); }
+        .promo-input { background:${c.inputBg}; border:1px solid ${c.inputBorder}; color:${c.text}; border-radius:8px; padding:9px 10px 9px 28px; font-size:13px; outline:none; font-family:'JetBrains Mono',monospace; text-transform:uppercase; letter-spacing:0.05em; width:100%; box-sizing:border-box; }
+        .promo-input:focus { border-color:${c.teal}; }
+        .promo-input::placeholder { color:${c.textFaint}; text-transform:none; letter-spacing:0; }
+        .checkout-btn { width:100%; padding:14px; border-radius:12px; border:none; background:${c.gradientBtn}; color:${dark ? '#04121A' : '#fff'}; font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-family:'Space Grotesk',sans-serif; box-shadow:0 4px 20px ${c.glowBtn}; transition:all 0.2s; }
+        .checkout-btn:hover { transform:translateY(-1px); }
+        .trust-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid ${c.divider}; }
+        .trust-item:last-child { border-bottom:none; }
+        .about-grid-bg {
+          background-image:
+          linear-gradient(${c.gridColor} 1px, transparent 1px),
+          linear-gradient(90deg, ${c.gridColor} 1px, transparent 1px);
+          background-size: 48px 48px;
+          animation: grid-drift 20s linear infinite;
+        }
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 360px",
-          gap: 24,
-          alignItems: "start",
-        }}
-      >
-        {/* Items list */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {items.map(({ part, quantity }) => {
-            const icon = CATEGORY_ICONS[part.category?.slug] || "🔩";
-            return (
-              <div
-                key={part.id}
-                style={{
-                  background: "#0d1526",
-                  border: "1px solid #111e35",
-                  borderRadius: 14,
-                  padding: 16,
-                  display: "flex",
-                  gap: 16,
-                  alignItems: "center",
-                }}
-              >
-                {/* Image */}
-                <Link
-                  to={`/catalog/${part.slug}`}
-                  style={{ textDecoration: "none", flexShrink: 0 }}
-                >
-                  <div
-                    style={{
-                      width: 80,
-                      height: 80,
-                      borderRadius: 10,
-                      background: "#111e35",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      overflow: "hidden",
-                      fontSize: 32,
-                    }}
-                  >
-                    {part.images?.[0] ? (
-                      <img
-                        src={part.images[0]}
-                        alt={part.name}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          objectPosition: "center",
-                          background: "#1f2937",
-                        }}
-                      />
-                    ) : (
-                      icon
-                    )}
-                  </div>
-                </Link>
+        @media (max-width:768px) {
+          .cart-layout { grid-template-columns:1fr !important; }
+          .cart-item-card { flex-wrap:wrap; }
+          .cart-thumb { width:56px !important; height:56px !important; }
+          .cart-price-block { width:100%; justify-content:space-between; padding-top:10px; border-top:1px solid ${c.divider}; margin-top:4px; }
+        }
+        @media (max-width:400px) {
+          .cart-item-card { padding:10px !important; gap:8px !important; }
+        }
+      `}</style>
 
-                {/* Info */}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <Link
-                    to={`/catalog/${part.slug}`}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <div
-                      style={{
-                        fontSize: 15,
-                        fontWeight: 600,
-                        color: "#f9fafb",
-                        marginBottom: 4,
-                        lineHeight: 1.3,
-                      }}
-                    >
-                      {getPartName(part, i18n.language)}
-                    </div>
-                  </Link>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <span
-                      style={{
-                        background: "rgba(212,56,13,0.12)",
-                        color: "#4d9fff",
-                        fontSize: 11,
-                        fontWeight: 500,
-                        padding: "2px 8px",
-                        borderRadius: 6,
-                      }}
-                    >
-                      {getCategoryName(part.category, i18n.language)}
-                    </span>
-                    {part.oemNumber && (
-                      <span
-                        style={{
-                          fontSize: 11,
-                          color: "#6b7280",
-                          fontFamily: "monospace",
-                        }}
-                      >
-                        OEM: {part.oemNumber}
-                      </span>
-                    )}
-                  </div>
-                </div>
+      <div className='about-grid-bg' style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 16px', position: 'relative' }}>
+        <div style={{ position: 'fixed', top: '5%', right: '5%', width: 500, height: 500, borderRadius: '50%', background: `radial-gradient(circle, ${c.glowBlue}, transparent 70%)`, filter: 'blur(60px)', pointerEvents: 'none', zIndex: 0 }} />
+        <div style={{ position: 'fixed', bottom: '10%', left: '5%', width: 400, height: 400, borderRadius: '50%', background: `radial-gradient(circle, ${c.glowTeal}, transparent 70%)`, filter: 'blur(60px)', pointerEvents: 'none', zIndex: 0 }} />
 
-                {/* Quantity + Price + Delete */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 16,
-                    flexShrink: 0,
-                  }}
-                >
-                  {/* Qty control */}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 0,
-                      border: "1px solid #374151",
-                      borderRadius: 8,
-                      overflow: "hidden",
-                    }}
-                  >
-                    <button
-                      onClick={() => updateQuantity(part.id, quantity - 1)}
-                      style={{
-                        width: 32,
-                        height: 32,
-                        background: "none",
-                        border: "none",
-                        color: "#9ca3af",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Minus size={13} />
-                    </button>
-                    <span
-                      style={{
-                        width: 32,
-                        textAlign: "center",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        color: "#f9fafb",
-                        borderLeft: "1px solid #374151",
-                        borderRight: "1px solid #374151",
-                        lineHeight: "32px",
-                      }}
-                    >
-                      {quantity}
-                    </span>
-                    <button
-                      onClick={() => updateQuantity(part.id, quantity + 1)}
-                      disabled={quantity >= part.stock}
-                      style={{
-                        width: 32,
-                        height: 32,
-                        background: "none",
-                        border: "none",
-                        color: "#9ca3af",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        opacity: quantity >= part.stock ? 0.3 : 1,
-                      }}
-                    >
-                      <Plus size={13} />
-                    </button>
-                  </div>
-
-                  {/* Price */}
-                  <div style={{ textAlign: "right", minWidth: 72 }}>
-                    <div
-                      style={{
-                        fontSize: 16,
-                        fontWeight: 700,
-                        color: "#4d9fff",
-                      }}
-                    >
-                      {formatPrice(Number(part.price) * quantity)}
-                    </div>
-                    {quantity > 1 && (
-                      <div style={{ fontSize: 11, color: "#6b7280" }}>
-                        {formatPrice(Number(part.price))} {t('common.eachPrice')}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Delete */}
-                  <button
-                    onClick={() => removeItem(part.id)}
-                    style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: 8,
-                      border: "none",
-                      background: "rgba(239,68,68,0.1)",
-                      color: "#ef4444",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-
-          {/* Continue shopping */}
-          <Link
-            to="/catalog"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              color: "#6b7280",
-              textDecoration: "none",
-              fontSize: 13,
-              marginTop: 4,
-              padding: "8px 0",
-            }}
-          >
-            <ShoppingBag size={14} /> {t('cart.continueShopping')}
-          </Link>
+        {/* Header */}
+        <div style={{ marginBottom: 24 }}>
+          <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 32, fontWeight: 900, color: c.text, marginTop: 4, marginBottom: 2, gap: 4 }}>{t('cart.title')}</h1>
+          <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: c.textFaint, paddingTop: 10 }}>{items.reduce((a, i) => a + i.quantity, 0)} {t('cart.items')}</p>
         </div>
 
-        {/* Order summary */}
-        <div style={{ position: "sticky", top: 80 }}>
-          <div
-            style={{
-              background: "#0d1526",
-              border: "1px solid #111e35",
-              borderRadius: 16,
-              overflow: "hidden",
-            }}
-          >
-            {/* Summary header */}
-            <div
-              style={{
-                padding: "20px 20px 0",
-                borderBottom: "1px solid #111e35",
-                paddingBottom: 16,
-              }}
-            >
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: "#f9fafb" }}>
-                {t('cart.orderSummary')}
-              </h2>
-            </div>
+        <div className="cart-layout">
 
-            {/* Line items */}
-            <div
-              style={{
-                padding: "16px 20px",
-                borderBottom: "1px solid #111e35",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: 14,
-                  color: "#9ca3af",
-                  marginBottom: 10,
-                }}
-              >
-                <span>
-                  {t('cart.subtotal')} ({items.reduce((a, i) => a + i.quantity, 0)})
-                </span>
-                <span style={{ color: "#f9fafb" }}>
-                  {formatPrice(subtotal)}
-                </span>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: 14,
-                  color: "#9ca3af",
-                  marginBottom: 10,
-                }}
-              >
-                <span>{t('cart.shipping')}</span>
-                <span style={{ color: "#f9fafb" }}>
-                  {formatPrice(shipping)}
-                </span>
-              </div>
-              {discountAmount > 0 && (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    fontSize: 14,
-                    color: "#4ade80",
-                    marginBottom: 10,
-                  }}
-                >
-                  <span>{t('cart.discount')} ({promoCode.toUpperCase()})</span>
-                  <span>−{formatPrice(discountAmount)}</span>
+          {/* Items */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {items.map(({ part, quantity }) => {
+              const icon = CATEGORY_ICONS[part.category?.slug] || '🔩'
+              return (
+                <div key={part.id} className="cart-item-card">
+                  <div className="energy-bar" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, opacity: 0.4 }} />
+
+                  {/* Thumb */}
+                  <Link to={`/catalog/${part.slug}`} style={{ textDecoration: 'none' }}>
+                    <div className="cart-thumb">
+                      {part.images?.[0]
+                        ? <img src={part.images[0]} alt={part.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} />
+                        : <span style={{ fontSize: 26 }}>{icon}</span>}
+                    </div>
+                  </Link>
+
+                  {/* Info */}
+                  <div className="cart-info">
+                    <div style={{ textDecoration: 'none', width: 'auto' }}>
+                      <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 600, color: c.text, lineHeight: 1.3, marginBottom: 6 }}>{getPartName(part, i18n.language)}</div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' as const }}>
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: c.teal, background: dark ? 'rgba(34,211,184,0.08)' : 'rgba(10,140,122,0.08)', border: `1px solid ${dark ? 'rgba(34,211,184,0.2)' : 'rgba(10,140,122,0.2)'}`, padding: '2px 7px', borderRadius: 20, letterSpacing: '0.08em', textTransform: 'uppercase' as const }}>
+                        {getCategoryName(part.category, i18n.language)}
+                      </span>
+                      {part.oemNumber && <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: c.textFaint }}>{part.oemNumber}</span>}
+                    </div>
+                  </div>
+
+                  {/* Price + qty + delete */}
+                  <div className="cart-price-block">
+                    {/* Qty */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <button className="qty-btn" onClick={() => updateQuantity(part.id, quantity - 1)}><Minus size={12} /></button>
+                      <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, fontWeight: 600, color: c.text, minWidth: 20, textAlign: 'center' as const }}>{quantity}</span>
+                      <button className="qty-btn" onClick={() => updateQuantity(part.id, quantity + 1)} disabled={quantity >= part.stock}><Plus size={12} /></button>
+                    </div>
+
+                    {/* Price */}
+                    <div style={{ textAlign: 'right' as const, marginTop: 20 }}>
+                      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, fontWeight: 700, color: c.accent }}>
+                        {part.price * quantity}₾
+                      </div>
+                      
+                      {/* Always rendered to reserve height, hidden when quantity === 1 */}
+                      <div 
+                        style={{ 
+                          fontFamily: "'JetBrains Mono', monospace", 
+                          fontSize: 11, 
+                          color: c.textFaint,
+                          visibility: quantity > 1 ? 'visible' : 'hidden' 
+                        }}
+                      >
+                        {part.price}₾ {t('common.eachPrice')}
+                      </div>
+                    </div>
+
+                    {/* Delete */}
+                    {/* <button className="del-btn" onClick={() => removeItem(part.id)}><Trash2 size={13} /></button> */}
+                  </div>
                 </div>
-              )}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: 18,
-                  fontWeight: 700,
-                  paddingTop: 12,
-                  borderTop: "1px solid #111e35",
-                  marginTop: 4,
-                }}
-              >
-                <span style={{ color: "#f9fafb" }}>Total</span>
-                <span style={{ color: "#4d9fff" }}>
-                  {formatPrice(orderTotal)}
-                </span>
-              </div>
-            </div>
+              )
+            })}
 
-            {/* Promo code */}
-            <div
-              style={{
-                padding: "16px 20px",
-                borderBottom: "1px solid #111e35",
-              }}
-            >
-              <div style={{ display: "flex", gap: 8 }}>
-                <div style={{ position: "relative", flex: 1 }}>
-                  <Tag
-                    size={13}
-                    style={{
-                      position: "absolute",
-                      left: 10,
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      color: "#6b7280",
-                    }}
-                  />
-                  <input
-                    placeholder={t('cart.promoPlaceholder')}
-                    value={promoCode}
-                    onChange={(e) => {
-                      setPromoCode(e.target.value);
-                      setPromoError("");
-                      setPromoResult(null);
-                    }}
-                    onKeyDown={(e) => e.key === "Enter" && handleApplyPromo()}
-                    style={{
-                      width: "100%",
-                      paddingLeft: 32,
-                      paddingRight: 10,
-                      paddingTop: 9,
-                      paddingBottom: 9,
-                      borderRadius: 8,
-                      border: "1px solid #374151",
-                      background: "#111e35",
-                      color: "#f9fafb",
-                      fontSize: 13,
-                      outline: "none",
-                      boxSizing: "border-box",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.05em",
-                    }}
-                  />
-                </div>
-                <button
-                  onClick={handleApplyPromo}
-                  disabled={promoLoading}
-                  style={{
-                    padding: "9px 14px",
-                    borderRadius: 8,
-                    border: "1px solid #374151",
-                    background: "#111e35",
-                    color: "#f9fafb",
-                    fontSize: 13,
-                    cursor: "pointer",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {promoLoading ? "…" : t('cart.apply')}
-                </button>
-              </div>
-              {promoError && (
-                <p style={{ color: "#f87171", fontSize: 12, marginTop: 6 }}>
-                  {promoError}
-                </p>
-              )}
-              {promoResult && (
-                <p style={{ color: "#4ade80", fontSize: 12, marginTop: 6 }}>
-                  ✓{" "}
-                  {promoResult.description ||
-                    `${promoResult.discount}${promoResult.type === "PERCENTAGE" ? "%" : "$"} off applied`}
-                </p>
-              )}
-            </div>
-
-            {/* Checkout button */}
-            <div style={{ padding: 20 }}>
-              <button
-                onClick={() =>
-                  user
-                    ? navigate("/checkout", {
-                        state: {
-                          promoCode: promoResult ? promoCode : undefined,
-                        },
-                      })
-                    : navigate("/login?redirect=/checkout")
-                }
-                style={{
-                  width: "100%",
-                  padding: "14px",
-                  borderRadius: 10,
-                  border: "none",
-                  background: "linear-gradient(135deg, #1d6fe8, #4d9fff)",
-                  color: "#fff",
-                  fontSize: 15,
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                  boxShadow: "0 4px 16px rgba(212,56,13,0.35)",
-                }}
-              >
-                {user ? t('cart.checkout') : t('cart.signInToCheckout')}
-                <ArrowRight size={16} />
-              </button>
-              {!user && (
-                <p
-                  style={{
-                    textAlign: "center",
-                    color: "#6b7280",
-                    fontSize: 12,
-                    marginTop: 10,
-                  }}
-                >
-                  {t('cart.signInNote')}
-                </p>
-              )}
-            </div>
+            <Link to="/catalog" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: c.textMuted, textDecoration: 'none', fontSize: 13, fontFamily: "'Inter', sans-serif", padding: '8px 0', marginTop: 4, width: '160px' }}>
+              <ShoppingBag size={14} /> {t('cart.continueShopping')}
+            </Link>
           </div>
 
-          {/* Trust badges */}
-          <div
-            style={{
-              background: "#0d1526",
-              border: "1px solid #111e35",
-              borderRadius: 12,
-              padding: "14px 16px",
-              marginTop: 12,
-            }}
-          >
-            {[
-              { icon: ShieldCheck, text: t('cart.secureSSL') },
-              { icon: RotateCcw, text: t('cart.freeReturns') },
-              { icon: BadgeCheck, text: t('cart.genuineParts') },
-            ].map(({ icon: Icon, text }) => (
-              <div
-                key={text}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  padding: "6px 0",
-                }}
-              >
-                <Icon size={14} style={{ color: "#4d9fff", flexShrink: 0 }} />
-                <span style={{ fontSize: 12, color: "#6b7280" }}>{text}</span>
+          {/* Summary */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div className="summary-card">
+              <div className="energy-bar" style={{ height: 2 }} />
+              <div style={{ padding: '16px 18px' }}>
+                <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, fontWeight: 700, color: c.text, marginBottom: 16 }}>{t('cart.orderSummary')}</h2>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16, paddingBottom: 16, borderBottom: `1px solid ${c.divider}` }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Inter', sans-serif", fontSize: 13, color: c.textMuted }}>
+                    <span>{t('cart.subtotal')} ({items.reduce((a, i) => a + i.quantity, 0)} {t('cart.items')})</span>
+                    <span style={{ color: c.text }}>{(subtotal)}₾</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Inter', sans-serif", fontSize: 13, color: c.textMuted }}>
+                    <span>{t('cart.shipping')}</span><span style={{ color: c.text }}>{(shipping)}₾</span>
+                  </div>
+                  {discountAmount > 0 && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Inter', sans-serif", fontSize: 13, color: '#4ade80' }}>
+                      <span>{t('cart.discount')}</span><span>−{(discountAmount)}₾</span>
+                    </div>
+                  )}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Space Grotesk', sans-serif", fontSize: 18, fontWeight: 700, paddingTop: 10, borderTop: `1px solid ${c.divider}`, marginTop: 4 }}>
+                    <span style={{ color: c.text }}>{t('cart.total')}</span>
+                    <span style={{ color: c.accent }}>{(orderTotal)}₾</span>
+                  </div>
+                </div>
+
+                {/* Promo */}
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <div style={{ position: 'relative', flex: 1 }}>
+                      <Tag size={12} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: c.textFaint }} />
+                      <input className="promo-input" placeholder={t('cart.promoPlaceholder')} value={promoCode}
+                        onChange={(e) => { setPromoCode(e.target.value); setPromoError(''); setPromoResult(null) }}
+                        onKeyDown={(e) => e.key === 'Enter' && handleApplyPromo()} />
+                    </div>
+                    <button onClick={handleApplyPromo} disabled={promoLoading} style={{ padding: '9px 12px', borderRadius: 8, border: `1px solid ${c.inputBorder}`, background: c.inputBg, color: c.text, fontSize: 12, cursor: 'pointer', fontFamily: "'JetBrains Mono', monospace", whiteSpace: 'nowrap' as const, flexShrink: 0 }}>
+                      {promoLoading ? '…' : t('cart.apply')}
+                    </button>
+                  </div>
+                  {promoError && <p style={{ fontSize: 12, color: '#f87171', marginTop: 6, fontFamily: "'Inter', sans-serif" }}>{promoError}</p>}
+                  {promoResult && <p style={{ fontSize: 12, color: '#4ade80', marginTop: 6, fontFamily: "'Inter', sans-serif" }}>✓ {promoResult.description || `${promoResult.discount}% off applied`}</p>}
+                </div>
+
+                <button className="checkout-btn" onClick={() => user
+                  ? navigate('/checkout', { state: { promoCode: promoResult ? promoCode : undefined } })
+                  : navigate('/login?redirect=/checkout')}>
+                  {user ? t('cart.checkout') : t('cart.signInToCheckout')} <ArrowRight size={16} />
+                </button>
+                {!user && <p style={{ textAlign: 'center', color: c.textFaint, fontSize: 12, marginTop: 10, fontFamily: "'Inter', sans-serif" }}>{t('cart.signInNote')}</p>}
               </div>
-            ))}
+            </div>
+
+            {/* Trust */}
+            <div className="summary-card" style={{ padding: '12px 16px' }}>
+              {[
+                { icon: ShieldCheck, text: t('cart.secureSSL') },
+                { icon: RotateCcw, text: t('cart.freeReturns') },
+                { icon: BadgeCheck, text: t('cart.genuineParts') },
+              ].map(({ icon: Icon, text }) => (
+                <div key={text} className="trust-item">
+                  <Icon size={14} style={{ color: c.teal, flexShrink: 0 }} />
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: c.textMuted }}>{text}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

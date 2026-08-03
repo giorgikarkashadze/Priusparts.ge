@@ -30,7 +30,7 @@ export default function FilterSidebar({ filters, onChange }: Props) {
     border: 'rgba(124,138,165,0.12)',
     selectBg: 'rgba(255,255,255,0.03)',
     selectBorder: 'rgba(124,138,165,0.2)',
-    selectColor: '#EAF2FF',
+    selectColor: 'rgba(198, 204, 218, 0.94)',
     optionBg: '#0a0f1e',
     labelColor: '#22D3B8',
     mutedColor: '#7C8AA5',
@@ -47,12 +47,13 @@ export default function FilterSidebar({ filters, onChange }: Props) {
     clearBg: 'rgba(255,107,87,0.06)',
     clearBorder: 'rgba(255,107,87,0.3)',
     clearColor: '#FF6B57',
+    gradientAccent: 'linear-gradient(135deg, #4C7CFF, #22D3B8)',
   } : {
     bg: 'rgba(255,255,255,0.9)',
-    border: 'rgba(60,90,160,0.15)',
+    border: 'rgba(3, 10, 26, 0.56)',
     selectBg: '#f8faff',
     selectBorder: 'rgba(60,90,160,0.2)',
-    selectColor: '#0B1220',
+    selectColor: 'rgba(7, 7, 7, 0.75)',
     optionBg: '#ffffff',
     labelColor: '#0C9C88',
     mutedColor: '#5B6B85',
@@ -69,12 +70,13 @@ export default function FilterSidebar({ filters, onChange }: Props) {
     clearBg: 'rgba(217,67,43,0.06)',
     clearBorder: 'rgba(217,67,43,0.3)',
     clearColor: '#D9432B',
+    gradientAccent: 'linear-gradient(135deg, #2952CC, #0A8C7A)',
   }
   
   const sectionLabel: React.CSSProperties = {
     fontFamily: "'JetBrains Mono', monospace",
-    fontSize: 10, fontWeight: 500, textTransform: 'uppercase' as const,
-    letterSpacing: '0.12em', color: s.labelColor, marginBottom: 10, display: 'block'
+    fontSize: 13, fontWeight: 600,
+    letterSpacing: '0.12em', background: `${s.gradientAccent} text`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: 10, display: 'block'
   }
 
   const selectStyle: React.CSSProperties = {
@@ -122,13 +124,16 @@ export default function FilterSidebar({ filters, onChange }: Props) {
           background: ${dark ? 'rgba(255,107,87,0.12)' : 'rgba(217,67,43,0.1)'} !important;
           transform: translateY(-1px);
         }
+        .filter-sidebar {
+          background: ${dark ? 'rgba(16, 26, 49, 0.8)' : 'rgba(40, 56, 128, 0.2)'} !important;
+          transform: translateY(-1px);
+          backdropFilter: blur(12px);
+          border: 1px solid rgba(124,138,165,0.12); border-radius: 14px;
+          padding: 16px; position: relative; overflow: hidden;
+        }
       `}</style>
 
-    <div style={{
-      background: 'rgba(13,18,30,0.8)', backdropFilter: 'blur(12px)',
-      border: '1px solid rgba(124,138,165,0.12)', borderRadius: 14,
-      padding: 16, position: 'relative', overflow: 'hidden'
-    }}>
+    <div className='filter-sidebar'>
 
       {/* Top energy line */}
       <div style={{
@@ -145,9 +150,9 @@ export default function FilterSidebar({ filters, onChange }: Props) {
             style={{
               textAlign: 'left', padding: '8px 12px', borderRadius: 8,
               border: !filters.category ? '1px solid rgba(76,124,255,0.5)' : '1px solid transparent',
-              cursor: 'pointer', fontSize: 13, fontWeight: 600,
-              background: !filters.category ? 'linear-gradient(135deg, rgba(76,124,255,0.2), rgba(34,211,184,0.2))' : 'transparent',
-              color: !filters.category ? '#EAF2FF' : '#7C8AA5',
+              cursor: 'pointer', fontSize: 15, fontWeight: 600,
+              background: !filters.category ? 'linear-gradient(135deg, rgba(18, 57, 163, 0.2), rgba(34,211,184,0.2))' : 'transparent',
+              color: s.selectColor,
               fontFamily: "'Inter', sans-serif", transition: 'all 0.15s'
             }}>
             {t('catalog.allParts')}
@@ -159,13 +164,13 @@ export default function FilterSidebar({ filters, onChange }: Props) {
               style={{
                 textAlign: 'left', padding: '8px 12px', borderRadius: 8,
                 border: filters.category === c.slug ? '1px solid rgba(34,211,184,0.5)' : '1px solid transparent',
-                cursor: 'pointer', fontSize: 13, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                cursor: 'pointer', fontSize: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 background: filters.category === c.slug ? 'rgba(34,211,184,0.1)' : 'transparent',
-                color: filters.category === c.slug ? '#22D3B8' : '#7C8AA5',
+                color: filters.category === c.slug ? dark ? '#f9fafb' : '#0B1220' : dark ? '#f9fafb' : '#0B1220',
                 fontFamily: "'Inter', sans-serif", transition: 'all 0.15s'
               }}>
               <span>{c.icon} {getCategoryName(c, i18n.language)}</span>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, opacity: 0.6 }}>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, opacity: 0.6 }}>
                 {c._count?.parts}
               </span>
             </button>
@@ -201,7 +206,7 @@ export default function FilterSidebar({ filters, onChange }: Props) {
                   fontFamily: "'JetBrains Mono', monospace", fontSize: 9,
                   color: s.labelColor, letterSpacing: '0.1em',
                   background: dark ? '#0d1526' : '#fff',
-                  padding: '0 4px', pointerEvents: 'none'
+                  padding: '0 4px', pointerEvents: 'none', borderRadius: 20
                 }}>{ t('catalog.from') }</div>
                 <select
                   className="hud-select"
@@ -242,7 +247,7 @@ export default function FilterSidebar({ filters, onChange }: Props) {
                   fontFamily: "'JetBrains Mono', monospace", fontSize: 9,
                   color: s.labelColor, letterSpacing: '0.1em',
                   background: dark ? '#0d1526' : '#fff',
-                  padding: '0 4px', pointerEvents: 'none'
+                  padding: '0 4px', pointerEvents: 'none', borderRadius: 20
                 }}>{ t('catalog.to') }</div>
                 <select
                   className="hud-select"
@@ -263,7 +268,7 @@ export default function FilterSidebar({ filters, onChange }: Props) {
             </div>
  
             {/* Active range display */}
-            {(filters.yearFrom || filters.yearTo) && (
+            {/* {(filters.yearFrom || filters.yearTo) && (
               <div style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 padding: '6px 10px', borderRadius: 8,
@@ -283,18 +288,18 @@ export default function FilterSidebar({ filters, onChange }: Props) {
                   ×
                 </button>
               </div>
-            )}
+            )} */}
           </div>
         </div>
 
       {/* Clear */}
       {Object.values(filters).some(Boolean) && (
         <button
-          onClick={() => onChange({ makeId: '', modelId: '', year: '', category: '', minPrice: '', maxPrice: '', search: '', sort: 'newest' })}
+          onClick={() => onChange({ makeId: '', modelId: '', yearFrom: '', yearTo: '', category: '', minPrice: '', maxPrice: '', search: '', sort: 'newest' })}
           style={{
             width: '100%', padding: '9px', borderRadius: 8,
             border: '1px solid rgba(255,107,87,0.3)', background: 'rgba(255,107,87,0.06)',
-            color: '#FF6B57', fontSize: 12, cursor: 'pointer',
+            color: s.clearColor, fontSize: 12, cursor: 'pointer',
             fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.05em',
             transition: 'all 0.15s'
           }}>

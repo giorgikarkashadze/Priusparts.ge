@@ -982,11 +982,11 @@ function InventoryTab() {
                   }
                 >
                   <td style={{ padding: '14px 16px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    {/* <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}> */}
                       {/* Image thumbnail */}
-                      ...existing thumbnail code...
+                      {/* ...existing thumbnail code... */}
                       <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        {/* <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}> */}
                           <div style={{ fontWeight: 500, color: '#e2e8f0' }}>{part.name}</div>
                           {/* Active status dot */}
                           <div style={{
@@ -994,10 +994,10 @@ function InventoryTab() {
                             background: part.isActive ? '#4ade80' : '#64748b',
                             boxShadow: part.isActive ? '0 0 6px rgba(74,222,128,0.6)' : 'none'
                           }} title={part.isActive ? 'Active' : 'Inactive'} />
-                        </div>
+                        {/* </div> */}
                         {part.oemNumber && <div style={{ fontSize: 11, color: '#475569', fontFamily: 'monospace' }}>{part.oemNumber}</div>}
                       </div>
-                    </div>
+                    {/* </div> */}
                   </td>
                   <td style={{ padding: "14px 16px" }}>
                     <span
