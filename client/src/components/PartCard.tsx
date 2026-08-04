@@ -27,6 +27,7 @@ const { dark } = useThemeStore()
   const disc = discount(part.price, part.comparePrice)
   const icon = CATEGORY_ICONS[part.category?.slug] || '🔩'
   const { i18n } = useTranslation()
+  const { t } = useTranslation()
 
   const handleAdd = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -116,7 +117,7 @@ const { dark } = useThemeStore()
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 backdropFilter: 'blur(2px)'
               }}>
-                <span style={{ color: '#7C8AA5', fontSize: 11, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em' }}>OUT OF STOCK</span>
+                <span style={{ color: '#7C8AA5', fontSize: 11, fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.1em' }}>{t('product.outOfStock')}</span>
               </div>
             )}
             {part.stock > 0 && part.stock <= 5 && (
@@ -127,7 +128,7 @@ const { dark } = useThemeStore()
                 fontSize: 9, fontWeight: 600, padding: '2px 7px', borderRadius: 20,
                 fontFamily: "'JetBrains Mono', monospace"
               }}>
-                {part.stock} LEFT
+                {part.stock} {t('product.left')}
               </div>
             )}
           </div>

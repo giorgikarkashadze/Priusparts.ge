@@ -1,21 +1,114 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { ShoppingCart, Star, ChevronRight, Package, RotateCcw, Shield, Zap, ChevronLeft } from 'lucide-react'
+import {
+  ShoppingCart, Star, ChevronRight, ChevronLeft,
+  Package, RotateCcw, Shield, Zap, AlertTriangle, CheckCircle
+} from 'lucide-react'
 import { usePart } from '@/hooks/useProducts'
-import { useCartStore } from '@/store'
-import { formatPrice, discount } from '@/lib/utils'
+import { useCartStore, useThemeStore } from '@/store'
+import { discount } from '@/lib/utils'
+import { getCategoryName, getPartDescription, getPartName } from '@/hooks/usePartLocale'
 import { useTranslation } from 'react-i18next'
-import { getPartName, getPartDescription, getCategoryName } from '@/hooks/usePartLocale'
 
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>()
   const { data: part, isLoading, isError } = usePart(slug!)
   const addItem = useCartStore((s) => s.addItem)
+  const { dark } = useThemeStore()
   const [quantity, setQuantity] = useState(1)
   const [activeImage, setActiveImage] = useState(0)
   const [added, setAdded] = useState(false)
   const { t } = useTranslation()
   const { i18n } = useTranslation()
+
+  // Theme tokens
+  const c = dark ? {
+    pageBg: '#05070C',
+    cardBg: 'rgba(13,18,30,0.8)',
+    cardBorder: 'rgba(124,138,165,0.12)',
+    text: '#EAF2FF',
+    textMuted: '#7C8AA5',
+    textFaint: '#4A5670',
+    accent: '#4C7CFF',
+    teal: '#22D3B8',
+    gradient: 'linear-gradient(135deg, #4C7CFF, #22D3B8)',
+    energyLine: 'linear-gradient(90deg, #4C7CFF, #22D3B8, #4C7CFF, #22D3B8)',
+    gridColor: 'rgba(76,124,255,0.04)',
+    glowBlue: 'rgba(76,124,255,0.08)',
+    glowTeal: 'rgba(34,211,184,0.06)',
+    imageBg: 'rgba(10,15,30,0.9)',
+    thumbBg: 'rgba(10,15,30,0.8)',
+    thumbActiveBorder: '#22D3B8',
+    thumbActiveGlow: 'rgba(34,211,184,0.3)',
+    oemBg: 'rgba(76,124,255,0.08)',
+    oemBorder: 'rgba(76,124,255,0.2)',
+    oemLabelColor: '#4C7CFF',
+    oemValueColor: '#EAF2FF',
+    qtyBg: 'rgba(255,255,255,0.03)',
+    qtyBorder: 'rgba(124,138,165,0.2)',
+    divider: 'rgba(124,138,165,0.1)',
+    trustBg: 'rgba(255,255,255,0.02)',
+    trustBorder: 'rgba(124,138,165,0.1)',
+    compatBg: 'rgba(76,124,255,0.06)',
+    compatHover: 'rgba(76,124,255,0.05)',
+    reviewBg: 'rgba(255,255,255,0.02)',
+    reviewBorder: 'rgba(124,138,165,0.1)',
+    stockGreen: '#22D3B8',
+    stockGreenGlow: 'rgba(34,211,184,0.6)',
+    stockOrange: '#F59E0B',
+    stockRed: '#FF6B57',
+    discountBg: 'linear-gradient(135deg, #FF6B57, #FF9A57)',
+    saveBg: 'rgba(255,107,87,0.1)',
+    saveBorder: 'rgba(255,107,87,0.2)',
+    saveColor: '#FF6B57',
+    cornerColor: 'rgba(34,211,184,0.4)',
+    breadcrumbColor: '#4A5670',
+    breadcrumbHover: '#22D3B8',
+    categoryColor: '#22D3B8',
+  } : {
+    pageBg: '#F0F4FF',
+    cardBg: 'rgba(255,255,255,0.92)',
+    cardBorder: 'rgba(60,90,200,0.12)',
+    text: '#0B1220',
+    textMuted: '#4A5A7A',
+    textFaint: '#8A9AB8',
+    accent: '#2952CC',
+    teal: '#0A8C7A',
+    gradient: 'linear-gradient(135deg, #2952CC, #0A8C7A)',
+    energyLine: 'linear-gradient(90deg, #2952CC, #0A8C7A, #2952CC, #0A8C7A)',
+    gridColor: 'rgba(41,82,204,0.04)',
+    glowBlue: 'rgba(41,82,204,0.06)',
+    glowTeal: 'rgba(10,140,122,0.05)',
+    imageBg: '#E8EEFF',
+    thumbBg: '#ffffff',
+    thumbActiveBorder: '#0A8C7A',
+    thumbActiveGlow: 'rgba(10,140,122,0.25)',
+    oemBg: 'rgba(41,82,204,0.06)',
+    oemBorder: 'rgba(41,82,204,0.2)',
+    oemLabelColor: '#2952CC',
+    oemValueColor: '#0B1220',
+    qtyBg: '#F8FAFF',
+    qtyBorder: 'rgba(60,90,200,0.2)',
+    divider: 'rgba(60,90,200,0.1)',
+    trustBg: '#ffffff',
+    trustBorder: 'rgba(60,90,200,0.12)',
+    compatBg: 'rgba(41,82,204,0.04)',
+    compatHover: 'rgba(41,82,204,0.04)',
+    reviewBg: '#ffffff',
+    reviewBorder: 'rgba(60,90,200,0.12)',
+    stockGreen: '#0A8C7A',
+    stockGreenGlow: 'none',
+    stockOrange: '#D97706',
+    stockRed: '#DC2626',
+    discountBg: 'linear-gradient(135deg, #DC2626, #EA580C)',
+    saveBg: 'rgba(220,38,38,0.08)',
+    saveBorder: 'rgba(220,38,38,0.2)',
+    saveColor: '#DC2626',
+    cornerColor: 'rgba(10,140,122,0.4)',
+    breadcrumbColor: '#8A9AB8',
+    breadcrumbHover: '#0A8C7A',
+    categoryColor: '#0A8C7A',
+  }
 
   const handleAddToCart = () => {
     if (!part) return
@@ -24,24 +117,22 @@ export default function ProductPage() {
     setTimeout(() => setAdded(false), 2000)
   }
 
+  // Loading state
   if (isLoading) return (
-    <div style={{ minHeight: '100vh', background: '#05070C', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes energy-flow { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-      `}</style>
+    <div style={{ minHeight: '100vh', background: c.pageBg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       <div style={{ textAlign: 'center' }}>
-        <div style={{ width: 48, height: 48, borderRadius: '50%', border: '2px solid transparent', borderTopColor: '#4C7CFF', borderRightColor: '#22D3B8', animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
-        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#22D3B8', letterSpacing: '0.15em' }}>{t('product.loading')}</div>
+        <div style={{ width: 48, height: 48, borderRadius: '50%', border: '2px solid transparent', borderTopColor: c.accent, borderRightColor: c.teal, animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
+        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: c.teal, letterSpacing: '0.15em' }}>LOADING PART DATA…</div>
       </div>
     </div>
   )
 
   if (isError || !part) return (
-    <div style={{ minHeight: '100vh', background: '#05070C', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
-      <div style={{ fontSize: 48 }}>🔍</div>
-      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 20, fontWeight: 600, color: '#EAF2FF' }}>{t('product.notFound')}</div>
-      <Link to="/catalog" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#4C7CFF', textDecoration: 'none', letterSpacing: '0.1em' }}>{t('product.backToCatalog')}</Link>
+    <div style={{ minHeight: '100vh', background: c.pageBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
+      <div style={{ fontSize: 56 }}>🔍</div>
+      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 22, fontWeight: 700, color: c.text }}>Part not found</div>
+      <Link to="/catalog" style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: c.accent, textDecoration: 'none', letterSpacing: '0.1em' }}>← BACK TO CATALOG</Link>
     </div>
   )
 
@@ -57,201 +148,247 @@ export default function ProductPage() {
   const icon = CATEGORY_ICONS[part.category?.slug] || '🔩'
 
   return (
-    <div style={{ minHeight: '100vh', background: '#05070C', color: '#EAF2FF' }}>
+    <div style={{ minHeight: '100vh', background: c.pageBg, color: c.text }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
         @keyframes energy-flow {
           0% { background-position: 0% 50%; }
           100% { background-position: 200% 50%; }
         }
-        @keyframes fade-up {
-          from { opacity: 0; transform: translateY(12px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
         @keyframes grid-drift {
           from { background-position: 0 0; }
           to { background-position: 48px 48px; }
         }
+        @keyframes fade-up {
+          from { opacity: 0; transform: translateY(14px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes glow-pulse {
-          0%, 100% { box-shadow: 0 0 20px rgba(76,124,255,0.2); }
-          50% { box-shadow: 0 0 40px rgba(34,211,184,0.3); }
+          0%, 100% { box-shadow: 0 0 20px ${c.glowBlue}; }
+          50% { box-shadow: 0 0 40px ${c.glowTeal}; }
         }
         @keyframes add-success {
           0% { transform: scale(1); }
-          50% { transform: scale(1.03); }
+          40% { transform: scale(1.04); }
           100% { transform: scale(1); }
         }
         .product-grid-bg {
           background-image:
-            linear-gradient(rgba(76,124,255,0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(76,124,255,0.04) 1px, transparent 1px);
+            linear-gradient(${c.gridColor} 1px, transparent 1px),
+            linear-gradient(90deg, ${c.gridColor} 1px, transparent 1px);
           background-size: 48px 48px;
-          animation: grid-drift 18s linear infinite;
+          animation: grid-drift 20s linear infinite;
         }
         .energy-bar {
-          background: linear-gradient(90deg, #4C7CFF, #22D3B8, #4C7CFF, #22D3B8);
+          background: ${c.energyLine};
           background-size: 200% 100%;
           animation: energy-flow 4s linear infinite;
+        }
+        .image-card {
+          background: ${c.imageBg};
+          border: 1px solid ${c.cardBorder};
+          border-radius: 20px;
+          overflow: hidden;
+          position: relative;
+          animation: glow-pulse 5s ease-in-out infinite;
+          backdrop-filter: blur(8px);
         }
         .thumb-btn {
           border-radius: 10px; overflow: hidden; cursor: pointer;
           border: 2px solid transparent;
           transition: all 0.2s ease;
-          background: rgba(10,15,30,0.8);
+          background: ${c.thumbBg};
+          display: flex; align-items: center; justify-content: center;
         }
-        .thumb-btn:hover { border-color: rgba(34,211,184,0.4); }
+        .thumb-btn:hover { border-color: ${c.thumbActiveBorder}; opacity: 0.9; }
         .thumb-btn.active {
-          border-color: #22D3B8;
-          box-shadow: 0 0 12px rgba(34,211,184,0.3);
+          border-color: ${c.thumbActiveBorder};
+          box-shadow: 0 0 12px ${c.thumbActiveGlow};
         }
         .qty-btn {
-          width: 36px; height: 36px; border-radius: 8px;
-          border: 1px solid rgba(124,138,165,0.25);
-          background: rgba(255,255,255,0.04); color: #EAF2FF;
+          width: 38px; height: 38px; border-radius: 9px;
+          border: 1px solid ${c.qtyBorder};
+          background: ${c.qtyBg}; color: ${c.text};
           cursor: pointer; display: flex; align-items: center; justify-content: center;
-          font-size: 18px; transition: all 0.15s ease;
+          font-size: 18px; font-weight: 300;
+          transition: all 0.15s ease;
         }
-        .qty-btn:hover { border-color: #22D3B8; color: #22D3B8; background: rgba(34,211,184,0.08); }
+        .qty-btn:hover:not(:disabled) {
+          border-color: ${c.teal}; color: ${c.teal};
+          background: ${dark ? 'rgba(34,211,184,0.06)' : 'rgba(10,140,122,0.06)'};
+        }
         .qty-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        .add-cart-btn {
+        .add-btn {
           flex: 1; padding: 14px; border-radius: 12px; border: none;
           font-size: 15px; font-weight: 700; cursor: pointer;
           display: flex; align-items: center; justify-content: center; gap: 8px;
           font-family: 'Space Grotesk', sans-serif;
           transition: all 0.2s ease;
         }
-        .add-cart-btn.ready {
-          background: linear-gradient(135deg, #4C7CFF, #22D3B8);
-          color: #04121A;
-          box-shadow: 0 4px 24px rgba(76,124,255,0.4);
+        .add-btn.ready {
+          background: ${c.gradient};
+          color: ${dark ? '#04121A' : '#fff'};
+          box-shadow: 0 4px 24px ${dark ? 'rgba(76,124,255,0.4)' : 'rgba(41,82,204,0.3)'};
         }
-        .add-cart-btn.ready:hover {
+        .add-btn.ready:hover {
           transform: translateY(-1px);
-          box-shadow: 0 8px 32px rgba(76,124,255,0.5);
+          box-shadow: 0 8px 32px ${dark ? 'rgba(76,124,255,0.5)' : 'rgba(41,82,204,0.4)'};
         }
-        .add-cart-btn.ready:active { transform: scale(0.98); }
-        .add-cart-btn.success {
-          background: linear-gradient(135deg, #22D3B8, #4C7CFF);
-          color: #04121A; animation: add-success 0.4s ease;
+        .add-btn.success {
+          background: ${dark ? 'linear-gradient(135deg, #22D3B8, #4C7CFF)' : 'linear-gradient(135deg, #0A8C7A, #2952CC)'};
+          color: ${dark ? '#04121A' : '#fff'};
+          animation: add-success 0.4s ease;
         }
-        .add-cart-btn:disabled {
-          background: rgba(124,138,165,0.15); color: #4A5670; cursor: not-allowed;
-          box-shadow: none;
+        .add-btn:disabled { background: ${dark ? 'rgba(124,138,165,0.15)' : 'rgba(100,116,139,0.12)'}; color: ${c.textFaint}; cursor: not-allowed; }
+        .trust-card {
+          flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;
+          padding: 12px 8px; border-radius: 12px;
+          background: ${c.trustBg}; border: 1px solid ${c.trustBorder};
+          transition: all 0.2s ease;
         }
-        .trust-badge {
-          display: flex; flex-direction: column; align-items: center; gap: 6px;
-          padding: 12px 8px; border-radius: 10px;
-          background: rgba(255,255,255,0.02); border: 1px solid rgba(124,138,165,0.1);
-          flex: 1; transition: all 0.2s;
+        .trust-card:hover {
+          border-color: ${dark ? 'rgba(34,211,184,0.25)' : 'rgba(10,140,122,0.25)'};
+          transform: translateY(-1px);
         }
-        .trust-badge:hover { border-color: rgba(34,211,184,0.2); background: rgba(34,211,184,0.03); }
-        .compat-row:hover { background: rgba(76,124,255,0.05); }
+        .compat-row { transition: background 0.15s ease; }
+        .compat-row:hover { background: ${c.compatHover}; }
         .review-card {
-          background: rgba(255,255,255,0.02); border: 1px solid rgba(124,138,165,0.1);
-          border-radius: 12px; padding: 16px; transition: border-color 0.2s;
+          background: ${c.reviewBg};
+          border: 1px solid ${c.reviewBorder};
+          border-radius: 14px; padding: 18px;
+          transition: all 0.2s ease;
+          position: relative; overflow: hidden;
         }
-        .review-card:hover { border-color: rgba(76,124,255,0.2); }
-        .breadcrumb-link { color: #4A5670; text-decoration: none; font-size: 12px; transition: color 0.15s; }
-        .breadcrumb-link:hover { color: #22D3B8; }
+        .review-card::before {
+          content: '"';
+          position: absolute; top: -8px; left: 14px;
+          font-size: 56px; color: ${c.accent};
+          opacity: ${dark ? 0.1 : 0.08};
+          font-family: Georgia, serif; line-height: 1;
+          pointer-events: none;
+        }
+        .review-card:hover {
+          border-color: ${dark ? 'rgba(76,124,255,0.2)' : 'rgba(41,82,204,0.2)'};
+          transform: translateY(-2px);
+        }
+        .breadcrumb-link {
+          font-family: 'JetBrains Mono', monospace; font-size: 11px;
+          color: ${c.breadcrumbColor}; text-decoration: none;
+          transition: color 0.15s; letter-spacing: 0.04em;
+        }
+        .breadcrumb-link:hover { color: ${c.breadcrumbHover}; }
+        .nav-arrow {
+          position: absolute; top: 50%; transform: translateY(-50%);
+          width: 34px; height: 34px; border-radius: 10px; z-index: 3;
+          background: ${dark ? 'rgba(10,15,30,0.85)' : 'rgba(255,255,255,0.85)'};
+          border: 1px solid ${c.cardBorder}; cursor: pointer;
+          color: ${c.text}; display: flex; align-items: center; justify-content: center;
+          backdrop-filter: blur(8px); transition: all 0.15s ease;
+        }
+        .nav-arrow:hover {
+          border-color: ${c.teal}; color: ${c.teal};
+          box-shadow: 0 4px 12px ${dark ? 'rgba(34,211,184,0.2)' : 'rgba(10,140,122,0.2)'};
+        }
         @media (max-width: 768px) {
-          .product-grid { grid-template-columns: 1fr !important; }
-          .trust-row { flex-direction: column !important; }
+          .product-main-grid { grid-template-columns: 1fr !important; }
+          .trust-row { flex-wrap: wrap !important; }
         }
         @media (prefers-reduced-motion: reduce) {
-          .energy-bar, .product-grid-bg { animation: none; }
+          .energy-bar, .product-grid-bg, .image-card { animation: none; }
+          .add-btn.ready:hover, .trust-card:hover { transform: none; }
         }
       `}</style>
 
       {/* Background */}
       <div className="product-grid-bg" style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }} />
-      <div style={{ position: 'fixed', top: '10%', right: '5%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, rgba(76,124,255,0.07), transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none', zIndex: 0 }} />
-      <div style={{ position: 'fixed', bottom: '10%', left: '5%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(34,211,184,0.05), transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none', zIndex: 0 }} />
+      <div style={{ position: 'fixed', top: '10%', right: '5%', width: 500, height: 500, borderRadius: '50%', background: `radial-gradient(circle, ${c.glowBlue}, transparent 70%)`, filter: 'blur(60px)', pointerEvents: 'none', zIndex: 0 }} />
+      <div style={{ position: 'fixed', bottom: '15%', left: '5%', width: 400, height: 400, borderRadius: '50%', background: `radial-gradient(circle, ${c.glowTeal}, transparent 70%)`, filter: 'blur(60px)', pointerEvents: 'none', zIndex: 0 }} />
 
-      <div style={{ position: 'relative', zIndex: 1, maxWidth: 1100, margin: '0 auto', padding: '24px 16px' }}>
+      <div style={{ position: 'relative', zIndex: 1, maxWidth: 1100, margin: '0 auto', padding: '24px 16px 56px' }}>
 
         {/* Breadcrumb */}
         <nav style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 28, animation: 'fade-up 0.3s ease-out both' }}>
           <Link to="/" className="breadcrumb-link">{t('product.nav.home')}</Link>
-          <ChevronRight size={12} style={{ color: '#1e293b' }} />
+          <ChevronRight size={11} style={{ color: c.textFaint }} />
           <Link to="/catalog" className="breadcrumb-link">{t('product.nav.catalog')}</Link>
-          <ChevronRight size={12} style={{ color: '#1e293b' }} />
+          <ChevronRight size={11} style={{ color: c.textFaint }} />
           <Link to={`/catalog?category=${part.category?.slug}`} className="breadcrumb-link">{getCategoryName(part.category, i18n.language)}</Link>
-          <ChevronRight size={12} style={{ color: '#1e293b' }} />
-          <span style={{ fontSize: 12, color: '#7C8AA5', fontFamily: "'Inter', sans-serif" }}>{getPartName(part, i18n.language)}</span>
+          <ChevronRight size={11} style={{ color: c.textFaint }} />
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: c.teal, letterSpacing: '0.04em', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {getPartName(part, i18n.language)}
+          </span>
         </nav>
 
         {/* Main grid */}
-        <div className="product-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, marginBottom: 48 }}>
+        <div className="product-main-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 36, marginBottom: 56 }}>
 
           {/* Left — Images */}
           <div style={{ animation: 'fade-up 0.4s 0.05s ease-out both' }}>
+
             {/* Main image */}
-            <div style={{
-              background: 'rgba(10,15,30,0.8)', backdropFilter: 'blur(12px)',
-              border: '1px solid rgba(124,138,165,0.12)', borderRadius: 16,
-              overflow: 'hidden', position: 'relative', aspectRatio: '1',
-              animation: 'glow-pulse 4s ease-in-out infinite'
-            }}>
-              {/* Energy line top */}
-              <div className="energy-bar" style={{ height: 2, width: '100%', position: 'absolute', top: 0, left: 0, zIndex: 2 }} />
+            <div className="image-card" style={{ aspectRatio: '1', marginBottom: 12 }}>
+              <div className="energy-bar" style={{ height: 2, position: 'absolute', top: 0, left: 0, right: 0, zIndex: 2 }} />
 
               {images[activeImage] ? (
-                <img src={images[activeImage]!} alt={part.name}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }} />
+                <img
+                  src={images[activeImage]!}
+                  alt={part.name}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }}
+                />
               ) : (
-                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 80 }}>
+                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 96 }}>
                   {icon}
                 </div>
               )}
 
+              {/* Discount badge */}
               {disc && (
-                <div style={{
-                  position: 'absolute', top: 16, right: 16, zIndex: 3,
-                  background: 'linear-gradient(135deg, #FF6B57, #FF9A57)',
-                  color: '#fff', fontSize: 12, fontWeight: 700, padding: '4px 12px',
-                  borderRadius: 20, fontFamily: "'JetBrains Mono', monospace",
-                  boxShadow: '0 4px 12px rgba(255,107,87,0.4)'
-                }}>
+                <div style={{ position: 'absolute', top: 16, right: 16, zIndex: 3, background: c.discountBg, color: '#fff', fontSize: 12, fontWeight: 700, padding: '4px 12px', borderRadius: 20, fontFamily: "'JetBrains Mono', monospace", boxShadow: '0 4px 12px rgba(255,107,87,0.4)' }}>
                   -{disc}%
                 </div>
               )}
 
               {/* Corner brackets */}
               {[
-                { top: 8, left: 8, borderTop: true, borderLeft: true },
-                { top: 8, right: 8, borderTop: true, borderRight: true },
-                { bottom: 8, left: 8, borderBottom: true, borderLeft: true },
-                { bottom: 8, right: 8, borderBottom: true, borderRight: true },
+                { top: 10, left: 10, bTop: true, bLeft: true },
+                { top: 10, right: 10, bTop: true, bRight: true },
+                { bottom: 10, left: 10, bBottom: true, bLeft: true },
+                { bottom: 10, right: 10, bBottom: true, bRight: true },
               ].map((pos, i) => (
                 <div key={i} style={{
-                  position: 'absolute', width: 16, height: 16, zIndex: 2,
-                  top: pos.top, left: (pos as any).left, right: (pos as any).right, bottom: (pos as any).bottom,
-                  borderTop: pos.borderTop ? '2px solid rgba(34,211,184,0.4)' : undefined,
-                  borderLeft: pos.borderLeft ? '2px solid rgba(34,211,184,0.4)' : undefined,
-                  borderRight: (pos as any).borderRight ? '2px solid rgba(34,211,184,0.4)' : undefined,
-                  borderBottom: (pos as any).borderBottom ? '2px solid rgba(34,211,184,0.4)' : undefined,
-                  pointerEvents: 'none'
+                  position: 'absolute', width: 18, height: 18, zIndex: 2, pointerEvents: 'none',
+                  top: (pos as any).top, left: (pos as any).left, right: (pos as any).right, bottom: (pos as any).bottom,
+                  borderTop: (pos as any).bTop ? `2px solid ${c.cornerColor}` : undefined,
+                  borderLeft: (pos as any).bLeft ? `2px solid ${c.cornerColor}` : undefined,
+                  borderRight: (pos as any).bRight ? `2px solid ${c.cornerColor}` : undefined,
+                  borderBottom: (pos as any).bBottom ? `2px solid ${c.cornerColor}` : undefined,
                 }} />
               ))}
 
-              {/* Nav arrows for multiple images */}
+              {/* Image nav arrows */}
               {images.length > 1 && (
                 <>
-                  <button onClick={() => setActiveImage(i => Math.max(0, i - 1))}
-                    style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', zIndex: 3, background: 'rgba(10,15,30,0.8)', border: '1px solid rgba(124,138,165,0.2)', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', color: '#EAF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <button className="nav-arrow" style={{ left: 12 }} onClick={() => setActiveImage(i => Math.max(0, i - 1))}>
                     <ChevronLeft size={16} />
                   </button>
-                  <button onClick={() => setActiveImage(i => Math.min(images.length - 1, i + 1))}
-                    style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', zIndex: 3, background: 'rgba(10,15,30,0.8)', border: '1px solid rgba(124,138,165,0.2)', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', color: '#EAF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <button className="nav-arrow" style={{ right: 12 }} onClick={() => setActiveImage(i => Math.min(images.length - 1, i + 1))}>
                     <ChevronRight size={16} />
                   </button>
                 </>
+              )}
+
+              {/* Image counter */}
+              {images.length > 1 && (
+                <div style={{ position: 'absolute', bottom: 14, right: 14, zIndex: 3, fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: c.textMuted, background: dark ? 'rgba(5,7,12,0.7)' : 'rgba(255,255,255,0.8)', padding: '3px 8px', borderRadius: 6, backdropFilter: 'blur(8px)' }}>
+                  {activeImage + 1}/{images.length}
+                </div>
               )}
             </div>
 
             {/* Thumbnails */}
             {images.length > 1 && (
-              <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {images.map((img, i) => (
                   <button key={i} className={`thumb-btn${activeImage === i ? ' active' : ''}`}
                     onClick={() => setActiveImage(i)}
@@ -270,92 +407,104 @@ export default function ProductPage() {
 
             {/* Category tag */}
             <div>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#22D3B8', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: c.categoryColor, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
                 // {getCategoryName(part.category, i18n.language)}
               </span>
             </div>
 
             {/* Name */}
-            <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 28, fontWeight: 700, color: '#EAF2FF', lineHeight: 1.2, letterSpacing: '-0.5px' }}>
+            <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 30, fontWeight: 700, color: c.text, lineHeight: 1.2, letterSpacing: '-0.5px', margin: 0 }}>
               {getPartName(part, i18n.language)}
             </h1>
 
             {/* OEM */}
             {part.oemNumber && (
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(76,124,255,0.08)', border: '1px solid rgba(76,124,255,0.2)', borderRadius: 8, padding: '6px 12px', width: 'fit-content' }}>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#4C7CFF', letterSpacing: '0.1em' }}>OEM</span>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#EAF2FF' }}>{part.oemNumber}</span>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: c.oemBg, border: `1px solid ${c.oemBorder}`, borderRadius: 10, padding: '8px 14px', width: 'fit-content' }}>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: c.oemLabelColor, letterSpacing: '0.12em', textTransform: 'uppercase' }}>OEM</span>
+                <div style={{ width: 1, height: 12, background: c.oemBorder }} />
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: c.oemValueColor, fontWeight: 500 }}>{part.oemNumber}</span>
               </div>
             )}
 
             {/* Rating */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {/* <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <div style={{ display: 'flex', gap: 2 }}>
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={14} style={{ fill: i < Math.round(avgRating) ? '#F59E0B' : 'none', color: i < Math.round(avgRating) ? '#F59E0B' : '#1e293b' }} />
+                  <Star key={i} size={14} style={{ fill: i < Math.round(avgRating) ? '#F59E0B' : 'none', color: i < Math.round(avgRating) ? '#F59E0B' : c.textFaint }} />
                 ))}
               </div>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#4A5670' }}>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: c.textFaint }}>
                 {avgRating.toFixed(1)} ({part.reviews?.length ?? 0} reviews)
               </span>
-            </div>
+            </div> */}
 
             {/* Price */}
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, padding: '16px 0', borderTop: '1px solid rgba(124,138,165,0.1)', borderBottom: '1px solid rgba(124,138,165,0.1)' }}>
-              <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 36, fontWeight: 700, color: '#4C7CFF', letterSpacing: '-1px' }}>
-                {formatPrice(part.price)}
-              </span>
-              {part.comparePrice && (
-                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 18, color: '#4A5670', textDecoration: 'line-through' }}>
-                  {formatPrice(part.comparePrice)}
+            <div style={{ padding: '18px 0', borderTop: `1px solid ${c.divider}`, borderBottom: `1px solid ${c.divider}` }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, flexWrap: 'wrap' }}>
+                <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 38, fontWeight: 700, color: c.accent, letterSpacing: '-1px' }}>
+                  {part.price}₾
                 </span>
-              )}
-              {disc && (
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#FF6B57', background: 'rgba(255,107,87,0.1)', border: '1px solid rgba(255,107,87,0.2)', padding: '3px 8px', borderRadius: 6 }}>
-                  SAVE {disc}%
-                </span>
-              )}
+                {part.comparePrice && (
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 20, color: c.textFaint, textDecoration: 'line-through' }}>
+                    {part.comparePrice}
+                  </span>
+                )}
+                {disc && (
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: c.saveColor, background: c.saveBg, border: `1px solid ${c.saveBorder}`, padding: '4px 10px', borderRadius: 8 }}>
+                    {t('product.save')} {disc}%
+                  </span>
+                )}
+              </div>
             </div>
 
-            {/* Stock status */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {/* Stock */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               {part.stock > 10 ? (
                 <>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#22D3B8', boxShadow: '0 0 8px rgba(34,211,184,0.6)' }} />
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#22D3B8' }}>IN STOCK — {part.stock} available</span>
+                  <CheckCircle size={16} style={{ color: c.stockGreen, flexShrink: 0 }} />
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: c.stockGreen }}>
+                    {t('product.inStock')} {part.stock} {t('product.available')}
+                  </span>
                 </>
               ) : part.stock > 0 ? (
                 <>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#F59E0B', boxShadow: '0 0 8px rgba(245,158,11,0.6)' }} />
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#F59E0B' }}>LOW STOCK — only {part.stock} left</span>
+                  <AlertTriangle size={16} style={{ color: c.stockOrange, flexShrink: 0 }} />
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: c.stockOrange }}>
+                    {t('product.lowStock')} {part.stock}
+                  </span>
                 </>
               ) : (
                 <>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#FF6B57', boxShadow: '0 0 8px rgba(255,107,87,0.6)' }} />
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#FF6B57' }}>OUT OF STOCK</span>
+                  <AlertTriangle size={16} style={{ color: c.stockRed, flexShrink: 0 }} />
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: c.stockRed }}>
+                    {t('product.outOfStock')}
+                  </span>
                 </>
               )}
             </div>
 
             {/* Description */}
             {part.description && (
-              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: '#7C8AA5', lineHeight: 1.7 }}>
-                { getPartDescription(part, i18n.language) }
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: c.textMuted, lineHeight: 1.75, margin: 0 }}>
+                {getPartDescription(part, i18n.language)}
               </p>
             )}
 
-            {/* Quantity + Add to cart */}
+            {/* Qty + Add to cart */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 0, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(124,138,165,0.2)', borderRadius: 10, overflow: 'hidden' }}>
-                <button className="qty-btn" style={{ border: 'none', borderRight: '1px solid rgba(124,138,165,0.15)', borderRadius: 0 }}
+              <div style={{ display: 'flex', alignItems: 'center', background: c.qtyBg, border: `1px solid ${c.qtyBorder}`, borderRadius: 12, overflow: 'hidden', flexShrink: 0 }}>
+                <button className="qty-btn" style={{ border: 'none', borderRight: `1px solid ${c.qtyBorder}`, borderRadius: 0 }}
                   onClick={() => setQuantity(q => Math.max(1, q - 1))}>−</button>
-                <span style={{ width: 44, textAlign: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, fontWeight: 600, color: '#EAF2FF' }}>{quantity}</span>
-                <button className="qty-btn" style={{ border: 'none', borderLeft: '1px solid rgba(124,138,165,0.15)', borderRadius: 0 }}
+                <span style={{ width: 44, textAlign: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, fontWeight: 600, color: c.text }}>{quantity}</span>
+                <button className="qty-btn" style={{ border: 'none', borderLeft: `1px solid ${c.qtyBorder}`, borderRadius: 0 }}
                   disabled={quantity >= part.stock}
                   onClick={() => setQuantity(q => Math.min(part.stock, q + 1))}>+</button>
               </div>
-              <button className={`add-cart-btn${added ? ' success' : part.stock > 0 ? ' ready' : ''}`}
-                onClick={handleAddToCart} disabled={part.stock === 0}>
+              <button
+                className={`add-btn${added ? ' success' : part.stock > 0 ? ' ready' : ''}`}
+                onClick={handleAddToCart}
+                disabled={part.stock === 0}
+              >
                 {added ? <><Zap size={16} /> {t('product.added')}</> : <><ShoppingCart size={16} /> {t('product.addToCart')}</>}
               </button>
             </div>
@@ -363,15 +512,17 @@ export default function ProductPage() {
             {/* Trust badges */}
             <div className="trust-row" style={{ display: 'flex', gap: 8 }}>
               {[
-                { icon: Package, text: t('product.freeReturns'), sub: t('product.freeReturnsSub') },
-                { icon: Shield, text: t('product.oemQuality'), sub: t('product.oemQualitySub') },
-                { icon: RotateCcw, text: t('product.fastDelivery'), sub: t('product.fastDeliverySub') },
-              ].map(({ icon: Icon, text, sub }) => (
-                <div key={text} className="trust-badge">
-                  <Icon size={16} style={{ color: '#22D3B8' }} />
+                { icon: Package, title: t('product.freeReturns'), sub: t('product.freeReturnsSub') },
+                { icon: Shield, title: t('product.oemQuality'), sub: t('product.oemQualitySub') },
+                { icon: RotateCcw, title: t('product.fastDelivery'), sub: t('product.fastDeliverySub') },
+              ].map(({ icon: Icon, title, sub }) => (
+                <div key={title} className="trust-card">
+                  <div style={{ width: 32, height: 32, borderRadius: 9, background: c.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Icon size={14} style={{ color: dark ? '#04121A' : '#fff' }} />
+                  </div>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 600, color: '#EAF2FF' }}>{text}</div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: '#4A5670', marginTop: 1 }}>{sub}</div>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 600, color: c.text }}>{title}</div>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: c.textFaint, marginTop: 1, letterSpacing: '0.05em' }}>{sub}</div>
                   </div>
                 </div>
               ))}
@@ -379,32 +530,33 @@ export default function ProductPage() {
           </div>
         </div>
 
-        {/* Compatibility table */}
-        {part.compatibility && part.compatibility.length > 0 && (
-          <section style={{ marginBottom: 40, animation: 'fade-up 0.4s 0.2s ease-out both' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-              <div className="energy-bar" style={{ height: 2, width: 32, borderRadius: 2 }} />
-              <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 20, fontWeight: 700, color: '#EAF2FF' }}>
-                {t('product.compatibility')}
+        {/* Compatibility */}
+        {/* {part.compatibility && part.compatibility.length > 0 && (
+          <section style={{ marginBottom: 48, animation: 'fade-up 0.4s 0.2s ease-out both' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18 }}>
+              <div className="energy-bar" style={{ height: 2, width: 28, borderRadius: 2, flexShrink: 0 }} />
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: c.categoryColor, letterSpacing: '0.12em', textTransform: 'uppercase' }}>// COMPATIBILITY</span>
+              <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 22, fontWeight: 700, color: c.text, margin: 0 }}>
+                Vehicle Compatibility
               </h2>
             </div>
-            <div style={{ background: 'rgba(13,18,30,0.8)', backdropFilter: 'blur(12px)', border: '1px solid rgba(124,138,165,0.12)', borderRadius: 14, overflow: 'hidden' }}>
+            <div style={{ background: c.cardBg, backdropFilter: 'blur(12px)', border: `1px solid ${c.cardBorder}`, borderRadius: 16, overflow: 'hidden' }}>
               <div className="energy-bar" style={{ height: 2 }} />
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                 <thead>
-                  <tr style={{ background: 'rgba(76,124,255,0.06)' }}>
-                    {[t('product.make'), t('product.model'), t('product.years')].map(h => (
-                      <th key={h} style={{ textAlign: 'center', padding: '12px 16px', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#22D3B8', borderBottom: '1px solid rgba(124,138,165,0.1)' }}>{h}</th>
+                  <tr style={{ background: c.compatBg }}>
+                    {['Make', 'Model', 'Years'].map(h => (
+                      <th key={h} style={{ textAlign: 'left', padding: '12px 18px', fontFamily: "'JetBrains Mono', monospace", fontSize: 9, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.12em', color: c.categoryColor, borderBottom: `1px solid ${c.divider}` }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {part.compatibility.map((c) => (
-                    <tr key={c.id} className="compat-row" style={{ borderBottom: '1px solid rgba(124,138,165,0.06)', transition: 'background 0.15s' }}>
-                      <td style={{ padding: '12px 16px', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: '#EAF2FF' }}>{c.model.make.name}</td>
-                      <td style={{ padding: '12px 16px', fontFamily: "'Inter', sans-serif", color: '#7C8AA5' }}>{c.model.name}</td>
-                      <td style={{ padding: '12px 16px', fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: '#4C7CFF' }}>
-                        {c.years.sort((a: number, b: number) => a - b).join(', ')}
+                  {part.compatibility.map((comp, i) => (
+                    <tr key={comp.id} className="compat-row" style={{ borderBottom: i < part.compatibility!.length - 1 ? `1px solid ${c.divider}` : 'none' }}>
+                      <td style={{ padding: '13px 18px', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: c.text }}>{comp.model.make.name}</td>
+                      <td style={{ padding: '13px 18px', fontFamily: "'Inter', sans-serif", color: c.textMuted }}>{comp.model.name}</td>
+                      <td style={{ padding: '13px 18px', fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: c.accent }}>
+                        {comp.years.sort((a: number, b: number) => a - b).join(', ')}
                       </td>
                     </tr>
                   ))}
@@ -412,51 +564,58 @@ export default function ProductPage() {
               </table>
             </div>
           </section>
-        )}
+        )} */}
 
         {/* Reviews */}
-        <section style={{ animation: 'fade-up 0.4s 0.25s ease-out both' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-            <div className="energy-bar" style={{ height: 2, width: 32, borderRadius: 2 }} />
-            <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 20, fontWeight: 700, color: '#EAF2FF' }}>
-              {t('product.reviews')}
+        {/* <section style={{ animation: 'fade-up 0.4s 0.25s ease-out both' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18 }}>
+            <div className="energy-bar" style={{ height: 2, width: 28, borderRadius: 2, flexShrink: 0 }} />
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: c.categoryColor, letterSpacing: '0.12em', textTransform: 'uppercase' }}>// REVIEWS</span>
+            <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 22, fontWeight: 700, color: c.text, margin: 0 }}>
+              Customer Reviews
             </h2>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#4A5670' }}>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: c.textFaint }}>
               ({part.reviews?.length ?? 0})
             </span>
           </div>
 
           {part.reviews && part.reviews.length > 0 ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 14 }}>
               {part.reviews.map((review) => (
                 <div key={review.id} className="review-card">
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'linear-gradient(135deg, #4C7CFF, #22D3B8)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, fontWeight: 700, color: '#04121A' }}>
+                      <div style={{ width: 34, height: 34, borderRadius: '50%', background: c.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, fontWeight: 700, color: dark ? '#04121A' : '#fff', flexShrink: 0 }}>
                         {review.user.name[0].toUpperCase()}
                       </div>
-                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 600, color: '#EAF2FF' }}>{review.user.name}</span>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 600, color: c.text }}>{review.user.name}</span>
                     </div>
                     <div style={{ display: 'flex', gap: 2 }}>
                       {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} size={12} style={{ fill: i < review.rating ? '#F59E0B' : 'none', color: i < review.rating ? '#F59E0B' : '#1e293b' }} />
+                        <Star key={i} size={12} style={{ fill: i < review.rating ? '#F59E0B' : 'none', color: i < review.rating ? '#F59E0B' : c.textFaint }} />
                       ))}
                     </div>
                   </div>
-                  {review.comment && <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: '#7C8AA5', lineHeight: 1.6 }}>{review.comment}</p>}
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#4A5670', marginTop: 8 }}>
+                  {review.comment && (
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: c.textMuted, lineHeight: 1.65, margin: '0 0 12px' }}>
+                      {review.comment}
+                    </p>
+                  )}
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: c.textFaint, letterSpacing: '0.05em' }}>
                     {new Date(review.createdAt).toLocaleDateString()}
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div style={{ background: 'rgba(13,18,30,0.8)', border: '1px solid rgba(124,138,165,0.1)', borderRadius: 14, padding: '48px 24px', textAlign: 'center' }}>
-              <Star size={28} style={{ color: '#1e293b', margin: '0 auto 12px' }} />
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: '#4A5670' }}>{t('product.noReviews')}</div>
+            <div style={{ background: c.cardBg, backdropFilter: 'blur(12px)', border: `1px solid ${c.cardBorder}`, borderRadius: 16, padding: '48px 24px', textAlign: 'center' }}>
+              <Star size={28} style={{ color: c.textFaint, margin: '0 auto 12px', display: 'block', opacity: 0.3 }} />
+              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: c.textFaint }}>
+                No reviews yet. Be the first to review this part.
+              </div>
             </div>
           )}
-        </section>
+        </section> */}
       </div>
     </div>
   )
