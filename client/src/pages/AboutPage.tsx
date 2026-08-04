@@ -39,7 +39,7 @@ const TEAM = [
     cardBorder: 'rgba(124,138,165,0.12)',
     text: '#EAF2FF',
     textMuted: '#7C8AA5',
-    textFaint: '#4A5670',
+    textFaint: '#9ba3b6',
     accent: '#4C7CFF',
     teal: '#22D3B8',
     coral: '#FF6B57',
@@ -64,7 +64,7 @@ const TEAM = [
     cardBorder: 'rgba(60,90,200,0.12)',
     text: '#0B1220',
     textMuted: '#4A5A7A',
-    textFaint: '#8A9AB8',
+    textFaint: '#4c5668',
     accent: '#2952CC',
     teal: '#0A8C7A',
     coral: '#CC3A28',
@@ -344,7 +344,7 @@ const TEAM = [
                   <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: c.textMuted, marginBottom: 10 }}>{role}</div>
                   <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: c.tagBg, border: `1px solid ${c.tagBorder}`, borderRadius: 20, padding: '3px 10px' }}>
                     <div style={{ width: 5, height: 5, borderRadius: '50%', background: c.teal }} />
-                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: c.tagColor }}>{exp}</span>
+                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: c.tagColor }}>{exp}</span>
                   </div>
                 </div>
               ))}
@@ -393,16 +393,16 @@ const TEAM = [
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 12 }}>
               {[
-                { icon: Mail, label: t('about.email'), value: 'support@priusparts.ge', href: 'mailto:support@priusparts.ge' },
-                { icon: Phone, label: t('about.phone'), value: '+995 XXX XXX XXX', href: 'tel:+995000000000' },
-                { icon: MapPin, label: t('about.visitUs'), value: 'Tbilisi, Georgia', href: '#' },
-              ].map(({ icon: Icon, label, value, href }) => (
-                <a key={label} href={href} className="contact-card">
+                { icon: Mail, label: t('about.email'), value: 'priuspartska@gmail.com', href: 'https://mail.google.com/mail/?view=cm&fs=1&to=priuspartska@gmail.com' },
+                { icon: Phone, label: t('about.phone'), value: '+995 591-21-90-22', href: 'tel:+995591219022' },
+                { icon: MapPin, label: t('about.visitUs'), value: t('about.street'), href: 'https://maps.app.goo.gl/3Wcv31FJsUnXb734A?g_st=ic', external: true },
+              ].map(({ icon: Icon, label, value, href, external }) => (
+                <a key={label} href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined} className="contact-card">
                   <div style={{ width: 40, height: 40, borderRadius: 10, background: c.gradientAccent, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <Icon size={16} style={{ color: dark ? '#04121A' : '#fff' }} />
                   </div>
                   <div>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: c.textFaint, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 2 }}>{label}</div>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: c.textFaint, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 2 }}>{label}</div>
                     <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, fontWeight: 500, color: c.text }}>{value}</div>
                   </div>
                 </a>

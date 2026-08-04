@@ -158,7 +158,7 @@ export default function Layout() {
           {/* Logo */}
           <Link to="/" onClick={closeMenus} style={{ textDecoration: 'none', marginRight: 16, flexShrink: 0 }}>
             <span style={{ fontSize: 26, fontWeight: 700, color: '#f9fafb', letterSpacing: '-0.5px', fontFamily: "'Space Grotesk', sans-serif" }}>
-              Prius<span style={{ background: 'linear-gradient(135deg, #4C7CFF, #22D3B8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Parts</span>
+              P<span style={{ background: 'linear-gradient(135deg, #4C7CFF, #22D3B8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Parts</span>
               <span style={{ color: '#6b7280', fontSize: 12, fontWeight: 400, fontFamily: "'JetBrains Mono', monospace" }}>.ge</span>
             </span>
           </Link>
