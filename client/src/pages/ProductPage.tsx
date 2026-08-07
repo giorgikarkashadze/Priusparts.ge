@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import {
-  ShoppingCart, Star, ChevronRight, ChevronLeft,
+  ShoppingCart, ChevronRight, ChevronLeft,
   Package, RotateCcw, Shield, Zap, AlertTriangle, CheckCircle
 } from 'lucide-react'
 import { usePart } from '@/hooks/useProducts'
@@ -138,9 +138,9 @@ export default function ProductPage() {
 
   const disc = discount(part.price, part.comparePrice)
   const images = part.images && part.images.length > 0 ? part.images : [null]
-  const avgRating = part.reviews?.length
-    ? part.reviews.reduce((sum, r) => sum + r.rating, 0) / part.reviews.length
-    : 4.2
+  // const avgRating = part.reviews?.length
+  //   ? part.reviews.reduce((sum, r) => sum + r.rating, 0) / part.reviews.length
+  //   : 4.2
 
   const CATEGORY_ICONS: Record<string, string> = {
     engine: '🔧', brakes: '🛞', suspension: '⚙️', electrical: '⚡', filters: '🌀', hybrid: '🔋',
@@ -463,7 +463,7 @@ export default function ProductPage() {
                 <>
                   <CheckCircle size={16} style={{ color: c.stockGreen, flexShrink: 0 }} />
                   <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: c.stockGreen }}>
-                    {t('product.inStock')} {part.stock} {t('product.available')}
+                    {t('product.inStock')} {part.stock}
                   </span>
                 </>
               ) : part.stock > 0 ? (
@@ -492,22 +492,82 @@ export default function ProductPage() {
 
             {/* Qty + Add to cart */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ display: 'flex', alignItems: 'center', background: c.qtyBg, border: `1px solid ${c.qtyBorder}`, borderRadius: 12, overflow: 'hidden', flexShrink: 0 }}>
+              {/* <div style={{ display: 'flex', alignItems: 'center', background: c.qtyBg, border: `1px solid ${c.qtyBorder}`, borderRadius: 12, overflow: 'hidden', flexShrink: 0 }}>
                 <button className="qty-btn" style={{ border: 'none', borderRight: `1px solid ${c.qtyBorder}`, borderRadius: 0 }}
                   onClick={() => setQuantity(q => Math.max(1, q - 1))}>−</button>
                 <span style={{ width: 44, textAlign: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, fontWeight: 600, color: c.text }}>{quantity}</span>
                 <button className="qty-btn" style={{ border: 'none', borderLeft: `1px solid ${c.qtyBorder}`, borderRadius: 0 }}
                   disabled={quantity >= part.stock}
                   onClick={() => setQuantity(q => Math.min(part.stock, q + 1))}>+</button>
-              </div>
-              <button
+              </div> */}
+              {/* <button
                 className={`add-btn${added ? ' success' : part.stock > 0 ? ' ready' : ''}`}
                 onClick={handleAddToCart}
                 disabled={part.stock === 0}
               >
                 {added ? <><Zap size={16} /> {t('product.added')}</> : <><ShoppingCart size={16} /> {t('product.addToCart')}</>}
-              </button>
+              </button> */}
+
+                {/* Phone Number */}
+                
+
             </div>
+            <div style={{
+              display: 'flex', flexDirection: 'column', gap: 10,
+              padding: '18px', borderRadius: 14,
+              background: dark ? 'rgba(76,124,255,0.06)' : 'rgba(41,82,204,0.05)',
+              border: `1px solid ${dark ? 'rgba(76,124,255,0.2)' : 'rgba(41,82,204,0.15)'}`,
+            }}>
+              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: c.textMuted, lineHeight: 1.6 }}>
+                {t('product.phoneTitle')}
+              </div>
+
+              {/* Phone number */}
+              <a href="tel:+995591219022" style={{ textDecoration: 'none' }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px',
+                  borderRadius: 10, cursor: 'pointer',
+                  background: dark ? 'rgba(34,211,184,0.08)' : 'rgba(10,140,122,0.06)',
+                  border: `1px solid ${dark ? 'rgba(34,211,184,0.25)' : 'rgba(10,140,122,0.2)'}`,
+                  transition: 'all 0.2s ease',
+                }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-1px)'
+                    ;(e.currentTarget as HTMLDivElement).style.boxShadow = `0 4px 16px ${dark ? 'rgba(34,211,184,0.15)' : 'rgba(10,140,122,0.15)'}`
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLDivElement).style.transform = 'none'
+                    ;(e.currentTarget as HTMLDivElement).style.boxShadow = 'none'
+                  }}
+                >
+                  <div style={{
+                    width: 40, height: 40, borderRadius: 10, flexShrink: 0,
+                    background: c.gradient,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 18
+                  }}>
+                    📱
+                  </div>
+                  <div>
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 18, fontWeight: 700, color: c.text, letterSpacing: '-0.3px' }}>
+                      +995 591 21 90 22
+                    </div>
+                  </div>
+                </div>
+              </a>
+
+              {/* Working hours */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 6, height: 6, borderRadius: '50%', background: c.stockGreen, boxShadow: dark ? `0 0 6px ${c.stockGreen}` : 'none' }} />
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: c.textFaint, letterSpacing: '0.05em' }}>
+                  {t('product.phoneSubText')}
+                </span>
+              </div>
+            </div>
+
+
+
+            
 
             {/* Trust badges */}
             <div className="trust-row" style={{ display: 'flex', gap: 8 }}>

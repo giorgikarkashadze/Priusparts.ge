@@ -180,14 +180,14 @@ const { dark } = useThemeStore()
                 </span>
               )}
             </div>
-            <button
+            {/* <button
               className={`add-btn${added ? ' added' : ''}`}
               onClick={handleAdd}
               disabled={part.stock === 0}
               title="Add to cart"
             >
               {added ? <Zap size={14} /> : <ShoppingCart size={14} />}
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

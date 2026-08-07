@@ -3,21 +3,23 @@ import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Lock, ChevronRight, ShieldCheck, Truck, RotateCcw, Zap } from 'lucide-react'
-import { useCartStore, useThemeStore } from '@/store'
+import { Lock, ChevronRight, ShieldCheck, Truck, RotateCcw, Zap, CreditCard } from 'lucide-react'
+import { useCartStore, useThemeStore, useAuthStore } from '@/store'
 import api from '@/lib/api'
+import { useTranslation } from 'react-i18next'
+import { getCategoryName, getPartName } from '@/hooks/usePartLocale'
 
 const schema = z.object({
   name: z.string().min(2, 'Full name required'),
   email: z.string().email('Valid email required'),
   phone: z.string()
     .min(9, 'Phone number required')
-    .regex(/^\+995\s?\d{3}\s?\d{2}\s?\d{2}\s?\d{2}$/, 'Enter valid Georgian number (+995 XXX XX XX XX)'),
+    .regex(/^\s?\d{3}\s?\d{2}\s?\d{2}\s?\d{2}$/, 'Enter valid Georgian number (XXX-XX-XX-XX)'),
   line1: z.string().min(4, 'Street address required'),
   line2: z.string().optional(),
   city: z.string().min(2, 'City required'),
   state: z.string().min(2, 'Region required'),
-  zip: z.string().optional(),
+  zip: z.string().min(2, 'ZIP code required').optional(),
 })
 type FormData = z.infer<typeof schema>
 
@@ -95,13 +97,19 @@ export default function CheckoutPage() {
     errorColor: '#DC2626',
   }
 
+  const { t } = useTranslation()
+  const { i18n } = useTranslation()
+
+  const user = useAuthStore((s) => s.user)
+  const isAdmin = user?.role === 'ADMIN'
+
   const { items, total, clearCart } = useCartStore()
   const navigate = useNavigate()
   const location = useLocation()
   const promoCode = (location.state as any)?.promoCode
 
   const [loading, setLoading] = useState(false)
-  // const [error, setError] = useState('')
+  const [error, setError] = useState('')
   const [focusedField, setFocusedField] = useState<string | null>(null)
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
@@ -114,7 +122,7 @@ export default function CheckoutPage() {
   const orderTotal = subtotal + shipping
 
   const onSubmit = async (data: FormData) => {
-    setLoading(true);
+    setLoading(true); setError('')
     try {
       const { email, phone, ...shippingAddress } = data
       const res = await api.post('/orders', {
@@ -125,11 +133,28 @@ export default function CheckoutPage() {
       clearCart()
       navigate(`/orders`, { state: { success: true, orderId: res.data.order.id } })
     } catch (e: any) {
-      // setError(e.response?.data?.error || 'Order failed. Please try again.')
+      setError(e.response?.data?.error || 'Order failed. Please try again.')
     } finally {
       setLoading(false)
     }
   }
+
+  const onAdminSubmit = async (data: FormData) => {
+  setLoading(true); setError('')
+  try {
+    const { email, phone, ...shippingAddress } = data
+    const res = await api.post('/orders/admin-test', {
+      items: items.map((i) => ({ partId: i.part.id, quantity: i.quantity })),
+      shippingAddress: { ...shippingAddress, phone },
+    })
+    clearCart()
+    navigate('/orders', { state: { success: true, orderId: res.data.order.id } })
+  } catch (e: any) {
+    setError(e.response?.data?.error || 'Order failed.')
+  } finally {
+    setLoading(false)
+  }
+}
 
   const getInputStyle = (name: string): React.CSSProperties => ({
     width: '100%', padding: '11px 14px',
@@ -243,11 +268,11 @@ export default function CheckoutPage() {
 
         {/* Breadcrumb */}
         <nav style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 24, animation: 'fade-up 0.3s ease-out both' }}>
-          <Link to="/" className="breadcrumb-link">HOME</Link>
+          <Link to="/" className="breadcrumb-link">{t('checkout.home')}</Link>
           <ChevronRight size={11} style={{ color: c.textFaint }} />
-          <Link to="/cart" className="breadcrumb-link">CART</Link>
+          <Link to="/cart" className="breadcrumb-link">{t('checkout.cart')}</Link>
           <ChevronRight size={11} style={{ color: c.textFaint }} />
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: c.teal, letterSpacing: '0.05em' }}>CHECKOUT</span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: c.teal, letterSpacing: '0.05em' }}>{t('checkout.title')}</span>
         </nav>
 
         {/* Header */}
@@ -257,8 +282,8 @@ export default function CheckoutPage() {
               <Lock size={18} style={{ color: dark ? '#04121A' : '#fff' }} />
             </div>
             <div>
-              <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 22, fontWeight: 700, color: c.text, letterSpacing: '-0.3px' }}>Secure checkout</h1>
-              <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: c.textFaint, letterSpacing: '0.08em' }}>SSL ENCRYPTED — YOUR DATA IS SAFE</p>
+              <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 29, fontWeight: 700, color: c.text, letterSpacing: '0.3px', marginBottom: 8 }}>{t('checkout.title')}</h1>
+              <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: c.textFaint, letterSpacing: '0.08em' }}>{t('checkout.subtitle')}</p>
             </div>
           </div>
         </div>
@@ -274,36 +299,26 @@ export default function CheckoutPage() {
               <div className="energy-bar" style={{ height: 2 }} />
               <div style={{ padding: '16px 20px', borderBottom: `1px solid ${c.cardBorder}`, display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{ width: 24, height: 24, borderRadius: 8, background: c.stepBg, border: `1px solid ${c.stepBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, color: c.stepColor }}>1</div>
-                <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 600, color: c.text }}>Contact information</span>
+                <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 17, fontWeight: 600, color: c.text }}>{t('checkout.contactInfo.title')}</span>
               </div>
               <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
-                <Field label="Full name" error={errors.name?.message} c={c}>
-                  <input {...register('name')} placeholder="Giorgi Beridze" autoComplete="name"
+                <Field label={t('checkout.contactInfo.name')} error={errors.name?.message} c={c}>
+                  <input {...register('name')} placeholder="" autoComplete="name"
                     style={getInputStyle('name')}
                     onFocus={() => setFocusedField('name')} onBlur={() => setFocusedField(null)} />
                 </Field>
-                <Field label="Email address" error={errors.email?.message} hint="Order confirmation will be sent here" c={c}>
-                  <input {...register('email')} type="email" placeholder="giorgi@example.com" autoComplete="email"
+                <Field label={t('checkout.contactInfo.email')} error={errors.email?.message} hint={t('checkout.contactInfo.emailHint')} c={c}>
+                  <input {...register('email')} type="email" placeholder="" autoComplete="email"
                     style={getInputStyle('email')}
                     onFocus={() => setFocusedField('email')} onBlur={() => setFocusedField(null)} />
                 </Field>
 
                 {/* Phone — Georgian only */}
-                <Field label="Phone number" error={errors.phone?.message} hint="Georgian number only (+995)" c={c}>
+                <Field label={t('checkout.contactInfo.phone')} error={errors.phone?.message} hint={t('checkout.contactInfo.phoneHint')} c={c}>
                   <div style={{ display: 'flex', gap: 8 }}>
-                    {/* +995 prefix badge */}
-                    <div style={{
-                      display: 'flex', alignItems: 'center', gap: 6, padding: '11px 14px',
-                      borderRadius: 10, background: c.phonePrefixBg,
-                      border: `1px solid ${c.phonePrefixBorder}`, flexShrink: 0,
-                      fontFamily: "'JetBrains Mono', monospace", fontSize: 13,
-                      fontWeight: 600, color: c.phonePrefixColor, whiteSpace: 'nowrap'
-                    }}>
-                      🇬🇪 +995
-                    </div>
                     <input
                       {...register('phone')}
-                      placeholder="555 12 34 56"
+                      placeholder="--- -- -- --"
                       autoComplete="tel"
                       style={{ ...getInputStyle('phone'), flex: 1 }}
                       onFocus={() => setFocusedField('phone')}
@@ -319,37 +334,32 @@ export default function CheckoutPage() {
               <div className="energy-bar" style={{ height: 2 }} />
               <div style={{ padding: '16px 20px', borderBottom: `1px solid ${c.cardBorder}`, display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{ width: 24, height: 24, borderRadius: 8, background: c.stepBg, border: `1px solid ${c.stepBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, color: c.stepColor }}>2</div>
-                <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 600, color: c.text }}>Shipping address</span>
+                <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 17, fontWeight: 600, color: c.text }}>{t('checkout.shipping.title')}</span>
               </div>
               <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
-                <Field label="Street address" error={errors.line1?.message} c={c}>
+                <Field label={t('checkout.shipping.address')} error={errors.line1?.message} c={c}>
                   <input {...register('line1')} placeholder="Rustaveli Ave 1" autoComplete="address-line1"
                     style={getInputStyle('line1')}
                     onFocus={() => setFocusedField('line1')} onBlur={() => setFocusedField(null)} />
                 </Field>
-                <Field label="Apartment, suite (optional)" c={c}>
+                <Field label={t('checkout.shipping.apartment')} c={c}>
                   <input {...register('line2')} placeholder="Apt 12"
                     style={getInputStyle('line2')}
                     onFocus={() => setFocusedField('line2')} onBlur={() => setFocusedField(null)} />
                 </Field>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                  <Field label="City" error={errors.city?.message} c={c}>
+                  <Field label={t('checkout.shipping.city')} error={errors.city?.message} c={c}>
                     <input {...register('city')} placeholder="Tbilisi"
                       style={getInputStyle('city')}
                       onFocus={() => setFocusedField('city')} onBlur={() => setFocusedField(null)} />
                   </Field>
-                  <Field label="Region" error={errors.state?.message} c={c}>
-                    <select {...register('state')}
-                      style={{ ...getInputStyle('state'), cursor: 'pointer', appearance: 'none' as const }}
-                      onFocus={() => setFocusedField('state')} onBlur={() => setFocusedField(null)}>
-                      <option value="">Select region</option>
-                      {['Tbilisi', 'Adjara', 'Guria', 'Imereti', 'Kakheti', 'Kvemo Kartli', 'Mtskheta-Mtianeti', 'Racha-Lechkhumi', 'Samegrelo', 'Samtskhe-Javakheti', 'Shida Kartli'].map(r => (
-                        <option key={r} value={r}>{r}</option>
-                      ))}
-                    </select>
+                  <Field label={t('checkout.shipping.region')} error={errors.state?.message} c={c}>
+                    <input {...register('state')}
+                      style={{ ...getInputStyle('state') }}
+                      onFocus={() => setFocusedField('state')} onBlur={() => setFocusedField(null)}/>
                   </Field>
                 </div>
-                <Field label="ZIP / Postal code (optional)" c={c}>
+                <Field label={t('checkout.shipping.zip')} c={c}>
                   <input {...register('zip')} placeholder="0105"
                     style={getInputStyle('zip')}
                     onFocus={() => setFocusedField('zip')} onBlur={() => setFocusedField(null)} />
@@ -358,11 +368,11 @@ export default function CheckoutPage() {
             </div>
 
             {/* Step 3 — Payment */}
-            {/* <div className="checkout-card">
+            <div className="checkout-card">
               <div className="energy-bar" style={{ height: 2 }} />
               <div style={{ padding: '16px 20px', borderBottom: `1px solid ${c.cardBorder}`, display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{ width: 24, height: 24, borderRadius: 8, background: c.stepBg, border: `1px solid ${c.stepBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, color: c.stepColor }}>3</div>
-                <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 600, color: c.text }}>Payment</span>
+                <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 600, color: c.text }}>{t('checkout.payment.title')}</span>
                 <CreditCard size={14} style={{ color: c.textFaint, marginLeft: 4 }} />
               </div>
               <div style={{ padding: 20 }}>
@@ -389,10 +399,29 @@ export default function CheckoutPage() {
                   ))}
                 </div>
               </div>
-            </div> */}
+            </div>
+            {/* Admin test order button */}
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={handleSubmit(onAdminSubmit)}
+                disabled={loading}
+                style={{
+                  width: '100%', padding: '12px', borderRadius: 12, border: `1px dashed ${dark ? 'rgba(255,107,87,0.4)' : 'rgba(220,38,38,0.3)'}`,
+                  background: dark ? 'rgba(255,107,87,0.06)' : 'rgba(220,38,38,0.04)',
+                  color: dark ? '#FF6B57' : '#DC2626',
+                  fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                  fontFamily: "'JetBrains Mono', monospace",
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                  letterSpacing: '0.05em'
+                }}
+              >
+                🔐 ADMIN — Place test order (no payment)
+              </button>
+            )}
 
             {/* Error */}
-            {/* {error && (
+            {error && (
               <div style={{
                 background: c.errorBg, border: `1px solid ${c.errorBorder}`,
                 borderRadius: 10, padding: '12px 16px',
@@ -401,25 +430,25 @@ export default function CheckoutPage() {
               }}>
                 ⚠ {error}
               </div>
-            )} */}
+            )}
 
             {/* Submit */}
             <button type="submit" disabled={loading} className={`submit-btn${!loading ? ' ready' : ''}`}>
               {loading ? (
                 <>
                   <div style={{ width: 16, height: 16, borderRadius: '50%', border: '2px solid transparent', borderTopColor: 'currentColor', animation: 'spin 0.8s linear infinite' }} />
-                  Placing order…
+                  {t('checkout.payment.placing')}
                 </>
               ) : (
                 <>
                   <Zap size={16} />
-                  Place order — {orderTotal}
+                  {t('checkout.payment.placeOrder')} — {orderTotal}
                 </>
               )}
             </button>
 
-            <p style={{ textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: c.textFaint, letterSpacing: '0.05em' }}>
-              BY PLACING YOUR ORDER YOU AGREE TO OUR TERMS OF SERVICE
+            <p style={{ textAlign: 'center', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: c.textFaint, letterSpacing: '0.05em' }}>
+              {t('checkout.payment.paymentSub')}
             </p>
           </form>
 
@@ -430,11 +459,11 @@ export default function CheckoutPage() {
             <div className="checkout-card">
               <div className="energy-bar" style={{ height: 2 }} />
               <div style={{ padding: '14px 18px', borderBottom: `1px solid ${c.cardBorder}` }}>
-                <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 600, color: c.text }}>
-                  Order summary{' '}
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: c.textFaint, fontWeight: 400 }}>
-                    ({items.reduce((a, i) => a + i.quantity, 0)} items)
-                  </span>
+                <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 17, fontWeight: 600, color: c.text }}>
+                  {t('checkout.summary.title')}{' '}
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, color: c.textFaint, fontWeight: 400 }}>
+                    ({items.reduce((a, i) => a + i.quantity, 0)} {t('checkout.summary.items')})
+                  </div>
                 </span>
               </div>
               <div style={{ padding: '12px 18px', display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -443,32 +472,33 @@ export default function CheckoutPage() {
                   return (
                     <div key={part.id} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                       <div style={{
-                        width: 44, height: 44, borderRadius: 8, flexShrink: 0,
+                        width: 44, height: 44, borderRadius: 8,
                         background: dark ? '#0a0f1e' : '#E8EEFF',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: 20, overflow: 'hidden', position: 'relative'
+                        fontSize: 20, position: 'relative'
                       }}>
                         {part.images?.[0]
-                          ? <img src={part.images[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} />
+                          ? <img src={part.images[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                           : icon}
                         <div style={{
-                          position: 'absolute', top: -4, right: -4, width: 16, height: 16,
+                          position: 'absolute', top: -9, right: -10, width: 18, height: 18,
                           background: c.gradient, borderRadius: '50%',
-                          fontFamily: "'JetBrains Mono', monospace", fontSize: 9, fontWeight: 700,
+                          fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700,
                           color: dark ? '#04121A' : '#fff',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center'
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          zIndex: 2, boxShadow: '0 0 0 2px ' + (dark ? '#0a0f1e' : '#fff')
                         }}>{quantity}</div>
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, fontWeight: 500, color: c.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {part.name}
+                          {getPartName(part, i18n.language)}
                         </div>
-                        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: c.textFaint, marginTop: 1 }}>
-                          {part.category?.name}
+                        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: c.textFaint, marginTop: 1 }}>
+                          {getCategoryName(part.category, i18n.language)}
                         </div>
                       </div>
                       <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, fontWeight: 600, color: c.text, flexShrink: 0 }}>
-                        {Number(part.price) * quantity}
+                        {Number(part.price) * quantity} ₾
                       </span>
                     </div>
                   )
@@ -478,17 +508,17 @@ export default function CheckoutPage() {
               {/* Totals */}
               <div style={{ padding: '12px 18px', borderTop: `1px solid ${c.cardBorder}`, display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {[
-                  { label: 'Subtotal', value: subtotal },
-                  { label: 'Shipping', value: shipping },
+                  { label: t('checkout.summary.subtotal'), value: subtotal },
+                  { label: t('checkout.summary.shipping'), value: shipping },
                 ].map(({ label, value }) => (
                   <div key={label} style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Inter', sans-serif", fontSize: 13, color: c.textMuted }}>
-                    <span>{label}</span>
-                    <span style={{ color: c.text }}>{value}</span>
+                    <span>{label} </span>
+                    <span style={{ color: c.text }}>{value} ₾</span>
                   </div>
                 ))}
                 <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 10, borderTop: `1px solid ${c.cardBorder}`, marginTop: 2 }}>
-                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, fontWeight: 700, color: c.text }}>Total</span>
-                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 18, fontWeight: 700, color: c.accent }}>{orderTotal}</span>
+                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, fontWeight: 700, color: c.text }}>{t('checkout.summary.total')}</span>
+                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 18, fontWeight: 700, color: c.accent }}>{orderTotal} ₾</span>
                 </div>
               </div>
             </div>
@@ -496,15 +526,15 @@ export default function CheckoutPage() {
             {/* Trust badges */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {[
-                { icon: ShieldCheck, text: 'SSL encrypted & secure' },
-                { icon: Truck, text: '1–3 day delivery across Georgia' },
-                { icon: RotateCcw, text: '30-day hassle-free returns' },
+                { icon: ShieldCheck, text: t('checkout.summary.sslSecure') },
+                { icon: Truck, text: t('checkout.summary.delivery') },
+                { icon: RotateCcw, text: t('checkout.summary.freeReturns') },
               ].map(({ icon: Icon, text }) => (
                 <div key={text} className="trust-badge">
                   <div style={{ width: 28, height: 28, borderRadius: 8, background: c.gradient, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <Icon size={13} style={{ color: dark ? '#04121A' : '#fff' }} />
                   </div>
-                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: c.textMuted }}>{text}</span>
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: c.textMuted, paddingLeft: 10 }}>{text}</span>
                 </div>
               ))}
             </div>

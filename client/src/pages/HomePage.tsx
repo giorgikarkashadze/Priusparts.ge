@@ -270,7 +270,7 @@ export default function HomePage() {
         )}
 
         {/* Promo banner */}
-        <section style={{ marginBottom: 48, animation: 'fade-up 0.5s ease-out both' }}>
+        {/* <section style={{ marginBottom: 48, animation: 'fade-up 0.5s ease-out both' }}>
           <div style={{
             background: 'linear-gradient(135deg, rgba(212,56,13,0.15), rgba(255,107,53,0.1))',
             border: '1px solid rgba(212,56,13,0.3)', borderRadius: 16, padding: '24px',
@@ -281,14 +281,14 @@ export default function HomePage() {
               <div style={{ fontWeight: 600, color: '#4d9fff', fontSize: 16 }}>{t('home.promo.title')}</div>
               <div style={{ fontSize: 13, color: '#64748b', marginTop: 4 }}>{t('home.promo.subtitle')} <strong style={{ color: '#f9fafb' }}>SUMMER30</strong> {t('home.promo.at')}</div>
             </div>
-            {/* <Link to="/catalog?category=brakes" style={{
+            <Link to="/catalog?category=brakes" style={{
               background: '#1d6fe8', color: '#fff', textDecoration: 'none',
               padding: '10px 20px', borderRadius: 8, fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap'
             }}>
               {t('home.promo.btn')}
-            </Link> */}
+            </Link>
           </div>
-        </section>
+        </section> */}
 
         {/* New arrivals */}
         {popular?.data && popular.data.length > 0 && (

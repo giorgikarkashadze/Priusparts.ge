@@ -6,9 +6,9 @@ import { requireAuth, AuthRequest } from '../middleware/auth'
 
 const router = Router()
 const prisma = new PrismaClient()
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? 'sk_test_placeholder', {
-  apiVersion: '2026-06-24.dahlia',
-})
+// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? 'sk_test_placeholder', {
+//   apiVersion: '2026-06-24.dahlia',
+// })
 
 const orderSchema = z.object({
   items: z.array(z.object({ partId: z.string(), quantity: z.number().min(1) })),
@@ -118,6 +118,53 @@ router.post('/validate-promo', async (req, res) => {
   })
   if (!promo) return res.status(404).json({ error: 'Invalid or expired promo code' })
   res.json({ discount: promo.discount, type: promo.type, description: promo.description })
+})
+
+// Admin test order — no payment required
+router.post('/admin-test', requireAuth, async (req: any, res) => {
+  try {
+    // Only admins can use this
+    if (req.user?.role !== 'ADMIN') {
+      return res.status(403).json({ error: 'Forbidden' })
+    }
+
+    const { items, shippingAddress } = req.body
+
+    // Fetch parts
+    const parts = await Promise.all(items.map(async (item: any) => {
+      const part = await prisma.part.findUnique({ where: { id: item.partId } })
+      if (!part) throw new Error(`Part ${item.partId} not found`)
+      return { ...part, quantity: item.quantity }
+    }))
+
+    const subtotal = parts.reduce((sum, p) => sum + Number(p.price) * p.quantity, 0)
+    const shipping = 9.99
+    const total = subtotal + shipping
+
+    const order = await prisma.order.create({
+      data: {
+        userId: req.user.id,
+        subtotal,
+        shipping,
+        discount: 0,
+        total,
+        stripePaymentId: `admin_test_${Date.now()}`,
+        shippingAddress,
+        items: {
+          create: parts.map(p => ({
+            partId: p.id,
+            quantity: p.quantity,
+            price: p.price
+          }))
+        }
+      },
+      include: { items: { include: { part: true } } }
+    })
+
+    res.status(201).json({ order })
+  } catch (e: any) {
+    res.status(500).json({ error: e.message || 'Failed to create test order' })
+  }
 })
 
 export default router

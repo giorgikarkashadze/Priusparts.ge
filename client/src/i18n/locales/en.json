@@ -118,7 +118,9 @@
     "years": "Years",
     "loading": "Loading Part Data...",
     "notFound": "Part not found",
-    "backToCatalog": "← Back to CATALOG"
+    "backToCatalog": "← Back to CATALOG",
+    "phoneTitle": "To order this part or ask about availability, call us directly:",
+    "phoneSubText": "MON–SAT 9:00 – 19:00 · TBILISI, GEORGIA"
   },
   "cart": {
     "title": "Your cart",
@@ -166,6 +168,7 @@
     "passDoesntMatch": "Password must be at least 8 characters"
   },
   "checkout": {
+    "home": "Home",
     "title": "Secure checkout",
     "subtitle": "Your information is encrypted and secure",
     "cart": "Cart",
@@ -174,17 +177,18 @@
       "title": "Contact information",
       "name": "Full Name",
       "email": "Email address",
-      "phone": "Phone Number"
+      "emailHint": "Order confirmation will be sent here",
+      "phone": "Phone Number",
+      "phoneHint": "Georgian number only (+995)"
     },
     "shipping": {
       "title": "Shipping address",
       "address": "Street address",
       "apartment": "Apartment, suite, etc. (optional)",
       "city": "City",
-      "region": "Region",
       "zip": "ZIP / Postal Code",
-      "country": {
-        "name": "Country",
+      "region": "Region",
+      "regionOptions": {
         "Georgia": "Georgia"
       }
     },
