@@ -10,7 +10,7 @@ import { getCategoryName } from '@/hooks/usePartLocale'
 
 export default function Layout() {
   // const itemCount = useCartStore((s) => s.itemCount())
-  const { user, clearAuth } = useAuthStore()
+  const { user } = useAuthStore()
   const { dark, toggle } = useThemeStore()
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)

@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import {
-  ShoppingCart, ChevronRight, ChevronLeft,
-  Package, RotateCcw, Shield, Zap, AlertTriangle, CheckCircle
+  ChevronRight, ChevronLeft,
+  Package, RotateCcw, Shield, AlertTriangle, CheckCircle
 } from 'lucide-react'
 import { usePart } from '@/hooks/useProducts'
-import { useCartStore, useThemeStore } from '@/store'
+import { useThemeStore } from '@/store'
 import { discount } from '@/lib/utils'
 import { getCategoryName, getPartDescription, getPartName } from '@/hooks/usePartLocale'
 import { useTranslation } from 'react-i18next'
@@ -13,11 +13,11 @@ import { useTranslation } from 'react-i18next'
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>()
   const { data: part, isLoading, isError } = usePart(slug!)
-  const addItem = useCartStore((s) => s.addItem)
+  // const addItem = useCartStore((s) => s.addItem)
+  // const [quantity, setQuantity] = useState(1)
+  // const [added, setAdded] = useState(false)
   const { dark } = useThemeStore()
-  const [quantity, setQuantity] = useState(1)
   const [activeImage, setActiveImage] = useState(0)
-  const [added, setAdded] = useState(false)
   const { t } = useTranslation()
   const { i18n } = useTranslation()
 
@@ -110,12 +110,12 @@ export default function ProductPage() {
     categoryColor: '#0A8C7A',
   }
 
-  const handleAddToCart = () => {
-    if (!part) return
-    addItem(part, quantity)
-    setAdded(true)
-    setTimeout(() => setAdded(false), 2000)
-  }
+  // const handleAddToCart = () => {
+  //   if (!part) return
+  //   addItem(part, quantity)
+  //   setAdded(true)
+  //   setTimeout(() => setAdded(false), 2000)
+  // }
 
   // Loading state
   if (isLoading) return (
@@ -123,7 +123,7 @@ export default function ProductPage() {
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       <div style={{ textAlign: 'center' }}>
         <div style={{ width: 48, height: 48, borderRadius: '50%', border: '2px solid transparent', borderTopColor: c.accent, borderRightColor: c.teal, animation: 'spin 0.8s linear infinite', margin: '0 auto 16px' }} />
-        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: c.teal, letterSpacing: '0.15em' }}>LOADING PART DATA…</div>
+        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: c.teal, letterSpacing: '0.15em' }}>{t('product.loading')}</div>
       </div>
     </div>
   )

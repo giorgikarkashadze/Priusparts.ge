@@ -714,7 +714,7 @@ function OrdersTab({ c, dark }: any) {
 }
 
 // ─── Promotions ───────────────────────────────────────────────────────────────
-function PromotionsTab({ c, inputSt, labelSt, btnPrimary, btnSecondary, dark }: any) {
+function PromotionsTab({ c, inputSt, labelSt, btnPrimary, btnSecondary }: any) {
   const qc = useQueryClient()
   const [showForm, setShowForm] = useState(false)
 
@@ -830,7 +830,7 @@ function PromotionsTab({ c, inputSt, labelSt, btnPrimary, btnSecondary, dark }: 
 }
 
 // ─── Settings ─────────────────────────────────────────────────────────────────
-function SettingsTab({ c, inputSt, labelSt, btnPrimary, dark }: any) {
+function SettingsTab({ c, inputSt, labelSt, btnPrimary }: any) {
   const [saved, setSaved] = useState(false)
 
   return (

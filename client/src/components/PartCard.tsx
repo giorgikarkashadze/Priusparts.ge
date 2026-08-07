@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ShoppingCart, Zap } from 'lucide-react'
-import { useCartStore, useThemeStore } from '@/store'
+import { useThemeStore } from '@/store'
 import { formatPrice, discount } from '@/lib/utils'
 import type { Part } from '@/types/types'
 import { useTranslation } from 'react-i18next'
@@ -21,21 +20,21 @@ const { dark } = useThemeStore()
       borderColor: '#F0F4FF',
     }
 
-  const addItem = useCartStore((s) => s.addItem)
-  const [added, setAdded] = useState(false)
+  // const addItem = useCartStore((s) => s.addItem)
+  // const [added, setAdded] = useState(false)
   const [hovered, setHovered] = useState(false)
   const disc = discount(part.price, part.comparePrice)
   const icon = CATEGORY_ICONS[part.category?.slug] || '🔩'
   const { i18n } = useTranslation()
   const { t } = useTranslation()
 
-  const handleAdd = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    addItem(part)
-    setAdded(true)
-    setTimeout(() => setAdded(false), 1500)
-  }
+  // const handleAdd = (e: React.MouseEvent) => {
+  //   e.preventDefault()
+  //   e.stopPropagation()
+  //   addItem(part)
+  //   setAdded(true)
+  //   setTimeout(() => setAdded(false), 1500)
+  // }
 
   return (
     <>
