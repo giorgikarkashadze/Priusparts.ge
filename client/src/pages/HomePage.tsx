@@ -26,7 +26,7 @@ export default function HomePage() {
       textMuted: '#7C8AA5',
       accent: '#4C7CFF',
       gradientHero: 'linear-gradient(135deg, #05070C 0%, #0a1628 50%, #05070C 100%)',
-      gradientAccent: 'linear-gradient(135deg, #4C7CFF, #22D3B8)',
+      gradientAccent: 'linear-gradient(135deg, #284185, #188b7a)',
       energyLine: 'linear-gradient(90deg, #4C7CFF, #22D3B8, #4C7CFF, #22D3B8)',
       gridColor: 'rgba(76,124,255,0.04)',
       glowBlue: 'rgba(76,124,255,0.08)',
@@ -214,8 +214,8 @@ export default function HomePage() {
             ['4.9★', t('home.stats.rating')],
           ].map(([val, lbl]) => (
             <div key={lbl}>
-              <div style={{ fontSize: 20, fontWeight: 700, color: dark ? '#18385f' : '#ebeffa' }}>{val}</div>
-              <div style={{ fontSize: 12, color: dark ? '#484849' : '#abaeb4', marginTop: 2 }}>{lbl}</div>
+              <div style={{ fontSize: 20, fontWeight: 700, color: dark ? '#bcc5d1' : '#ebeffa' }}>{val}</div>
+              <div style={{ fontSize: 12, color: dark ? '#b7b7c4' : '#ced2da', marginTop: 2 }}>{lbl}</div>
             </div>
           ))}
         </div>
