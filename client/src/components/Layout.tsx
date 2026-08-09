@@ -1,7 +1,7 @@
-import { Outlet, Link, useLocation } from 'react-router-dom'
-import { Sun, Moon, User, Settings, Menu, X } from 'lucide-react'
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
+import { Sun, Moon, Settings, Menu, X, Package, LogOut } from 'lucide-react'
 import { useState } from 'react'
-import { useAuthStore, useThemeStore } from '@/store'
+import { useAuthStore, useCartStore, useThemeStore } from '@/store'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useRef } from 'react'
 import { useCategories } from '@/hooks/useProducts'
@@ -10,11 +10,11 @@ import { getCategoryName } from '@/hooks/usePartLocale'
 
 export default function Layout() {
   // const itemCount = useCartStore((s) => s.itemCount())
-  const { user } = useAuthStore()
+  const { user, clearAuth } = useAuthStore()
   const { dark, toggle } = useThemeStore()
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
   const location = useLocation()
   const { t } = useTranslation()
   // const { currency, toggle: toggleCurrency } = useCurrencyStore()
@@ -338,16 +338,9 @@ export default function Layout() {
 
           {/* User — desktop */}
           <div style={{ position: 'relative' }} ref={userMenuRef}>
-            {user ? (
+            {user && user.role === 'ADMIN' && (
               <>
-              <button>
-                {user.role === 'ADMIN' && (
-                      <Link to="/admin" onClick={closeMenus} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: 8, color: '#4d9fff', textDecoration: 'none', fontSize: 13 }}>
-                        <Settings size={15} />
-                      </Link>
-                    )}
-              </button>
-                {/* <button onClick={() => setUserMenuOpen(!userMenuOpen)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', borderRadius: 8, background: 'rgba(255,255,255,0.08)', border: 'none', color: '#f9fafb', cursor: 'pointer', fontSize: 13 }}>
+                <button onClick={() => setUserMenuOpen(!userMenuOpen)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', borderRadius: 8, background: 'rgba(255,255,255,0.08)', border: 'none', color: '#f9fafb', cursor: 'pointer', fontSize: 13 }}>
                   <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'linear-gradient(135deg, #4C7CFF, #22D3B8)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 600, color: '#04121A' }}>
                     {user.name[0].toUpperCase()}
                   </div>
@@ -368,12 +361,8 @@ export default function Layout() {
                       <LogOut size={13} /> {t('nav.signOut')}
                     </button>
                   </div>
-                )} */}
+                )}
               </>
-            ) : (
-              <Link to="/login" onClick={closeMenus} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.08)', color: '#94a3b8', textDecoration: 'none', fontSize: 13 }}>
-                <User size={13} /> {t('nav.signIn')}
-              </Link>
             )}
           </div>
         </div>
